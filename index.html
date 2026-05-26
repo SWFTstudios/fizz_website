@@ -4,33 +4,339 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>fizz5</title>
+    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+    <link rel="apple-touch-icon" href="/images/webclip.png" />
+    <link rel="stylesheet" href="/css/normalize.css" />
+    <link rel="stylesheet" href="/css/webflow.css" />
+    <link rel="stylesheet" href="/css/fizz5.webflow.css" />
   </head>
-  <body>
-    <header class="navbar">
-      <div class="nav-inner">
-        <a class="brand" href="/" aria-label="fizz5 home">
-          <img class="brand-logo" src="/images/Fizz_Logo.png" alt="fizz5" />
-        </a>
-        <nav class="nav-links" aria-label="Primary">
-          <a href="#bottles">Bottles</a>
-          <a href="#flavor-packs">Flavor Packs</a>
-          <a href="#about">About</a>
-          <a href="#contact">Contact</a>
-        </nav>
-      </div>
-    </header>
+  <body class="home-page">
+    <div id="content" class="page-wrapper">
+      <div class="main-wrapper">
+        <header role="banner" class="navbar w-nav">
+          <div class="nav-base">
+            <div class="grid-wrapper">
+              <div class="nav-content">
+                <a href="/" class="brand w-nav-brand" aria-label="fizz5 home">
+                  <img
+                    src="/images/Fizz_Logo.png"
+                    loading="lazy"
+                    sizes="(max-width: 2000px) 100vw, 2000px"
+                    srcset="/images/Fizz_Logo-p-500.png 500w, /images/Fizz_Logo-p-800.png 800w, /images/Fizz_Logo-p-1080.png 1080w, /images/Fizz_Logo-p-1600.png 1600w, /images/Fizz_Logo.png 2000w"
+                    alt="fizz5"
+                    class="brand-logo"
+                  />
+                </a>
+                <nav role="navigation" class="nav-menu w-nav-menu" aria-label="Primary">
+                  <div class="menu-base">
+                    <div class="menu-wrapper">
+                      <a href="#bottles" class="nav-link-2 w-inline-block">
+                        <div class="nav-link-text">
+                          <div class="button-text-wrapper">
+                            <div class="button-text">Bottles</div>
+                          </div>
+                        </div>
+                      </a>
+                      <a href="#flavor-packs" class="nav-link-2 w-inline-block">
+                        <div class="nav-link-text">
+                          <div class="button-text-wrapper">
+                            <div class="button-text">Flavor Packs</div>
+                          </div>
+                        </div>
+                      </a>
+                      <a href="#about" class="nav-link-2 w-inline-block">
+                        <div class="nav-link-text">
+                          <div class="button-text-wrapper">
+                            <div class="button-text">About</div>
+                          </div>
+                        </div>
+                      </a>
+                      <a href="#contact" class="nav-link-2 w-inline-block">
+                        <div class="nav-link-text">
+                          <div class="button-text-wrapper">
+                            <div class="button-text">Contact</div>
+                          </div>
+                        </div>
+                      </a>
+                    </div>
+                  </div>
+                </nav>
+                <div class="right-nav">
+                  <button
+                    type="button"
+                    class="menu-button-2 w-nav-button"
+                    aria-label="Open menu"
+                    aria-expanded="false"
+                  >
+                    <img src="/images/menu-224x242x.svg" loading="lazy" alt="" class="menu-icon" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </header>
 
-    <main class="page">
-      <section class="hero" id="top">
-        <h1>Fizz5</h1>
-        <p>Marketing + commerce experience rebuilt outside Webflow.</p>
-      </section>
-      <section class="placeholder" id="bottles" aria-label="Bottles section">
-        <h2>Bottles</h2>
-      </section>
-    </main>
+        <section id="hero--content" class="hero-section" aria-label="Hero">
+          <div class="hero-track">
+            <div class="carousel-wrapper" aria-hidden="true">
+              <div class="text-wrapper">
+                <div class="carousel-div-wrapper">
+                  <div class="hflex">
+                    <div class="carousel-div">
+                      <img
+                        src="https://cdn.prod.website-files.com/69e14e0b44cfdaa4a9af66f3/69e6832d54fbe42998238893_Fizz_Logo.png"
+                        loading="lazy"
+                        alt=""
+                        class="carousel-image"
+                      />
+                    </div>
+                    <div class="carousel-div">
+                      <img
+                        src="/images/Fizz_Logo_Black.avif"
+                        loading="lazy"
+                        sizes="(max-width: 2000px) 100vw, 2000px"
+                        srcset="/images/Fizz_Logo_Black-p-500.png 500w, /images/Fizz_Logo_Black.avif 2000w"
+                        alt=""
+                        class="carousel-image"
+                      />
+                    </div>
+                    <div class="carousel-div">
+                      <img
+                        src="https://cdn.prod.website-files.com/69e14e0b44cfdaa4a9af66f3/69e6832d54fbe42998238893_Fizz_Logo.png"
+                        loading="lazy"
+                        alt=""
+                        class="carousel-image"
+                      />
+                    </div>
+                    <div class="carousel-div">
+                      <img
+                        src="/images/Fizz_Logo_Black.avif"
+                        loading="lazy"
+                        sizes="(max-width: 2000px) 100vw, 2000px"
+                        srcset="/images/Fizz_Logo_Black-p-500.png 500w, /images/Fizz_Logo_Black.avif 2000w"
+                        alt=""
+                        class="carousel-image"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div class="carousel-div-wrapper is--2">
+                  <div class="hflex">
+                    <div class="carousel-div">
+                      <img
+                        src="https://cdn.prod.website-files.com/69e14e0b44cfdaa4a9af66f3/69e6832d54fbe42998238893_Fizz_Logo.png"
+                        loading="lazy"
+                        alt=""
+                        class="carousel-image"
+                      />
+                    </div>
+                    <div class="carousel-div">
+                      <img
+                        src="/images/Fizz_Logo_Black.avif"
+                        loading="lazy"
+                        alt=""
+                        class="carousel-image"
+                      />
+                    </div>
+                    <div class="carousel-div">
+                      <img
+                        src="https://cdn.prod.website-files.com/69e14e0b44cfdaa4a9af66f3/69e6832d54fbe42998238893_Fizz_Logo.png"
+                        loading="lazy"
+                        alt=""
+                        class="carousel-image"
+                      />
+                    </div>
+                    <div class="carousel-div">
+                      <img
+                        src="/images/Fizz_Logo_Black.avif"
+                        loading="lazy"
+                        alt=""
+                        class="carousel-image"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="video-bg_wrapper">
+              <div class="hero-content-wrap-padding absolute">
+                <div id="hero-content-container" class="container is-hero">
+                  <div class="column-2 is-hero">
+                    <div class="overflow-hidden">
+                      <p class="display hero-small">Elevate Your</p>
+                    </div>
+                    <div class="overflow-hidden">
+                      <p class="display hero-large">Hydration</p>
+                    </div>
+                  </div>
+                  <div class="column-2 is-hero-second">
+                    <div class="overflow-hidden">
+                      <p class="text-style medium hero">
+                        Enjoy healthy, hydrating flavor. <br />Now with a sparkling twist.
+                      </p>
+                    </div>
+                    <div class="button-group-2 margin-top margin-medium">
+                      <a href="#intro" class="button-2 is-text-link w-inline-block">
+                        <div class="button-link-content">
+                          <div>Fizz Up Your Day</div>
+                        </div>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="hero-slider w-slider" data-autoplay="true">
+                <div class="w-slider-mask">
+                  <div id="is--slide--1" class="w-slide">
+                    <div class="hero-video_container w-background-video w-background-video-atom">
+                      <video
+                        autoplay
+                        loop
+                        muted
+                        playsinline
+                        data-object-fit="cover"
+                        poster="https://cdn.prod.website-files.com/69f88c02240c0cd6011f809d%2F69fb6ab828d94dcf19a4cf3a_sparkling-blue-bokeh-light-abstract-background-2025-12-17-06-46-25-utc_v1%20%281080p%29_poster.0000000.jpg"
+                      >
+                        <source
+                          src="https://cdn.prod.website-files.com/69f88c02240c0cd6011f809d%2F69fb6ab828d94dcf19a4cf3a_sparkling-blue-bokeh-light-abstract-background-2025-12-17-06-46-25-utc_v1%20%281080p%29_mp4.mp4"
+                          type="video/mp4"
+                        />
+                      </video>
+                      <div class="hero-content-container is-hero">
+                        <div class="background-image-overlay"></div>
+                        <div class="background-image-overlay bottom"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div id="is--slide--2" class="w-slide">
+                    <div class="hero-video_container w-background-video w-background-video-atom">
+                      <video
+                        autoplay
+                        loop
+                        muted
+                        playsinline
+                        data-object-fit="cover"
+                        poster="/videos/rising-air-bubbles-on-black-background-2025-12-17-20-54-19-utc-1080p_poster.0000000.jpg"
+                      >
+                        <source
+                          src="/videos/rising-air-bubbles-on-black-background-2025-12-17-20-54-19-utc-1080p_mp4.mp4"
+                          type="video/mp4"
+                        />
+                        <source
+                          src="/videos/rising-air-bubbles-on-black-background-2025-12-17-20-54-19-utc-1080p_webm.webm"
+                          type="video/webm"
+                        />
+                      </video>
+                      <div class="hero-content-container is-hero">
+                        <div class="background-image-overlay"></div>
+                        <div class="background-image-overlay bottom"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="slide-nav w-slider-nav w-slider-nav-invert w-round"></div>
+              </div>
+              <button type="button" class="slide-arrow w-slider-arrow-left" aria-label="Previous slide">
+                <span class="slider-arrow-wrapper">
+                  <img src="/images/arrow-left24x242x-5.svg" alt="" class="slider-arrow" />
+                </span>
+              </button>
+              <button type="button" class="slide-arrow right w-slider-arrow-right" aria-label="Next slide">
+                <span class="slider-arrow-wrapper">
+                  <img src="/images/arrow-right24x242x-5.svg" alt="" class="slider-arrow" />
+                </span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <section id="intro" class="intro-section" aria-label="Introduction">
+          <div class="intro-sticky">
+            <div class="intro-content">
+              <div class="w-layout-vflex flex-block">
+                <h2 class="intro-subhead">Carbonation you can <br />take anywhere</h2>
+                <img
+                  src="/images/Fizz_Logo.avif"
+                  loading="lazy"
+                  width="238"
+                  alt="fizz5"
+                  srcset="/images/Fizz_Logo-p-500.avif 500w, /images/Fizz_Logo-p-800.avif 800w, /images/Fizz_Logo.avif 2000w"
+                  sizes="238px"
+                />
+              </div>
+              <div class="flex-block">
+                <p class="intro-paragraph">
+                  Fizz is a portable carbonation bottle paired with our in-house flavor packs so you
+                  can liven up your water and your day in seconds. <br />Just add some Fizz.
+                </p>
+                <div class="cta-links">
+                  <a href="#explore" class="cta-link" data-transition>Explore</a>
+                  <a href="#shop-stub" class="cta-link left" data-transition>Shop</a>
+                </div>
+              </div>
+            </div>
+            <div class="background-video intro-section w-background-video w-background-video-atom">
+              <video autoplay loop muted playsinline data-object-fit="cover" poster="/videos/loop-animation-of-water-on-black-background-2026-01-28-04-38-31-utc_poster.0000000.jpg">
+                <source src="/videos/loop-animation-of-water-on-black-background-2026-01-28-04-38-31-utc_mp4.mp4" type="video/mp4" />
+                <source src="/videos/loop-animation-of-water-on-black-background-2026-01-28-04-38-31-utc_webm.webm" type="video/webm" />
+              </video>
+            </div>
+          </div>
+        </section>
+
+        <div id="post-intro" class="post-intro is-gated" hidden>
+        <section class="sticky-track" aria-label="Product transition">
+          <div class="lottie-animation-3">
+            <div data-lottie-scroll aria-hidden="true"></div>
+          </div>
+          <div class="overlay gradient top"></div>
+        </section>
+
+        <section id="explore" class="page-content-section" aria-label="Explore">
+          <div class="section" id="bottles">
+            <div class="grid-wrapper">
+              <div class="story-wrapper">
+                <div class="story-content">
+                  <div class="stacked-intro large centered">
+                    <div class="stacked-intro small">
+                      <div class="width-large">
+                        <h1 class="heading large">Add some fizz to your life</h1>
+                      </div>
+                      <div class="width-medium">
+                        <div class="body-display">
+                          Our innovative fabric gives you the comfort to flow through your body goals
+                          in every movement and find a better work.
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="shop-stub" class="page-content-section" aria-label="Shop coming soon">
+          <div class="section">
+            <div class="grid-wrapper">
+              <div class="story-wrapper">
+                <div class="story-content">
+                  <h1 class="heading large">Shop coming soon</h1>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        </div>
+      </div>
+    </div>
+
+    <div id="lottie-overlay" aria-hidden="true">
+      <div id="lottie-overlay-canvas"></div>
+    </div>
 
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
-

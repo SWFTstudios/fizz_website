@@ -1,99 +1,19 @@
-:root {
-  --bg: #05070a;
-  --fg: #eaf2ff;
-  --muted: rgba(234, 242, 255, 0.75);
-  --accent: #52d7ff;
-}
+/* Minimal global resets; home layout uses Webflow CSS + home-overrides.css */
 
 * {
   box-sizing: border-box;
 }
 
-html,
-body {
-  height: 100%;
+html {
+  scroll-behavior: smooth;
 }
 
-body {
-  margin: 0;
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica,
-    Arial, "Apple Color Emoji", "Segoe UI Emoji";
-  background: radial-gradient(1200px 700px at 50% -100px, rgba(82, 215, 255, 0.25), transparent),
-    var(--bg);
-  color: var(--fg);
-}
-
-.navbar {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  backdrop-filter: blur(10px);
-  background: rgba(5, 7, 10, 0.65);
-  border-bottom: 1px solid rgba(234, 242, 255, 0.08);
-}
-
-.nav-inner {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 14px 20px;
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  justify-content: space-between;
-}
-
-.brand-logo {
-  height: 34px;
-  width: auto;
-  display: block;
-}
-
-.nav-links {
-  display: flex;
-  gap: 18px;
-}
-
-.nav-links a {
-  color: var(--fg);
-  text-decoration: none;
-  font-weight: 600;
-  opacity: 0.9;
-}
-
-.nav-links a:hover {
-  opacity: 1;
-  color: var(--accent);
-}
-
-.page {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 40px 20px 120px;
-}
-
-.hero {
-  padding: 70px 0 40px;
-}
-
-.hero h1 {
-  margin: 0 0 12px;
-  font-size: 56px;
-  letter-spacing: -0.03em;
-}
-
-.hero p {
-  margin: 0;
-  color: var(--muted);
-  font-size: 18px;
-  max-width: 70ch;
-}
-
-.placeholder {
-  padding: 60px 0;
-  border-top: 1px solid rgba(234, 242, 255, 0.08);
-}
-
-.placeholder h2 {
-  margin: 0;
+.page-content-section {
+  position: relative;
+  z-index: 3;
+  background: #fff;
+  color: #204b6d;
+  min-height: 100vh;
+  padding: 6rem 2rem 8rem;
 }
 

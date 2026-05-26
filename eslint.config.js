@@ -3,7 +3,7 @@ import tsPlugin from "@typescript-eslint/eslint-plugin";
 
 export default [
   {
-    ignores: ["dist/**", "node_modules/**", "fizz5.webflow/**"],
+    ignores: ["dist/**", "node_modules/**", "fizz5.webflow/**", ".wrangler/**"],
   },
   {
     files: ["**/*.{ts,tsx}"],
