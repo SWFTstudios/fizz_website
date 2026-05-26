@@ -2,8 +2,23 @@ import lottie, { type AnimationItem } from "lottie-web"
 import gsap from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 
+const FULL_VIEWPORT_LOTTIE = {
+  rendererSettings: {
+    preserveAspectRatio: "xMidYMid slice",
+  },
+} as const
+
 function prefersReducedMotion(): boolean {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches
+}
+
+function bindLottieResize(anim: AnimationItem, container: HTMLElement): void {
+  const resize = (): void => {
+    anim.resize(container.clientWidth, container.clientHeight)
+  }
+
+  resize()
+  window.addEventListener("resize", resize, { passive: true })
 }
 
 gsap.registerPlugin(ScrollTrigger)
@@ -54,11 +69,14 @@ export function initLottieScroll(): void {
     loop: false,
     autoplay: false,
     path: "/lottie/fizz-lottie-transition.json",
+    ...FULL_VIEWPORT_LOTTIE,
   })
 
   anim.addEventListener("DOMLoaded", () => {
     const totalFrames = anim?.totalFrames ?? 0
     if (totalFrames <= 0 || !anim) return
+
+    bindLottieResize(anim, container)
 
     ScrollTrigger.create({
       trigger: track,
@@ -78,6 +96,7 @@ export function initLottieScroll(): void {
 declare global {
   interface Window {
     __fizzTransition?: (onComplete?: () => void) => void
+    Webflow?: { ready: () => void }
   }
 }
 
@@ -85,10 +104,118 @@ let transitionAnim: AnimationItem | null = null
 let transitionReady = false
 const transitionReadyCallbacks: Array<() => void> = []
 
-export function initLottieTransition(): void {
+function getOverlayElements(): {
+  overlay: HTMLElement
+  canvas: HTMLElement
+} | null {
   const overlay = document.getElementById("lottie-overlay")
   const canvas = document.getElementById("lottie-overlay-canvas")
-  if (!overlay || !canvas) return
+  if (!overlay || !canvas) return null
+  return { overlay, canvas }
+}
+
+function whenTransitionReady(run: () => void): void {
+  if (transitionReady) run()
+  else transitionReadyCallbacks.push(run)
+}
+
+const OVERLAY_FADE_MS = 450
+
+function showLottieOverlay(overlay: HTMLElement): void {
+  overlay.classList.remove("is-fading", "is-waiting")
+  overlay.classList.add("is-active")
+  overlay.setAttribute("aria-hidden", "false")
+}
+
+/** Fade out overlay and fully dismiss so it cannot block clicks. */
+export function dismissLottieOverlay(): Promise<void> {
+  const elements = getOverlayElements()
+  if (!elements) return Promise.resolve()
+
+  const { overlay } = elements
+
+  if (prefersReducedMotion() || !overlay.classList.contains("is-active")) {
+    overlay.classList.remove("is-active", "is-fading", "is-waiting")
+    overlay.setAttribute("aria-hidden", "true")
+    transitionAnim?.stop()
+    return Promise.resolve()
+  }
+
+  return new Promise((resolve) => {
+    let settled = false
+
+    const finish = (): void => {
+      if (settled) return
+      settled = true
+      overlay.classList.remove("is-active", "is-fading", "is-waiting")
+      overlay.setAttribute("aria-hidden", "true")
+      transitionAnim?.stop()
+      transitionAnim?.goToAndStop(0, true)
+      resolve()
+    }
+
+    overlay.classList.remove("is-waiting")
+    overlay.classList.add("is-fading")
+    overlay.classList.remove("is-active")
+
+    const onTransitionEnd = (event: TransitionEvent): void => {
+      if (event.target !== overlay || event.propertyName !== "opacity") return
+      overlay.removeEventListener("transitionend", onTransitionEnd)
+      finish()
+    }
+
+    overlay.addEventListener("transitionend", onTransitionEnd)
+    window.setTimeout(() => {
+      overlay.removeEventListener("transitionend", onTransitionEnd)
+      finish()
+    }, OVERLAY_FADE_MS + 50)
+  })
+}
+
+/** Barba leave: play forward and resolve when the Lottie animation completes. */
+export function playLottieTransition(): Promise<void> {
+  if (prefersReducedMotion()) return Promise.resolve()
+
+  const elements = getOverlayElements()
+  if (!elements) return Promise.resolve()
+
+  const { overlay } = elements
+
+  return new Promise((resolve) => {
+    whenTransitionReady(() => {
+      if (!transitionAnim) {
+        resolve()
+        return
+      }
+
+      const canvas = document.getElementById("lottie-overlay-canvas")
+      if (canvas) transitionAnim.resize(canvas.clientWidth, canvas.clientHeight)
+
+      showLottieOverlay(overlay)
+      transitionAnim.goToAndStop(0, true)
+
+      const done = (): void => {
+        transitionAnim?.removeEventListener("complete", done)
+        overlay.classList.add("is-waiting")
+        resolve()
+      }
+
+      transitionAnim.addEventListener("complete", done)
+      transitionAnim.play()
+    })
+  })
+}
+
+/** Barba enter: fade out overlay after new page content is mounted. */
+export function playPageLoadTransition(): Promise<void> {
+  return dismissLottieOverlay()
+}
+
+export function initLottieTransition(): void {
+  const elements = getOverlayElements()
+  if (!elements) return
+
+  const { overlay, canvas } = elements
 
   if (transitionAnim) return
 
@@ -98,35 +225,35 @@ export function initLottieTransition(): void {
     loop: false,
     autoplay: false,
     path: "/lottie/fizz-lottie-transition.json",
+    ...FULL_VIEWPORT_LOTTIE,
   })
 
   transitionAnim.addEventListener("DOMLoaded", () => {
+    if (transitionAnim) bindLottieResize(transitionAnim, canvas)
     transitionReady = true
     transitionReadyCallbacks.splice(0).forEach((cb) => cb())
   })
 
-  // Primary “through the bottle” moment on Explore/Shop CTA.
   window.__fizzTransition = (onComplete?: () => void): void => {
-    overlay.classList.add("is-active")
-    overlay.setAttribute("aria-hidden", "false")
+    whenTransitionReady(() => {
+      if (!transitionAnim) {
+        onComplete?.()
+        return
+      }
 
-    const start = (): void => {
-      if (!transitionAnim) return
+      showLottieOverlay(overlay)
+
+      const canvas = document.getElementById("lottie-overlay-canvas")
+      if (canvas) transitionAnim.resize(canvas.clientWidth, canvas.clientHeight)
       transitionAnim.goToAndStop(0, true)
       transitionAnim.play()
 
       const done = (): void => {
         transitionAnim?.removeEventListener("complete", done)
-        onComplete?.()
-        overlay.classList.remove("is-active")
-        overlay.setAttribute("aria-hidden", "true")
-        transitionAnim?.stop()
+        void dismissLottieOverlay().then(() => onComplete?.())
       }
 
       transitionAnim.addEventListener("complete", done)
-    }
-
-    if (transitionReady) start()
-    else transitionReadyCallbacks.push(start)
+    })
   }
 }

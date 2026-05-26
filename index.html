@@ -10,7 +10,8 @@
     <link rel="stylesheet" href="/css/webflow.css" />
     <link rel="stylesheet" href="/css/fizz5.webflow.css" />
   </head>
-  <body class="home-page">
+  <body data-barba="wrapper" class="home-page">
+    <div id="main" data-barba="container" data-barba-namespace="home">
     <div id="content" class="page-wrapper">
       <div class="main-wrapper">
         <header role="banner" class="navbar w-nav">
@@ -30,28 +31,28 @@
                 <nav role="navigation" class="nav-menu w-nav-menu" aria-label="Primary">
                   <div class="menu-base">
                     <div class="menu-wrapper">
-                      <a href="#bottles" class="nav-link-2 w-inline-block">
+                      <a href="#bottles" class="nav-link-2 w-inline-block" data-barba-prevent="self">
                         <div class="nav-link-text">
                           <div class="button-text-wrapper">
                             <div class="button-text">Bottles</div>
                           </div>
                         </div>
                       </a>
-                      <a href="#flavor-packs" class="nav-link-2 w-inline-block">
+                      <a href="#flavor-packs" class="nav-link-2 w-inline-block" data-barba-prevent="self">
                         <div class="nav-link-text">
                           <div class="button-text-wrapper">
                             <div class="button-text">Flavor Packs</div>
                           </div>
                         </div>
                       </a>
-                      <a href="#about" class="nav-link-2 w-inline-block">
+                      <a href="#about" class="nav-link-2 w-inline-block" data-barba-prevent="self">
                         <div class="nav-link-text">
                           <div class="button-text-wrapper">
                             <div class="button-text">About</div>
                           </div>
                         </div>
                       </a>
-                      <a href="#contact" class="nav-link-2 w-inline-block">
+                      <a href="#contact" class="nav-link-2 w-inline-block" data-barba-prevent="self">
                         <div class="nav-link-text">
                           <div class="button-text-wrapper">
                             <div class="button-text">Contact</div>
@@ -177,7 +178,7 @@
                       </p>
                     </div>
                     <div class="button-group-2 margin-top margin-medium">
-                      <a href="#intro" class="button-2 is-text-link w-inline-block">
+                      <a href="#intro" class="button-2 is-text-link w-inline-block" data-barba-prevent="self">
                         <div class="button-link-content">
                           <div>Fizz Up Your Day</div>
                         </div>
@@ -272,8 +273,8 @@
                   can liven up your water and your day in seconds. <br />Just add some Fizz.
                 </p>
                 <div class="cta-links">
-                  <a href="#explore" class="cta-link" data-transition>Explore</a>
-                  <a href="#shop-stub" class="cta-link left" data-transition>Shop</a>
+                  <a href="/explore.html" class="cta-link" data-transition>Explore</a>
+                  <a href="#shop-stub" class="cta-link left" data-transition data-barba-prevent="self">Shop</a>
                 </div>
               </div>
             </div>
@@ -331,6 +332,7 @@
         </section>
         </div>
       </div>
+    </div>
     </div>
 
     <div id="lottie-overlay" aria-hidden="true">

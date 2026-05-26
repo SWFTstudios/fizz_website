@@ -1,17 +1,23 @@
 import "./styles/global.css"
 import "./styles/home-overrides.css"
+import gsap from "gsap"
+import { ScrollTrigger } from "gsap/ScrollTrigger"
 import { initHeroSlider, initLogoMarquee, initNavToggle } from "./lib/heroHome"
 import { initHeroScroll } from "./lib/heroScroll"
-import {
-  initLottieTransition,
-  isPostIntroUnlocked,
-  unlockPostIntro,
-} from "./lib/lottieScroll"
+import { initExploreTransition } from "./lib/exploreTransition"
+import { isPostIntroUnlocked, unlockPostIntro } from "./lib/lottieScroll"
 
-const GATED_HASHES = new Set(["#explore", "#shop-stub"])
+gsap.registerPlugin(ScrollTrigger)
+
+const GATED_HASHES = new Set(["#shop-stub"])
 
 function prefersReducedMotion(): boolean {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches
+}
+
+function isSamePageHash(href: string | null): boolean {
+  if (!href) return false
+  return href.startsWith("#")
 }
 
 document.documentElement.classList.add("js")
@@ -39,11 +45,24 @@ document.addEventListener("click", (e) => {
   el.scrollIntoView({ behavior: "smooth", block: "start" })
 })
 
-initNavToggle()
-initLogoMarquee()
-initHeroSlider()
-initHeroScroll()
-initLottieTransition()
+function refreshHomePage(): void {
+  if (!document.getElementById("hero--content")) return
+
+  ScrollTrigger.getAll().forEach((trigger) => {
+    const el = trigger.trigger
+    if (el instanceof Element && el.closest(".hero-track, .sticky-track")) {
+      trigger.kill()
+    }
+  })
+
+  initNavToggle()
+  initLogoMarquee()
+  initHeroSlider()
+  initHeroScroll()
+  ScrollTrigger.refresh()
+}
+
+initExploreTransition(refreshHomePage)
 
 function runCtaTransition(href: string | null): void {
   const afterUnlock = (): void => {
@@ -65,8 +84,11 @@ function runCtaTransition(href: string | null): void {
 
 document.querySelectorAll<HTMLAnchorElement>("a.cta-link[data-transition]").forEach((link) => {
   link.addEventListener("click", (e) => {
+    const href = link.getAttribute("href")
+    if (!isSamePageHash(href)) return
+
     e.preventDefault()
     e.stopPropagation()
-    runCtaTransition(link.getAttribute("href"))
+    runCtaTransition(href)
   })
 })

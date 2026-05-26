@@ -17,3 +17,47 @@ html {
   padding: 6rem 2rem 8rem;
 }
 
+/* Fixed Lottie overlay for Barba page transitions. */
+#lottie-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.45s ease,
+    visibility 0.45s ease;
+}
+
+#lottie-overlay.is-active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+/* Animation finished but enter() not run yet — keep visible, stop blocking clicks. */
+#lottie-overlay.is-active.is-waiting {
+  pointer-events: none;
+}
+
+#lottie-overlay.is-fading {
+  pointer-events: none;
+}
+
+#lottie-overlay-canvas {
+  width: 100vw;
+  height: 100vh;
+  min-width: 100%;
+  min-height: 100%;
+  overflow: hidden;
+}
+
+#lottie-overlay-canvas svg {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 100%;
+  min-height: 100%;
+}
+
