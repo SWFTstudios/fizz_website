@@ -1,322 +1,412 @@
-# FIZZ5
+# FIZZ5 — How This Site Is Built
 
-Codename: **`fizz5`**
+**Codename:** `fizz5`  
+**Live reference:** [fizz5.webflow.io](https://fizz5.webflow.io/)
 
-Marketing site rebuild for [fizz5.webflow.io](https://fizz5.webflow.io/). The live Webflow export in `fizz5.webflow/` is the **design reference only**; the runtime is a Vite + TypeScript app served by a single Cloudflare Worker.
+This document is both a project guide and a plain-language tour of the technology behind it. You do not need a computer science background to follow along. By the end, you should understand not just *what* we built, but *why* each piece exists and how it fits together.
 
-This README is the living build log — update it as features land.
+We update this README as the project grows. Think of it as the book we write while building the house.
 
 ---
 
 ## Table of contents
 
-- [What exists today](#what-exists-today)
-- [Tech stack](#tech-stack)
-- [Repository layout](#repository-layout)
-- [How the app is built](#how-the-app-is-built)
-- [Runtime architecture](#runtime-architecture)
-- [Home page](#home-page)
-- [Explore page (3D z-scroll)](#explore-page-3d-z-scroll)
-- [Page transitions (Barba + Lottie)](#page-transitions-barba--lottie)
-- [Cloudflare Worker](#cloudflare-worker)
-- [Development](#development)
-- [Deployment](#deployment)
-- [Migration status](#migration-status)
-- [Further reading](#further-reading)
+1. [The big picture](#1-the-big-picture)
+2. [Where the design lives vs. where the code runs](#2-where-the-design-lives-vs-where-the-code-runs)
+3. [How source code becomes a website](#3-how-source-code-becomes-a-website)
+4. [Inside the repository](#4-inside-the-repository)
+5. [The home page: scroll, video, and animation](#5-the-home-page-scroll-video-and-animation)
+6. [The Explore page: a 3D scroll experience](#6-the-explore-page-a-3d-scroll-experience)
+7. [Moving between pages without a full reload](#7-moving-between-pages-without-a-full-reload)
+8. [The Lottie overlay: the “through the bottle” moment](#8-the-lottie-overlay-the-through-the-bottle-moment)
+9. [Where the site is hosted](#9-where-the-site-is-hosted)
+10. [Working on the project](#10-working-on-the-project)
+11. [What is done, and what comes next](#11-what-is-done-and-what-comes-next)
+12. [Go deeper](#12-go-deeper)
 
 ---
 
-## What exists today
+## 1. The big picture
 
-| Area | Status |
-|------|--------|
-| Vite + TypeScript frontend | ✅ |
-| Multi-page build (`/` + `/explore.html`) | ✅ |
-| Cloudflare Worker + static assets binding | ✅ Scaffolded |
-| Homepage hero (slider, marquee, scroll scale) | ✅ Partial parity |
-| Homepage scroll-scrub Lottie (`sticky-track`) | ✅ |
-| In-page Shop CTA Lottie transition | ✅ |
-| Site-wide Barba.js page transitions | ✅ |
-| Explore 3D z-scroll experience | ✅ Ported to TS |
-| Shopify Storefront API proxy | 🔲 Scaffold only |
-| Full homepage content / CMS sections | 🔲 Placeholder |
-| Nav search Lottie, image trail, promo strip | 🔲 Not started |
+Fizz5 is a marketing website for a sparkling beverage brand. It was originally designed and published in **Webflow** — a visual website builder that lets designers lay out pages, add animations, and publish without writing code.
 
----
+We are **rebuilding** that site as real, maintainable code. The goal is the same look and feel, but with:
 
-## Tech stack
+- Full control over behavior and performance
+- A path to add shopping (Shopify) and custom APIs later
+- Hosting on **Cloudflare**, a global edge network, instead of Webflow’s servers
 
-| Layer | Choice | Why |
-|-------|--------|-----|
-| Build | [Vite 6](https://vite.dev/) | Fast dev server, multi-page HTML entries |
-| Language | TypeScript (strict) | Typed ports from Webflow interactions |
-| Animations | [GSAP](https://gsap.com/) + ScrollTrigger | Replaces Webflow IX2 scroll choreography |
-| Lottie | [lottie-web](https://github.com/airbnb/lottie-web) | Full-page transitions + scroll-scrub on home |
-| Routing | [@barba/core](https://barba.js.org/) + `@barba/prefetch` | SPA-like transitions without jQuery SmoothState |
-| Hosting | Cloudflare Workers + Workers Static Assets | One deploy for UI + `/api/*` |
-| Reference | Webflow export (`fizz5.webflow/`) | Read-only; never executed at runtime |
-
----
-
-## Repository layout
+In short: Webflow gave us the blueprint. This repo is the construction site.
 
 ```
-fizz5/
-├── fizz5.webflow/          # Webflow export — reference only, do not edit at runtime
-├── public/
-│   ├── css/                # Ported Webflow CSS (webflow.css, fizz5.webflow.css)
-│   ├── images/             # Static images
-│   ├── videos/             # Hero / intro video assets
-│   └── lottie/             # fizz-lottie-transition.json (from Webflow documents/)
-├── src/
-│   ├── main.ts             # Single JS entry for all pages
-│   ├── lib/
-│   │   ├── exploreTransition.ts   # Barba init, views, page shell helpers
-│   │   ├── heroHome.ts            # Hero slider, logo marquee, nav toggle
-│   │   ├── heroScroll.ts          # Hero-track scroll scale (300vh)
-│   │   ├── lottieScroll.ts        # Lottie overlay + sticky-track scrub
-│   │   └── zScroll.ts             # Explore 3D card scroll (ported from fizzzscroll)
-│   ├── styles/
-│   │   ├── global.css             # Resets, Lottie overlay, shared tokens
-│   │   ├── home-overrides.css     # Homepage-specific layout fixes
-│   │   └── z-scroll.css           # Explore HUD, loader, modal, scene
-│   ├── types/barba.d.ts           # Minimal Barba module stubs
-│   └── worker/                    # Cloudflare Worker (/api/*)
-├── index.html              # Home — data-barba-namespace="home"
-├── explore.html            # Explore — data-barba-namespace="explore"
-├── vite.config.ts          # Multi-page Rollup inputs
-├── wrangler.jsonc          # Worker + dist/ assets binding
-├── INSTRUCTIONS.md         # Active migration to-do queue (for Cursor sessions)
-└── docs/                   # Architecture, migration, Webflow MCP inspection
+  Webflow (design reference)          This repo (what actually runs)
+  ─────────────────────────          ──────────────────────────────
+  fizz5.webflow/          ──port──►  src/ + public/ + index.html
+  Visual editor, IX2        rewrite    TypeScript, GSAP, Barba, Lottie
+  Hosted on Webflow         migrate    Built with Vite, served by Cloudflare Worker
 ```
-
-**Rule:** Port from `fizz5.webflow/` into `src/` and `public/`. Do not depend on Webflow's runtime JS except where CSS class names require it.
 
 ---
 
-## How the app is built
+## 2. Where the design lives vs. where the code runs
 
-Vite treats each HTML file as an entry point:
+### The reference folder: `fizz5.webflow/`
+
+When you export a Webflow site, you get HTML, CSS, images, and JavaScript files. We keep that export in **`fizz5.webflow/`** and treat it as **read-only**.
+
+We open it to answer questions like:
+
+- “How tall is the hero section?” (`300vh` — three times the viewport height)
+- “Which Lottie file does the transition use?” (`documents/fizz-lottie-transition.json`)
+- “What classes does the nav use?”
+
+We **do not** run the Webflow export in production. It is a museum copy of the original, not the engine.
+
+### The real site: `src/`, `public/`, and the HTML files
+
+Everything users actually load comes from:
+
+| Location | Role |
+|----------|------|
+| `index.html` | Home page structure |
+| `explore.html` | Explore / product-facts 3D page |
+| `public/` | CSS, images, videos, Lottie JSON — files served as-is |
+| `src/` | TypeScript that powers interactions, transitions, and scroll effects |
+
+**Porting** means copying structure and styles from the Webflow export, then rewriting the *behavior* in TypeScript so we own it completely.
+
+---
+
+## 3. How source code becomes a website
+
+Modern front-end projects rarely ship raw TypeScript to browsers. Browsers understand HTML, CSS, and JavaScript — not `.ts` files. So we use a **build tool** to prepare everything.
+
+### Vite: the build tool
+
+[**Vite**](https://vite.dev/) is our build tool. During development it gives you a local server with instant updates when you save a file. For production it **bundles** — combines and optimizes — our code into files the browser can load quickly.
+
+We have **two HTML entry points** (two “doors” into the app):
 
 ```ts
-// vite.config.ts
+// vite.config.ts — both pages are built in one pass
 rollupOptions: {
   input: {
-    main: "index.html",
-    explore: "explore.html",
+    main: "index.html",      // home
+    explore: "explore.html",   // explore
   },
 }
 ```
 
-Both pages load the **same module**:
+Both pages load the **same JavaScript entry**:
 
 ```html
 <script type="module" src="/src/main.ts"></script>
 ```
 
-Barba keeps one JavaScript runtime alive across navigations — there is no separate `explore.ts` entry. On first load, `bootCurrentPage()` reads `[data-barba-namespace]` and initializes either home or explore.
+That single entry is intentional. Page navigation is handled in JavaScript (see [Section 7](#7-moving-between-pages-without-a-full-reload)), so one runtime stays alive as you move between home and explore.
 
-Build output goes to `dist/`; the Worker serves it via the `ASSETS` binding.
+### TypeScript: JavaScript with guardrails
+
+**TypeScript** is JavaScript plus **types** — labels that describe what shape data should have. It catches mistakes before the site runs in a browser. Our config is **strict**: the compiler is picky, which keeps the port from Webflow from turning into a pile of fragile copy-paste.
+
+### The build output: `dist/`
+
+When you run `npm run build`, Vite writes optimized files to **`dist/`**. That folder is what Cloudflare serves to visitors. You generally edit `src/` and HTML, not `dist/` directly.
 
 ---
 
-## Runtime architecture
+## 4. Inside the repository
+
+Here is a map of the important folders. You do not need to memorize it — use it as a index when you are looking for something specific.
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│  <body data-barba="wrapper">                                │
-│    ┌─────────────────────────────────────────────────────┐  │
-│    │  #main  data-barba="container"                      │  │
-│    │  data-barba-namespace="home" | "explore"            │  │
-│    │  ← Barba swaps this HTML on internal navigation     │  │
-│    └─────────────────────────────────────────────────────┘  │
-│    #lottie-overlay  ← persistent outside container          │
-│    main.ts → initExploreTransition(refreshHomePage)           │
-└─────────────────────────────────────────────────────────────┘
+fizz5/
+├── fizz5.webflow/     Reference export (do not edit for runtime)
+├── public/            Static assets (CSS, images, videos, Lottie JSON)
+├── src/
+│   ├── main.ts        Starts everything on every page
+│   ├── lib/           Feature modules (hero, Lottie, explore, Barba)
+│   ├── styles/        CSS we maintain (overrides + explore layout)
+│   ├── types/         TypeScript declarations for third-party libraries
+│   └── worker/        Server-side code for /api/* routes
+├── index.html         Home
+├── explore.html       Explore 3D page
+├── vite.config.ts     Build configuration
+└── wrangler.jsonc     Cloudflare Worker deployment config
 ```
 
-**Initialization order (`main.ts`):**
+### The modules in `src/lib/` (what each one does)
 
-1. Register GSAP ScrollTrigger
-2. Wire in-page hash navigation (respecting post-intro gate)
-3. `initExploreTransition(refreshHomePage)` — Barba + Lottie overlay
-4. Shop CTA handler — same-page `#shop-stub` via `window.__fizzTransition`
-
----
-
-## Home page
-
-**Markup:** Ported from `fizz5.webflow/index.html` into `index.html`, with Webflow CSS linked from `public/css/`.
-
-**Key sections:**
-
-| Section | Webflow class | Height / behavior | Implementation |
-|---------|---------------|-------------------|----------------|
-| Hero track | `.hero-track` | `300vh`, sticky video | `heroScroll.ts` — GSAP scale scrub on `.video-bg_wrapper` |
-| Hero slider | `.hero-slider` | 2 slides, theme swap | `heroHome.ts` — light/dark themes (`#a8d0e4` / `#030303`) |
-| Logo row | `.logo-carousel` | Marquee | `heroHome.ts` — CSS animation (Webflow used IX2 scroll) |
-| Intro | `.intro-section` | `100vh` sticky | Markup + video; IX2 entrance not yet ported |
-| Sticky Lottie | `.sticky-track` | `500vh` track, `100vh` sticky Lottie | `lottieScroll.ts` — ScrollTrigger scrubs frames |
-| Post-intro content | `#post-intro` | Gated until Shop/Explore CTA | `unlockPostIntro()` reveals + lazy-inits scroll Lottie |
-
-**Scroll-scrub Lottie math:** User scrolls through **500vh** of `.sticky-track` while the Lottie layer stays **100vh** sticky. Frame index = `progress × (totalFrames − 1)`. Same formula as Webflow IX2.
-
-**CTAs:**
-
-| Link | Target | Behavior |
-|------|--------|------------|
-| Explore | `/explore.html` | Barba transition + full-viewport Lottie |
-| Shop | `#shop-stub` | In-page Lottie via `__fizzTransition`, then scroll |
-| Nav anchors | `#bottles`, etc. | `data-barba-prevent="self"` — smooth scroll, no Barba |
+| File | Plain English |
+|------|----------------|
+| `main.ts` | Front door: wires up navigation, Barba, and home refresh logic |
+| `heroHome.ts` | Hero slider (light/dark themes), logo marquee, mobile nav |
+| `heroScroll.ts` | Shrinks the hero video as you scroll through the tall hero section |
+| `lottieScroll.ts` | Full-screen Lottie transitions + scroll-scrubbed Lottie on the home page |
+| `exploreTransition.ts` | Barba setup: when to swap pages, which scripts to start/stop |
+| `zScroll.ts` | Explore page: 3D card stack, camera scroll, loader, modals |
 
 ---
 
-## Explore page (3D z-scroll)
+## 5. The home page: scroll, video, and animation
 
-**Markup:** `explore.html` — ported from `fizz5.webflow/z-scroll-page.html`.
+The home page is a **long scrolling story**. Several sections are much taller than the screen on purpose — that extra height is what makes scroll-driven animation possible.
 
-**Implementation:** `src/lib/zScroll.ts` + `src/styles/z-scroll.css` replace the Webflow site scripts:
+### Viewport height (`vh`)
 
-| Webflow script | Purpose | Vite replacement |
-|----------------|---------|------------------|
-| `fizzzscrollcss0/1` | Inject 3D card CSS | `z-scroll.css` |
-| `fizzzscrolljs01` | Camera scroll along Z axis | `zScroll.ts` |
-| `fizzzscrolljs02` | Init `.viewport` roots | `runLoaderThenInit()` |
+**`100vh`** means “100% of the viewport height” — one screen tall. **`300vh`** is three screens of scroll distance. Webflow used these tall sections so scrolling *through* them drives animation, not just moving down the page.
 
-**Features:**
+### Hero track (`300vh`)
 
-- Loader with progress (`#zs-loader-pct`)
-- Camera HUD (REC, ISO, scroll hint, clock)
-- 3D card stack with parallax, blur, and modal detail view
-- Fallback product facts when CMS data is absent (`#cms-data`)
-- `destroyZScroll()` on Barba leave; `bootExplorePage({ skipLoader: true })` on Barba enter
+The **hero** is the first big section: video background, logo carousel, headline, slider arrows.
 
-**Direct visit:** Opening `/explore.html` runs the full loader (`skipLoader: false`).
+- **Markup** lives in `index.html` (classes like `.hero-track`, `.video-bg_wrapper`).
+- **Scroll scale** — the video subtly shrinks as you scroll — is in `heroScroll.ts`, powered by **GSAP ScrollTrigger**.
+
+**GSAP** (GreenSock Animation Platform) is an industry-standard animation library. **ScrollTrigger** is a GSAP plugin that ties animation progress to scroll position: “when the user has scrolled 40% through this section, the video should be at 88% scale.”
+
+Webflow achieved similar effects with **IX2** (Interactions 2.0) — visual, no-code animation timelines. We recreate those timelines in code for control and clarity.
+
+### Hero slider and logo marquee
+
+The hero has two slides with different color themes (sky blue `#a8d0e4` and dark `#030303`). `heroHome.ts` switches background and text colors when you click arrows.
+
+The logo row uses a **CSS marquee** (continuous horizontal motion). The Webflow original tied logo movement to scroll; we chose a simpler loop for now — one of several “parity gaps” we may close later.
+
+### Intro section
+
+A full-screen **intro** with product video sits below the hero. Lower on the page, content is **gated**: the big Lottie scroll section stays hidden until the user clicks **Shop** or completes a transition that unlocks it (`unlockPostIntro()` in `lottieScroll.ts`).
+
+### Sticky Lottie track (`500vh`)
+
+One of the signature moments: a **Lottie** animation (vector animation exported from After Effects as JSON) scrubs forward as you scroll through a **500vh** black section.
+
+- **Lottie** = lightweight, scalable animation format (not a video file).
+- The animation sits in a **sticky** layer (`position: sticky`) so it stays on screen while you scroll through the tall track.
+- `lottieScroll.ts` loads `/public/lottie/fizz-lottie-transition.json` and maps scroll progress to frame numbers:
+
+  **frame = scrollProgress × (totalFrames − 1)**
+
+That is the same math Webflow’s IX2 used — we replaced the editor timeline with explicit code.
+
+### Home page CTAs (calls to action)
+
+| Button | Goes to | What happens |
+|--------|---------|--------------|
+| **Explore** | `/explore.html` | Full-page Lottie transition, then Barba loads the explore page |
+| **Shop** | `#shop-stub` (same page) | Lottie plays, then page scrolls to the shop section — no page swap |
+| Nav links | `#bottles`, etc. | Smooth scroll within the home page |
 
 ---
 
-## Page transitions (Barba + Lottie)
+## 6. The Explore page: a 3D scroll experience
 
-SmoothState was replaced because its fixed timer raced the Lottie duration and only swapped HTML without booting page scripts.
+**Explore** is a separate page where product facts appear as **3D cards** you move through by scrolling — like a camera flying down a corridor of cards.
 
-**Flow:**
+### From Webflow scripts to our TypeScript
 
+On Webflow, this experience relied on custom site scripts named **`fizzzscroll`** (CSS injectors + JS initializers). Those scripts are **not** used in our build. We ported the behavior into:
+
+- `src/lib/zScroll.ts` — logic (camera, cards, loader, modals)
+- `src/styles/z-scroll.css` — layout and HUD styling
+
+### What you see on Explore
+
+- **Loader** — “Loading – 0%…” while assets prepare
+- **Camera HUD** — REC, ISO, frame rate, clock (visual chrome)
+- **Card stack** — facts with parallax, blur, and depth
+- **Modal** — click a card for detail, specs, and CTA
+- **Fallback content** — if CMS data is missing, built-in sample facts still demo the experience
+
+### Direct visit vs. arriving from Home
+
+- Open **`/explore.html` directly** → full loader runs.
+- Click **Explore** from home → Barba swaps content after the Lottie transition → explore boots **without** the loader again (`skipLoader: true`) because the transition already bought time.
+
+When you leave Explore, `destroyZScroll()` tears down listeners and animation state so nothing leaks when you return to Home.
+
+---
+
+## 7. Moving between pages without a full reload
+
+Classic websites load a **new document** on every click — blank flash, scripts restart, scroll jumps. **Single-page app (SPA)** patterns swap content in place so it feels continuous.
+
+We use [**Barba.js**](https://barba.js.org/) — a small library that:
+
+1. Intercepts internal link clicks
+2. Fetches the next page in the background (**prefetch**)
+3. Replaces only part of the DOM (our `#main` container)
+4. Runs **hooks** before and after the swap (start/stop page-specific code)
+
+### The Barba markup contract
+
+```html
+<body data-barba="wrapper">
+  <div id="main" data-barba="container" data-barba-namespace="home">
+    <!-- page content Barba replaces -->
+  </div>
+  <div id="lottie-overlay">...</div>  <!-- stays outside — never swapped -->
+</body>
 ```
-User clicks /explore.html
-  → Barba prefetches explore.html (parallel)
-  → leave(): await playLottieTransition()  // resolves on Lottie "complete"
-  → overlay gets .is-waiting (visible, pointer-events: none)
-  → Barba swaps #main container
-  → enter(): await dismissLottieOverlay()  // 450ms fade out
-  → explore view afterEnter: bootExplorePage()
-```
 
-**Barba views:**
+- **`wrapper`** — outer shell that persists
+- **`container`** — the slice Barba replaces
+- **`namespace`** — `home` or `explore`; tells our code which page logic to run
 
-| Namespace | beforeEnter | afterEnter | beforeLeave |
-|-----------|-------------|------------|-------------|
-| `home` | `restoreHomePageShell()` | `refreshHomePage()` — re-inits hero + ScrollTrigger | Kill hero/sticky triggers |
-| `explore` | `applyExplorePageShell()` — body classes, title | `bootExplorePage({ skipLoader: true })` | `destroyZScroll()` |
+### Why we replaced SmoothState
 
-**Overlay CSS (`global.css`):**
+An earlier approach used **SmoothState** (jQuery + fixed timers). It swapped HTML on a clock, not when the Lottie actually finished, and did not reliably boot Explore’s 3D code afterward. Barba’s **promise-based** hooks let us say: “wait until the animation completes, *then* swap, *then* fade out, *then* boot explore.”
 
-- Default: `opacity: 0`, `visibility: hidden`, `pointer-events: none`
-- `.is-active`: visible during playback
-- `.is-waiting`: animation done, waiting for page swap — no click blocking
-- `.is-fading`: 450ms fade-out on enter
+### Link rules (what Barba handles vs. ignores)
 
-**Prevent Barba on:** hash links, external URLs, `mailto:`/`tel:`, `[data-barba-prevent]`, Shop CTA.
+| Link type | Behavior |
+|-----------|----------|
+| `/explore.html`, `/` | Barba + Lottie transition |
+| `#shop-stub`, `#bottles`, … | Stay on page (`data-barba-prevent="self"`) |
+| External sites, `mailto:` | Normal navigation — Barba steps aside |
 
-`history.scrollRestoration = 'manual'`; scroll reset in Barba `enter()`.
+### Barba “views” — lifecycle per page
 
----
+| Page | When you arrive | When you leave |
+|------|-----------------|----------------|
+| **home** | Restore body classes, re-init hero + scroll animations | Kill scroll triggers so they are not duplicated |
+| **explore** | Apply explore styles, boot z-scroll | Destroy z-scroll cleanly |
 
-## Cloudflare Worker
-
-Single Worker (`src/worker/index.ts`) handles:
-
-- **`/api/health`** — `{ ok: true, environment }`
-- **`/api/shop/*`** — Shopify Storefront proxy (scaffolded; see `docs/SHOPIFY-INTEGRATION.md`)
-- **Everything else** — static assets from `dist/` via `ASSETS` binding (SPA fallback enabled)
-
-Local secrets: `.dev.vars` (not committed). Production: `wrangler secret put`.
+`history.scrollRestoration = 'manual'` prevents the browser from restoring an old scroll position after a transition — we reset to the top on purpose.
 
 ---
 
-## Development
+## 8. The Lottie overlay: the “through the bottle” moment
 
-**Requirements:** Node 22+, npm
+The full-screen transition is a **Lottie animation** in a fixed overlay (`#lottie-overlay`) that sits above the page.
+
+### Lifecycle in plain terms
+
+1. **User clicks Explore** → overlay becomes visible, animation plays from frame 0
+2. **Animation completes** → overlay enters a **waiting** state: still visible, but **`pointer-events: none`** so it does not block clicks
+3. **Barba swaps page content** under the overlay
+4. **`enter()` hook** → overlay **fades out** over 450ms, then hides completely
+
+That fade matters. Without it, the last frame would sit like a black sheet and swallow clicks even though the new page loaded underneath.
+
+### Shop CTA (same page)
+
+**Shop** uses the same Lottie file but a separate path: `window.__fizzTransition()` plays the overlay, fades out, then unlocks gated content and scrolls to `#shop-stub`. No Barba involved — you never leave the home document.
+
+### Reduced motion
+
+If the user’s system prefers reduced motion (`prefers-reduced-motion: reduce`), we skip animations and jump straight to the end state. Accessibility is part of the design, not an afterthought.
+
+---
+
+## 9. Where the site is hosted
+
+### Cloudflare Worker
+
+A [**Cloudflare Worker**](https://developers.cloudflare.com/workers/) is a small program that runs on Cloudflare’s edge — close to users worldwide. Ours does two jobs:
+
+1. **Serve the website** — HTML, CSS, JS, images from the `dist/` folder (Workers **Static Assets** binding)
+2. **Handle APIs** — routes under `/api/*` for health checks and (future) Shopify proxying
+
+One Worker, one deploy, one place to roll back if something breaks. See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for why we chose this over splitting Pages + Workers.
+
+### API routes today
+
+| Route | Purpose |
+|-------|---------|
+| `GET /api/health` | Sanity check — returns `{ ok: true }` |
+| `/api/shop/*` | Scaffold for future Storefront API proxy ([`docs/SHOPIFY-INTEGRATION.md`](docs/SHOPIFY-INTEGRATION.md)) |
+
+Secrets (API tokens) live in **`.dev.vars`** locally and **Wrangler secrets** in production — never committed to git.
+
+---
+
+## 10. Working on the project
+
+### Prerequisites
+
+- **Node.js 22+** and **npm** (Node’s package manager)
+
+### Commands
 
 ```bash
-npm install
-npm run dev          # Vite dev server → http://localhost:5173
-npm run worker:dev   # Build + Wrangler dev (full Worker stack)
+npm install          # install dependencies
+npm run dev          # local site → http://localhost:5173
+npm run worker:dev   # build + run with Cloudflare Worker locally
+npm run lint         # code style / bug patterns
+npm run typecheck    # TypeScript validation
+npm run build        # production build → dist/
+npm run deploy       # build + deploy to Cloudflare
 ```
 
-**Quality checks (same as CI):**
+### Manual test checklist
 
-```bash
-npm run lint
-npm run typecheck
-npm run build
-```
+After changing behavior, walk through these flows:
 
-**Manual test checklist:**
+- [ ] **Home → Explore** — Lottie plays, fades out, 3D cards and HUD work
+- [ ] **Explore → Home** — browser back or link to `/`; hero animations work again
+- [ ] **Home → Shop** — in-page Lottie, scroll to shop; Barba does not intercept
+- [ ] **Direct `/explore.html`** — loader completes, scroll experience runs
+- [ ] **Back / forward** — no stuck overlay, no double animations
 
-- [ ] Home → Explore — Lottie plays, fades out, 3D cards work
-- [ ] Explore → Home — back button or `/`; hero re-inits
-- [ ] Home → Shop — in-page Lottie, no Barba intercept
-- [ ] Direct `/explore.html` — loader + z-scroll
-- [ ] Browser back/forward — no stuck overlay or duplicate listeners
+CI runs lint, typecheck, and build on every pull request.
 
----
+### Contributing
 
-## Deployment
-
-```bash
-npm run deploy   # vite build && wrangler deploy
-```
-
-Config: `wrangler.jsonc` — Worker name `fizz5`, assets from `./dist`.
+Branch from `main`, open a PR, use [Conventional Commits](https://www.conventionalcommits.org/) (`feat:`, `fix:`, `docs:`). Details: [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md).
 
 ---
 
-## Migration status
+## 11. What is done, and what comes next
 
-Tracked in [`INSTRUCTIONS.md`](INSTRUCTIONS.md). Current queue:
+### Built and working
 
-| Task | Notes |
-|------|-------|
-| Lottie reveal timing | Match Webflow IX2 fade-in for `.sticky-track` |
-| Hero scroll choreography | Full IX2 carousel + copy entrance on `300vh` track |
-| Nav search Lottie | Element `c515ba7c-0a1b-2f65-a43e-3a0568d7f84d` |
-| Lower page content | Bottles, flavor packs, about, contact sections |
-| Image trail bubbles | `fizz5trailvendors` scripts — optional |
+| Feature | Status |
+|---------|--------|
+| Vite + TypeScript build | Done |
+| Home + Explore multi-page setup | Done |
+| Hero slider, marquee, scroll-scale video | Done (some IX2 nuance still to match) |
+| Scroll-scrubbed Lottie on home | Done |
+| Shop / Explore Lottie transitions | Done |
+| Barba page transitions with prefetch | Done |
+| Explore 3D z-scroll (TypeScript port) | Done |
+| Cloudflare Worker + static assets | Scaffolded |
+| Overlay fade-out (no click blocking) | Done |
 
-**Completed milestones:**
+### Still on the roadmap
 
-- **2026-05** — Project scaffold: Vite, Worker, CI, Webflow CSS in `public/`
-- **2026-05** — Homepage hero port: slider, marquee, scroll scale, sticky Lottie scrub
-- **2026-05** — Explore page: z-scroll 3D ported from `fizzzscroll` to TypeScript
-- **2026-05** — Barba.js replaces SmoothState; promise-based Lottie + overlay fade dismiss
+Tracked in [`INSTRUCTIONS.md`](INSTRUCTIONS.md):
 
-Webflow MCP inspection report: [`docs/WEBFLOW-MCP-INSPECTION.md`](docs/WEBFLOW-MCP-INSPECTION.md)
+| Task | Why it matters |
+|------|----------------|
+| Lottie reveal timing | Match Webflow’s fade-in when the sticky track appears |
+| Hero scroll choreography | Richer carousel + copy motion on the 300vh track |
+| Nav search Lottie | Animated search icon on menu hover |
+| Lower page sections | Bottles, flavor packs, about, contact content |
+| Image trail bubbles | Optional decorative cursor effect from Webflow |
+| Shopify integration | Shopping via `/api/shop/*` proxy |
+
+### Milestones (project diary)
+
+- **2026-05** — Scaffold: Vite, Worker, CI, Webflow CSS in `public/`
+- **2026-05** — Home hero port: slider, marquee, scroll scale, sticky Lottie
+- **2026-05** — Explore page: `fizzzscroll` reimplemented in TypeScript
+- **2026-05** — Barba replaces SmoothState; Lottie tied to animation completion + fade dismiss
+- **2026-05** — README expanded as living documentation
 
 ---
 
-## Further reading
+## 12. Go deeper
 
-| Doc | Contents |
-|-----|----------|
-| [`INSTRUCTIONS.md`](INSTRUCTIONS.md) | Active to-do queue for Cursor sessions |
-| [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | Deployment model, Shopify plan |
-| [`docs/WEBFLOW-MIGRATION.md`](docs/WEBFLOW-MIGRATION.md) | How to port sections from the export |
-| [`docs/WEBFLOW-MCP-INSPECTION.md`](docs/WEBFLOW-MCP-INSPECTION.md) | Designer IDs, script inventory, parity checklist |
-| [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md) | Branching, commits, PR checklist |
-| [`docs/SHOPIFY-INTEGRATION.md`](docs/SHOPIFY-INTEGRATION.md) | Future commerce API surface |
+| Document | Best for |
+|----------|----------|
+| [`INSTRUCTIONS.md`](INSTRUCTIONS.md) | Active task queue (especially for AI-assisted sessions) |
+| [`docs/WEBFLOW-MCP-INSPECTION.md`](docs/WEBFLOW-MCP-INSPECTION.md) | Designer element IDs, script inventory, parity checklist |
+| [`docs/WEBFLOW-MIGRATION.md`](docs/WEBFLOW-MIGRATION.md) | Step-by-step porting from the export |
+| [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | Deployment model and Shopify direction |
+| [`docs/SHOPIFY-INTEGRATION.md`](docs/SHOPIFY-INTEGRATION.md) | Future commerce API design |
+| [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md) | Branches, commits, PR expectations |
 
 ---
 
-## Contributing
-
-Trunk-based flow: branch off `main`, open a PR, CI must pass (lint + typecheck + build). Conventional Commits. See [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md).
+*If you read this start to finish, you now understand the difference between a design reference and a runtime, how scroll drives animation, why Barba and Lottie are paired, and where this project is headed. Welcome to the build.*
