@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Explore Fizz | fizz5</title>
+    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+    <link rel="apple-touch-icon" href="/images/webclip.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;1,300&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body data-barba="wrapper" class="z-scroll-page">
+    <div id="main" data-barba="container" data-barba-namespace="explore">
+      <div id="cms-data" hidden aria-hidden="true"></div>
+
+      <div class="page-embed">
+        <div id="zs-loader" aria-live="polite" aria-busy="true">
+          <div class="zs-loader-grid">
+            <span>Shutter</span><span>1/87</span> <span>ISO</span><span>800</span> <span>EV</span
+            ><span>+1.00</span> <span>Format</span><span>F/S</span>
+          </div>
+          <div id="zs-loader-pct">Loading - 0%</div>
+          <div class="zs-loader-brand">Fizz5 · Product Facts</div>
+        </div>
+
+        <div id="zs-camera-hud" aria-hidden="true">
+          <div class="zs-hud-tl"><span>REC</span><span>24fps</span></div>
+          <div class="zs-hud-tr"><span>ISO 800</span><span>EV +1.00</span></div>
+          <div class="zs-hud-bl"><span>SCROLL TO NAVIGATE</span></div>
+          <div class="zs-hud-br"><span id="zs-hud-time"></span></div>
+        </div>
+
+        <div id="zs-cursor"></div>
+        <div id="zs-cursor-ring"></div>
+
+        <div id="zs-scroll-hint">
+          <div class="zs-scroll-hint-text">Scroll</div>
+          <div class="zs-scroll-hint-line"></div>
+        </div>
+
+        <div id="zs-fact-title">
+          <div id="zs-fact-title-text"></div>
+        </div>
+
+        <div id="zs-scroll-track"></div>
+
+        <div id="zs-scene-container">
+          <div id="zs-scene"></div>
+        </div>
+
+        <div id="zs-end-screen">
+          <div class="zs-end-text">
+            <h2>That's a wrap.</h2>
+            <p>Scroll back up to explore.</p>
+          </div>
+        </div>
+
+        <div id="zs-empty-state">
+          <p>Add Product Facts in Webflow CMS to populate this experience.</p>
+        </div>
+
+        <div id="zs-modal-backdrop"></div>
+
+        <div
+          id="zs-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="zs-modal-title-el"
+          tabindex="-1"
+        >
+          <button id="zs-modal-close" aria-label="Close">✕</button>
+          <div id="zs-modal-hero"></div>
+          <div id="zs-modal-body">
+            <div class="zs-modal-meta">
+              <h2 class="zs-modal-title" id="zs-modal-title-el"></h2>
+              <p class="zs-modal-blurb"></p>
+            </div>
+            <div class="zs-modal-divider"></div>
+            <div class="zs-modal-rich"></div>
+            <div class="zs-modal-specs-wrap">
+              <div class="zs-modal-specs-label">Details</div>
+              <div class="zs-modal-specs"></div>
+            </div>
+            <div class="zs-modal-cta-wrap">
+              <a href="#" class="zs-modal-cta" id="zs-modal-cta-link" target="_blank" rel="noopener">
+                <span class="zs-modal-cta-text">Learn more</span>
+                <span class="zs-modal-cta-arrow">→</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="lottie-overlay" aria-hidden="true">
+      <div id="lottie-overlay-canvas"></div>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
