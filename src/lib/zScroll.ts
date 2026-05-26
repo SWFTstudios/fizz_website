@@ -90,6 +90,21 @@ const FALLBACK_FACTS: Fact[] = [
   },
 ]
 
+const WATER_VIDEO_POSTER =
+  "/videos/loop-animation-of-water-on-black-background-2026-01-28-04-38-31-utc_poster.0000000.jpg"
+const WATER_VIDEO_MP4 =
+  "/videos/loop-animation-of-water-on-black-background-2026-01-28-04-38-31-utc_mp4.mp4"
+const WATER_VIDEO_WEBM =
+  "/videos/loop-animation-of-water-on-black-background-2026-01-28-04-38-31-utc_webm.webm"
+
+// Place the water plane far behind the card stack so the camera move creates depth parallax.
+const WATER_Z = -9000
+const WATER_SCALE = 1.15
+
+function prefersReducedMotion(): boolean {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches
+}
+
 function escapeHtml(str: string): string {
   return String(str)
     .replace(/&/g, "&amp;")
@@ -283,6 +298,66 @@ export function initZScroll(): void {
     CONFIG.SCROLL_PER_CARD * facts.length + CONFIG.Z_OFFSET + 600
   scrollTrackEl.style.height = totalScrollHeight + "px"
 
+  const reducedMotion = prefersReducedMotion()
+
+  // A far-depth water plane behind the card stack.
+  // It lives inside the same 3D scene so the existing camera movement creates natural depth parallax.
+  const WATER_PLANE_PARALLAX_FACTOR = 0.07
+  let waterBackdropEl: HTMLDivElement | null = null
+  let waterVideoEl: HTMLVideoElement | null = null
+
+  const waterBackdrop = document.createElement("div")
+  waterBackdrop.className = "zs-water-backdrop"
+  waterBackdrop.setAttribute("aria-hidden", "true")
+  waterBackdrop.style.transform = `translateZ(${WATER_Z}px) scale(${WATER_SCALE})`
+
+  const vignette = document.createElement("div")
+  vignette.className = "zs-water-vignette"
+  waterBackdrop.appendChild(vignette)
+
+  if (reducedMotion) {
+    const poster = document.createElement("div")
+    poster.className = "zs-water-poster"
+    poster.style.backgroundImage = `url('${WATER_VIDEO_POSTER}')`
+    waterBackdrop.appendChild(poster)
+  } else {
+    const video = document.createElement("video")
+    video.muted = true
+    video.loop = true
+    video.autoplay = true
+    video.playsInline = true
+    video.preload = "auto"
+    video.poster = WATER_VIDEO_POSTER
+    video.setAttribute("aria-hidden", "true")
+    video.className = "zs-water-video"
+
+    const mp4 = document.createElement("source")
+    mp4.src = WATER_VIDEO_MP4
+    mp4.type = "video/mp4"
+    const webm = document.createElement("source")
+    webm.src = WATER_VIDEO_WEBM
+    webm.type = "video/webm"
+    video.appendChild(mp4)
+    video.appendChild(webm)
+
+    video.addEventListener(
+      "canplay",
+      () => {
+        void video.play().catch(() => {
+          // Ignore autoplay failures (should be rare with muted video).
+        })
+      },
+      { once: true },
+    )
+
+    waterVideoEl = video
+    waterBackdrop.appendChild(video)
+  }
+
+  waterBackdropEl = waterBackdrop
+  if (sceneEl.firstChild) sceneEl.insertBefore(waterBackdropEl, sceneEl.firstChild)
+  else sceneEl.appendChild(waterBackdropEl)
+
   const positions: CardPosition[] = [
     { v: "pos-top", h: "pos-right" },
     { v: "pos-top", h: "pos-left" },
@@ -343,6 +418,10 @@ export function initZScroll(): void {
   let modalOpen = false
 
   function openModal(index: number): void {
+    if (waterVideoEl) {
+      if (!waterVideoEl.paused) waterVideoEl.pause()
+    }
+
     const fact = facts[index]
     const detail = fact.detailEl
 
@@ -420,6 +499,12 @@ export function initZScroll(): void {
     modalBackdropEl.classList.remove("active")
     document.body.classList.remove("modal-open")
     modalOpen = false
+
+    if (waterVideoEl) {
+      void waterVideoEl.play().catch(() => {
+        // No-op. If it can't resume (autoplay policy), it's fine.
+      })
+    }
   }
 
   modalCloseEl.addEventListener("click", closeModal)
@@ -467,6 +552,12 @@ export function initZScroll(): void {
     const targetZ = modalOpen ? smoothCameraZ : currentScrollY
     smoothCameraZ += (targetZ - smoothCameraZ) * CONFIG.EASE
     sceneEl.style.transform = `translateZ(${smoothCameraZ}px)`
+
+    if (waterBackdropEl) {
+      const drift = smoothCameraZ * WATER_PLANE_PARALLAX_FACTOR
+      waterBackdropEl.style.transform = `translateZ(${WATER_Z + drift}px) scale(${WATER_SCALE})`
+    }
+
     if (!modalOpen) {
       const ox = 50 + (mouseX - 0.5) * 100 * CONFIG.PARALLAX_STRENGTH
       const oy = 50 + (mouseY - 0.5) * 100 * CONFIG.PARALLAX_STRENGTH
@@ -520,6 +611,8 @@ export function initZScroll(): void {
     window.removeEventListener("scroll", onScroll)
     window.removeEventListener("mousemove", onMouseMove)
     document.removeEventListener("keydown", onKeyDown)
+
+    waterVideoEl?.pause()
   }
 }
 
