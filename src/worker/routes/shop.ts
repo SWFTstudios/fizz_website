@@ -7,7 +7,11 @@ type ShopError = {
   };
 };
 
-export async function handleShopApi(req: Request, url: URL, env: Env): Promise<Response> {
+export async function handleShopApi(
+  req: Request,
+  url: URL,
+  _env: Env,
+): Promise<Response> {
   const pathname = url.pathname;
 
   // Future implementation will proxy calls to Shopify Storefront API.
