@@ -1,0 +1,14 @@
+# Project overview (fizz5)
+
+Codename: `fizz5`
+
+## Repository intent
+
+`fizz5.webflow/` is a Webflow export used only as a design reference. New code lives under `src/` and is hosted via a single Cloudflare Worker.
+
+## Default engineering style
+
+- Small PRs.
+- Conventional Commits.
+- TypeScript-first for new code.
+- Avoid copying Webflow runtime artifacts unless absolutely needed.

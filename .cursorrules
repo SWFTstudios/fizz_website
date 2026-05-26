@@ -1,0 +1,8 @@
+{
+  "description": "Legacy project-wide Cursor rules (kept intentionally small).",
+  "rules": [
+    "Always read INSTRUCTIONS.md and list active to-dos at start of session.",
+    "Never modify fizz5.webflow/ at runtime; treat it as a reference export only.",
+    "Prefer small, reviewable changes; one logical change per PR."
+  ]
+}

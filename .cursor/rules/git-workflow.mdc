@@ -1,0 +1,17 @@
+# Git workflow rules
+
+## Branch naming
+
+- `feat/<area>-<short-desc>`
+- `fix/<area>-<short-desc>`
+- `chore/<short-desc>`
+
+## Commit messages
+
+Use Conventional Commits.
+
+## Pull requests
+
+- PRs must be opened against `main`.
+- Prefer one logical change per PR.
+- CI must pass: lint, typecheck, build.

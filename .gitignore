@@ -1,0 +1,17 @@
+node_modules
+dist
+.wrangler
+.wrangler-state
+.env
+.dev.vars
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# macOS
+.DS_Store
+
+# Vite
+.vite

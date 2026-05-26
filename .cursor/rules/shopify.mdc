@@ -1,0 +1,15 @@
+# Shopify rules (future /api/shop/*)
+
+## Contract first
+
+- Treat `/api/shop/*` as your stable internal API surface for the frontend.
+- Never expose Shopify access tokens to the browser.
+
+## Token safety
+
+- Shopify credentials live in Worker env vars.
+- Use `.dev.vars` locally and `wrangler secret put` in production.
+
+## Error handling
+
+- Always return a JSON body with `error.code` and `error.message` fields for `/api/shop/*`.

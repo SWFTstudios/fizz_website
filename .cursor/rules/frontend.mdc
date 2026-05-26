@@ -1,0 +1,10 @@
+# Frontend rules
+
+Applies to `src/**/*.{ts,tsx,css,html}` and any root HTML/CSS that becomes part of the frontend build.
+
+## Implementation guidance
+
+- Prefer small, focused components under `src/components/`.
+- Avoid hard dependencies on Webflow runtime (`webflow.js`) in new code.
+- Keep assets under `public/` and reference them via stable paths.
+- In the Worker-served site, avoid client-side routing unless explicitly implemented later.

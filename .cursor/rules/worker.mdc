@@ -1,0 +1,12 @@
+# Worker rules (src/worker/*)
+
+## Fetch routing
+
+- Requests under `/api/*` must be handled by `src/worker/index.ts` routes.
+- Everything else should fall back to the static assets binding.
+
+## Best practices
+
+- Keep secrets in Cloudflare Workers env vars only.
+- Validate inputs at the boundary.
+- Return consistent JSON error shapes for `/api/*` endpoints.

@@ -1,0 +1,9 @@
+# Copy to `.dev.vars` and fill in locally.
+# Worker env vars used by fizz5.
+
+ENVIRONMENT=development
+
+# Shopify
+SHOPIFY_STORE_DOMAIN=your-store.myshopify.com
+SHOPIFY_STOREFRONT_TOKEN=your_storefront_token
+
