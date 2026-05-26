@@ -216,6 +216,7 @@ On Webflow, this experience relied on custom site scripts named **`fizzzscroll`*
 - **Camera HUD** — REC, ISO, frame rate, clock (visual chrome)
 - **Card stack** — facts with parallax, blur, and depth
 - **Modal** — click a card for detail, specs, and CTA
+- **Water backdrop** — the same looping “water on black” video from the home intro is rendered as a far 3D layer behind the cards. Because it lives inside the camera scene, it automatically drifts with the Z-axis movement, making the whole experience feel like you are hovering over water. When `prefers-reduced-motion` is enabled, it stays as a static poster instead of autoplaying, and it is paused while the card modal is open.
 - **Fallback content** — if CMS data is missing, built-in sample facts still demo the experience
 
 ### Direct visit vs. arriving from Home
