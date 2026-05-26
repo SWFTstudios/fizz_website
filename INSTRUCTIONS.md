@@ -12,7 +12,9 @@ This file also acts as the single source of truth for the project work queue.
 
 ## Active to-dos
 
-- [Phase 1] docs-and-rules (in progress): Create `.cursorrules`, `.cursor/rules/*.mdc`, `INSTRUCTIONS.md`, `README.md`, and foundational docs/templates.
+- [Phase 5] verify-and-seed-todos: Completed local verification for Vite build + Worker health route.
+
+- [Migration] Port hero section: Create `src/components/Hero.ts` (or `hero.ts`) by porting the hero markup/behavior from `fizz5.webflow/index.html` into the new Vite build.
 
 ## Notes
 

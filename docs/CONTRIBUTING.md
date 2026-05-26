@@ -36,6 +36,17 @@ Before requesting review, ensure:
 - [ ] No secrets are committed (use `.dev.vars` locally; `wrangler secret put` in prod).
 - [ ] PR runs CI: lint, typecheck, and build.
 
+## GitHub branch protection (recommended)
+
+In the GitHub UI for `main`, enable:
+
+- Require a pull request before merging.
+- Require status checks to pass before merging.
+- Status checks: `CI / build` (or the job name shown by GitHub).
+- Require branches to be up to date before merging.
+- Require linear history.
+- Allow only squash merges (optional, but recommended to keep history reviewable).
+
 ## Working with `fizz5.webflow/`
 
 - `fizz5.webflow/` is a reference export.

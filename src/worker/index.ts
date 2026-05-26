@@ -1,7 +1,9 @@
 import { handleShopApi } from "./routes/shop";
 
 export interface Env {
-  ASSETS: Fetcher;
+  ASSETS: {
+    fetch(request: Request): Promise<Response>;
+  };
   ENVIRONMENT: string;
   SHOPIFY_STORE_DOMAIN?: string;
   SHOPIFY_STOREFRONT_TOKEN?: string;
