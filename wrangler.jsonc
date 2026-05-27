@@ -1,5 +1,7 @@
 {
-  "name": "fizz5",
+  // Must match the Worker name in Cloudflare (Workers Builds: fizz-website). See docs/CLOUDFLARE-BUILDS.md.
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "fizz-website",
   "main": "src/worker/index.ts",
   "compatibility_date": "2026-05-26",
   "compatibility_flags": ["nodejs_compat"],

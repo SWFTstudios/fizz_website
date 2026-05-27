@@ -383,7 +383,9 @@ Product copy, specs, and features live in [`src/lib/shopData.ts`](src/lib/shopDa
 npm run deploy   # vite build && wrangler deploy
 ```
 
-Config: `wrangler.jsonc` — Worker name `fizz5`, assets from `./dist`.
+Config: `wrangler.jsonc` — Worker name **`fizz-website`** (matches the Cloudflare Git-connected Worker), assets from `./dist`.
+
+**Workers Builds (PR check):** set **Build command** to `npm run build` and **Deploy command** to `npm run deploy` in the dashboard. Details: [`docs/CLOUDFLARE-BUILDS.md`](docs/CLOUDFLARE-BUILDS.md).
 
 ---
 
@@ -422,6 +424,7 @@ Webflow MCP inspection report: [`docs/WEBFLOW-MCP-INSPECTION.md`](docs/WEBFLOW-M
 | [`docs/WEBFLOW-MIGRATION.md`](docs/WEBFLOW-MIGRATION.md) | How to port sections from the export |
 | [`docs/WEBFLOW-MCP-INSPECTION.md`](docs/WEBFLOW-MCP-INSPECTION.md) | Designer IDs, script inventory, parity checklist |
 | [`docs/WEBFLOW-WARP-SLIDER.md`](docs/WEBFLOW-WARP-SLIDER.md) | Shop category slider notes |
+| [`docs/CLOUDFLARE-BUILDS.md`](docs/CLOUDFLARE-BUILDS.md) | Workers Builds dashboard settings for PR deploy checks |
 | [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md) | Branching, commits, PR checklist |
 | [`docs/SHOPIFY-INTEGRATION.md`](docs/SHOPIFY-INTEGRATION.md) | Future commerce API surface |
 
