@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Shop Fizz</title>
+    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+    <link rel="apple-touch-icon" href="/images/webclip.png" />
+  </head>
+  <body
+    data-barba="wrapper"
+    class="shop-page product-detail-page"
+    data-product-slug="arctic-white"
+  >
+    <div id="main" data-barba="container" data-barba-namespace="product">
+      <nav class="shop-top-nav" aria-label="Shop">
+        <a href="/shop.html" class="shop-top-nav-link fizz-label">Shop</a>
+        <a href="/" class="shop-top-nav-link fizz-label">Home</a>
+      </nav>
+
+      <article
+        class="product-pdp"
+        data-shopify-product-id=""
+        data-shopify-variant-id=""
+      >
+        <div class="product-pdp__hero" data-product-hero></div>
+        <div class="product-pdp__info">
+          <p class="product-pdp__eyebrow fizz-eyebrow">Fizz5 Bottle</p>
+          <h1 class="product-pdp__title fizz-heading" data-product-title></h1>
+          <div class="product-pdp__price-row">
+            <p class="product-pdp__price" data-product-price></p>
+            <p class="product-pdp__compare-at fizz-caption" data-product-compare-at></p>
+          </div>
+          <p class="product-pdp__desc fizz-lead" data-product-desc></p>
+          <button type="button" class="product-pdp__buy fizz-btn fizz-btn--primary" data-shopify-add-to-cart>
+            Add to Cart
+          </button>
+          <a href="/bottles.html" class="product-pdp__back fizz-label">All bottles</a>
+        </div>
+      </article>
+
+      <div class="product-pdp-detail">
+        <section class="product-pdp__section product-pdp__features" aria-labelledby="pdp-features-heading">
+          <h2 id="pdp-features-heading" class="product-pdp__section-title fizz-heading--md">
+            Why this bottle
+          </h2>
+          <div class="product-pdp__features-grid" data-product-features></div>
+        </section>
+
+        <section class="product-pdp__section product-pdp__specs-block" aria-labelledby="pdp-specs-heading">
+          <h2 id="pdp-specs-heading" class="product-pdp__section-title fizz-heading--md">
+            Specifications
+          </h2>
+          <dl class="product-pdp__specs" data-product-specs></dl>
+        </section>
+
+        <section class="product-pdp__section product-pdp__how" aria-labelledby="pdp-how-heading">
+          <h2 id="pdp-how-heading" class="product-pdp__section-title fizz-heading--md">
+            How it works
+          </h2>
+          <ol class="product-pdp__steps" data-product-steps></ol>
+        </section>
+
+        <section class="product-pdp__section product-pdp__care-block" aria-labelledby="pdp-care-heading">
+          <h2 id="pdp-care-heading" class="product-pdp__section-title fizz-heading--md">
+            Care &amp; maintenance
+          </h2>
+          <ul class="product-pdp__care-list" data-product-care></ul>
+        </section>
+
+        <footer class="product-pdp__footer">
+          <a href="/bottles.html" class="product-pdp__footer-link fizz-label">View all bottles</a>
+        </footer>
+      </div>
+    </div>
+
+    <div id="lottie-overlay" aria-hidden="true">
+      <div id="lottie-overlay-canvas"></div>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

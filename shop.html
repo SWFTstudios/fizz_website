@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Shop Fizz | fizz5</title>
+    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+    <link rel="apple-touch-icon" href="/images/webclip.png" />
+  </head>
+  <body data-barba="wrapper" class="shop-page">
+    <div id="main" data-barba="container" data-barba-namespace="shop">
+      <nav class="shop-top-nav" aria-label="Shop">
+        <a href="/" class="shop-top-nav-link fizz-label">Home</a>
+        <a href="/explore.html" class="shop-top-nav-link fizz-label">Explore</a>
+      </nav>
+
+      <main class="shop-main">
+        <section class="shop-hero-slider" aria-label="Shop categories">
+          <div class="shop-container-slider">
+            <div class="shop-splide splide" id="shop-category-splide">
+              <div class="splide__track">
+                <ul class="splide__list"></ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="shop-controls">
+            <button type="button" class="slide-arrow shop-control--prev" aria-label="Previous slide">
+              <span class="slider-arrow-wrapper">
+                <img src="/images/arrow-left24x242x-5.svg" alt="" class="slider-arrow" />
+              </span>
+            </button>
+            <button type="button" class="slide-arrow right shop-control--next" aria-label="Next slide">
+              <span class="slider-arrow-wrapper">
+                <img src="/images/arrow-right24x242x-5.svg" alt="" class="slider-arrow" />
+              </span>
+            </button>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div id="lottie-overlay" aria-hidden="true">
+      <div id="lottie-overlay-canvas"></div>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,267 @@
+/* Site-wide type: Helvetica Neue headings/body + IBM Plex Mono labels */
+
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;1,300&display=swap");
+
+:root {
+  --fizz-font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --fizz-font-mono: "IBM Plex Mono", "Courier New", monospace;
+
+  --fizz-heading-weight: 300;
+  --fizz-heading-tracking: 0.04em;
+  --fizz-heading-line: 1.1;
+
+  --fizz-heading-size-xl: clamp(36px, 8vw, 56px);
+  --fizz-heading-size-lg: clamp(28px, 5vw, 42px);
+  --fizz-heading-size-md: 28px;
+  --fizz-heading-size-sm: 22px;
+
+  --fizz-body-size: 16px;
+  --fizz-body-line: 1.65;
+  --fizz-body-size-sm: 14px;
+  --fizz-body-size-xs: 13px;
+
+  --fizz-eyebrow-size: 11px;
+  --fizz-eyebrow-tracking: 0.2em;
+
+  --fizz-label-size: 11px;
+  --fizz-label-tracking: 0.14em;
+
+  --fizz-caption-size: 12px;
+  --fizz-caption-tracking: 0.08em;
+
+  --fizz-text: #ffffff;
+  --fizz-text-muted: rgba(255, 255, 255, 0.6);
+  --fizz-text-subtle: rgba(255, 255, 255, 0.45);
+  --fizz-text-faint: rgba(255, 255, 255, 0.4);
+
+  --fizz-text-on-light: #204b6d;
+  --fizz-text-muted-on-light: rgba(32, 75, 109, 0.65);
+}
+
+html {
+  font-family: var(--fizz-font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--fizz-font-sans);
+  font-size: var(--fizz-body-size);
+  font-weight: 400;
+  line-height: var(--fizz-body-line);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--fizz-font-sans);
+  font-weight: var(--fizz-heading-weight);
+  letter-spacing: var(--fizz-heading-tracking);
+  line-height: var(--fizz-heading-line);
+  margin: 0;
+}
+
+h1 {
+  font-size: var(--fizz-heading-size-xl);
+}
+
+h2 {
+  font-size: var(--fizz-heading-size-md);
+}
+
+h3 {
+  font-size: var(--fizz-heading-size-sm);
+}
+
+p {
+  margin: 0 0 1em;
+  line-height: var(--fizz-body-line);
+}
+
+p:last-child {
+  margin-bottom: 0;
+}
+
+/* Eyebrow / overline (e.g. FIZZ5) */
+.fizz-eyebrow,
+[class*="eyebrow"] {
+  font-family: var(--fizz-font-mono);
+  font-size: var(--fizz-eyebrow-size);
+  font-weight: 400;
+  letter-spacing: var(--fizz-eyebrow-tracking);
+  text-transform: uppercase;
+  color: var(--fizz-text-faint);
+}
+
+/* Primary display heading */
+.fizz-heading,
+.fizz-heading--xl {
+  font-family: var(--fizz-font-sans);
+  font-size: var(--fizz-heading-size-xl);
+  font-weight: var(--fizz-heading-weight);
+  letter-spacing: var(--fizz-heading-tracking);
+  line-height: var(--fizz-heading-line);
+  color: var(--fizz-text);
+}
+
+.fizz-heading--lg {
+  font-size: var(--fizz-heading-size-lg);
+}
+
+.fizz-heading--md {
+  font-size: var(--fizz-heading-size-md);
+}
+
+/* Lead / paragraph */
+.fizz-lead,
+.fizz-body {
+  font-family: var(--fizz-font-sans);
+  font-size: var(--fizz-body-size);
+  line-height: var(--fizz-body-line);
+  color: var(--fizz-text-muted);
+  font-weight: 400;
+}
+
+.fizz-body--sm {
+  font-size: var(--fizz-body-size-sm);
+}
+
+.fizz-body--xs {
+  font-size: var(--fizz-body-size-xs);
+  color: var(--fizz-text-faint);
+  letter-spacing: 0.06em;
+}
+
+/* Mono UI labels: nav, CTAs, hints */
+.fizz-label,
+.fizz-mono {
+  font-family: var(--fizz-font-mono);
+  font-size: var(--fizz-label-size);
+  font-weight: 400;
+  letter-spacing: var(--fizz-label-tracking);
+  text-transform: uppercase;
+}
+
+.fizz-caption {
+  font-family: var(--fizz-font-mono);
+  font-size: var(--fizz-caption-size);
+  letter-spacing: var(--fizz-caption-tracking);
+  color: var(--fizz-text-subtle);
+}
+
+/* —— Home (Webflow) overrides —— */
+body.home-page {
+  font-family: var(--fizz-font-sans);
+}
+
+/* Override Webflow Satoshi across the home layout */
+body.home-page .main-wrapper,
+body.home-page .main-wrapper :where(:not([class*="webflow-icons"])) {
+  font-family: var(--fizz-font-sans);
+}
+
+body.home-page .heading,
+body.home-page .heading.large,
+body.home-page .heading-style-h2,
+body.home-page .heading-2 {
+  font-family: var(--fizz-font-sans);
+  font-weight: var(--fizz-heading-weight);
+  letter-spacing: var(--fizz-heading-tracking);
+  line-height: var(--fizz-heading-line);
+}
+
+body.home-page .heading {
+  font-size: var(--fizz-heading-size-lg);
+}
+
+body.home-page .heading.large {
+  font-size: var(--fizz-heading-size-xl);
+}
+
+body.home-page .intro-subhead {
+  font-family: var(--fizz-font-sans);
+  font-size: var(--fizz-heading-size-xl);
+  font-weight: var(--fizz-heading-weight);
+  letter-spacing: var(--fizz-heading-tracking);
+  line-height: var(--fizz-heading-line);
+  text-transform: none;
+  color: var(--fizz-text);
+}
+
+body.home-page .nav-link-text,
+body.home-page .nav-link-2,
+body.home-page .nav-link,
+body.home-page .nav-link__label,
+body.home-page .fizz-label,
+body.home-page .fizz-eyebrow,
+body.home-page .fizz-caption,
+body.home-page .fizz-mono {
+  font-family: var(--fizz-font-mono);
+  font-size: var(--fizz-label-size);
+  font-weight: 400;
+  letter-spacing: var(--fizz-label-tracking);
+  text-transform: uppercase;
+}
+
+body.home-page a.cta-link.fizz-btn {
+  letter-spacing: 0.16em;
+}
+
+body.home-page .page-content-section {
+  font-family: var(--fizz-font-sans);
+  color: var(--fizz-text-on-light);
+}
+
+body.home-page .page-content-section p,
+body.home-page .page-content-section li {
+  font-size: var(--fizz-body-size);
+  line-height: var(--fizz-body-line);
+  color: var(--fizz-text-muted-on-light);
+}
+
+body.home-page .page-content-section h1,
+body.home-page .page-content-section h2,
+body.home-page .page-content-section h3 {
+  color: var(--fizz-text-on-light);
+}
+
+/* —— Explore —— */
+body.z-scroll-page {
+  font-family: var(--fizz-font-sans);
+}
+
+body.z-scroll-page .zs-card-label,
+body.z-scroll-page .zs-scroll-hint-text,
+body.z-scroll-page .zs-card-hint,
+body.z-scroll-page .zs-card-detail-specs-label,
+body.z-scroll-page .fizz-btn {
+  font-family: var(--fizz-font-mono);
+}
+
+body.z-scroll-page .zs-end-text h2,
+body.z-scroll-page .zs-card-detail-title {
+  font-family: var(--fizz-font-sans);
+  font-weight: var(--fizz-heading-weight);
+  letter-spacing: var(--fizz-heading-tracking);
+}
+
+body.z-scroll-page .zs-end-text p,
+body.z-scroll-page .zs-card-blurb,
+body.z-scroll-page .zs-card-detail-lead,
+body.z-scroll-page .zs-card-detail-rich {
+  font-family: var(--fizz-font-sans);
+  line-height: var(--fizz-body-line);
+}
+
+body.z-scroll-page .zs-card-detail-lead,
+body.z-scroll-page .zs-end-text p {
+  color: var(--fizz-text-muted);
+}
+
+/* —— Shop —— */
+body.shop-page {
+  font-family: var(--fizz-font-sans);
+}

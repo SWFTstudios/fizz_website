@@ -1,0 +1,28 @@
+/** @type {import('stylelint').Config} */
+export default {
+  extends: ["stylelint-config-standard"],
+  ignoreFiles: ["dist/**", "fizz5.webflow/**"],
+  rules: {
+    "selector-class-pattern": null,
+    "custom-property-pattern": null,
+    "keyframes-name-pattern": null,
+    "alpha-value-notation": null,
+    "color-function-notation": null,
+    "color-function-alias-notation": null,
+    "value-keyword-case": null,
+    "rule-empty-line-before": null,
+    "media-feature-range-notation": null,
+    "no-descending-specificity": null,
+    "declaration-block-no-shorthand-property-overrides": null,
+    "comment-empty-line-before": null,
+    "declaration-block-no-redundant-longhand-properties": null,
+    "declaration-empty-line-before": null,
+    "custom-property-empty-line-before": null,
+    "color-hex-length": null,
+    "length-zero-no-unit": null,
+    "at-rule-empty-line-before": null,
+    "property-no-vendor-prefix": null,
+    "declaration-block-no-duplicate-properties": true,
+    "no-duplicate-selectors": true,
+  },
+};

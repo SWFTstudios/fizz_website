@@ -1,0 +1,109 @@
+/* Shared buttons — use fizz-btn + one variant everywhere */
+
+:root {
+  --fizz-btn-hover-fg: #0a0a0a;
+  --fizz-btn-padding-y: 14px;
+  --fizz-btn-padding-x: 28px;
+  --fizz-btn-radius: 100px;
+}
+
+.fizz-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-sizing: border-box;
+  margin: 0;
+  padding: var(--fizz-btn-padding-y) var(--fizz-btn-padding-x);
+  border: 1px solid transparent;
+  border-radius: var(--fizz-btn-radius);
+  font-family: var(--fizz-font-mono);
+  font-size: var(--fizz-label-size);
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: var(--fizz-label-tracking);
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  appearance: none;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.fizz-btn--block {
+  width: 100%;
+}
+
+.fizz-btn--arrow .fizz-btn__arrow {
+  font-size: 14px;
+  line-height: 1;
+  transition: transform 0.2s ease;
+}
+
+.fizz-btn--arrow:hover .fizz-btn__arrow {
+  transform: translateX(4px);
+}
+
+/* Filled — Add to Cart, primary actions */
+.fizz-btn--primary {
+  border-color: #fff;
+  background: #fff;
+  color: var(--fizz-btn-hover-fg);
+}
+
+.fizz-btn--primary:hover {
+  background: transparent;
+  color: #fff;
+}
+
+.product-pdp__info--light-bg .fizz-btn--primary {
+  border-color: #1a1a1a;
+  background: #1a1a1a;
+  color: #fff;
+}
+
+.product-pdp__info--light-bg .fizz-btn--primary:hover {
+  background: transparent;
+  color: #1a1a1a;
+}
+
+/* Outline — View product, home intro CTAs */
+.fizz-btn--outline {
+  border-color: currentColor;
+  background: transparent;
+  color: inherit;
+}
+
+.fizz-btn--outline:hover {
+  background: currentColor;
+  color: var(--fizz-btn-hover-fg);
+}
+
+/* Ghost — explore modals, glass on dark UI */
+.fizz-btn--ghost {
+  border-color: rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.04);
+  color: #fff;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.06),
+    0 12px 40px rgba(0, 0, 0, 0.35);
+}
+
+.fizz-btn--ghost:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.65);
+  transform: translateY(-2px);
+  box-shadow:
+    0 0 24px rgba(255, 255, 255, 0.08),
+    0 16px 48px rgba(0, 0, 0, 0.45);
+}
+
+/* Legacy Webflow hook — same skin as outline */
+a.cta-link.fizz-btn {
+  width: auto;
+  min-width: 160px;
+}
