@@ -31,7 +31,7 @@
                 <nav role="navigation" class="nav-menu w-nav-menu" aria-label="Primary">
                   <div class="menu-base">
                     <div class="menu-wrapper">
-                      <a href="#bottles" class="nav-link-2 w-inline-block" data-barba-prevent="self">
+                      <a href="#shop" class="nav-link-2 w-inline-block" data-barba-prevent="self">
                         <div class="nav-link-text">
                           <div class="button-text-wrapper">
                             <div class="button-text">Bottles</div>
@@ -42,6 +42,13 @@
                         <div class="nav-link-text">
                           <div class="button-text-wrapper">
                             <div class="button-text">Flavor Packs</div>
+                          </div>
+                        </div>
+                      </a>
+                      <a href="/shop.html" class="nav-link-2 w-inline-block" data-transition>
+                        <div class="nav-link-text">
+                          <div class="button-text-wrapper">
+                            <div class="button-text">Shop</div>
                           </div>
                         </div>
                       </a>
@@ -319,8 +326,8 @@
                   can liven up your water and your day in seconds. <br />Just add some Fizz.
                 </p>
                 <div class="cta-links">
-                  <a href="/explore.html" class="cta-link fizz-label" data-transition>Explore</a>
-                  <a href="/shop.html" class="cta-link left fizz-label" data-transition>Shop</a>
+                  <a href="/explore.html" class="cta-link fizz-btn fizz-btn--outline" data-transition>Explore</a>
+                  <a href="#shop" class="cta-link left fizz-btn fizz-btn--outline" data-barba-prevent="self">Shop</a>
                 </div>
               </div>
             </div>
@@ -341,36 +348,21 @@
           <div class="overlay gradient top"></div>
         </section>
 
-        <section id="explore" class="page-content-section" aria-label="Explore">
-          <div class="section" id="bottles">
-            <div class="grid-wrapper">
-              <div class="story-wrapper">
-                <div class="story-content">
-                  <div class="stacked-intro large centered">
-                    <div class="stacked-intro small">
-                      <div class="width-large">
-                        <h1 class="heading large fizz-heading">Add some fizz to your life</h1>
-                      </div>
-                      <div class="width-medium">
-                        <div class="body-display">
-                          Our innovative fabric gives you the comfort to flow through your body goals
-                          in every movement and find a better work.
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section id="shop-stub" class="page-content-section" aria-label="Shop coming soon">
-          <div class="section">
-            <div class="grid-wrapper">
-              <div class="story-wrapper">
-                <div class="story-content">
-                  <h1 class="heading large fizz-heading">Shop coming soon</h1>
+        <section
+          id="shop"
+          class="shop-panel shop-marquee-panel page-content-section is-shop-hidden"
+          aria-label="Shop"
+          hidden
+        >
+          <div class="shop-marquee-inner">
+            <header class="shop-marquee-header">
+              <h2 class="shop-marquee-title fizz-heading">Shop bottles</h2>
+              <p class="shop-marquee-lead fizz-lead">Pick your finish.</p>
+            </header>
+            <div class="shop-marquee-viewport">
+              <div class="shop-marquee-splide splide" data-shop-marquee-splide>
+                <div class="splide__track">
+                  <ul class="splide__list"></ul>
                 </div>
               </div>
             </div>

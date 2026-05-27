@@ -583,9 +583,9 @@ export function initZScroll(): void {
           <div class="zs-card-detail-specs">${resolved.specs}</div>
         </div>
         <div class="zs-card-detail-cta-wrap${ctaHidden ? " is-hidden" : ""}">
-          <a href="${ctaHref}" class="zs-card-detail-cta" target="_blank" rel="noopener">
-            <span class="zs-card-detail-cta-text">${ctaLabel}</span>
-            <span class="zs-card-detail-cta-arrow">→</span>
+          <a href="${ctaHref}" class="fizz-btn fizz-btn--ghost fizz-btn--arrow" target="_blank" rel="noopener">
+            <span>${ctaLabel}</span>
+            <span class="fizz-btn__arrow" aria-hidden="true">→</span>
           </a>
         </div>
       </div>`
@@ -714,7 +714,7 @@ export function initZScroll(): void {
       overCard ||
       overTitle ||
       (e.target instanceof Element
-        ? e.target.closest("button, a, .zs-card-close, .zs-end-cta")
+        ? e.target.closest("button, a, .zs-card-close, .fizz-btn")
         : null)
     document.body.classList.toggle("cursor-hover", !!over)
   }

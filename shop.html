@@ -9,25 +9,33 @@
   </head>
   <body data-barba="wrapper" class="shop-page">
     <div id="main" data-barba="container" data-barba-namespace="shop">
+      <nav class="shop-top-nav" aria-label="Shop">
+        <a href="/" class="shop-top-nav-link fizz-label">Home</a>
+        <a href="/explore.html" class="shop-top-nav-link fizz-label">Explore</a>
+      </nav>
+
       <main class="shop-main">
-        <header class="shop-header">
-          <nav class="shop-nav" aria-label="Site">
-            <a href="/" class="shop-nav-link fizz-label">Home</a>
-            <a href="/explore.html" class="shop-nav-link fizz-label">Explore</a>
-          </nav>
-        </header>
+        <section class="shop-hero-slider" aria-label="Shop categories">
+          <div class="shop-container-slider">
+            <div class="shop-splide splide" id="shop-category-splide">
+              <div class="splide__track">
+                <ul class="splide__list"></ul>
+              </div>
+            </div>
+          </div>
 
-        <div class="shop-hero">
-          <p class="shop-eyebrow fizz-eyebrow">Fizz5</p>
-          <h1 class="shop-title fizz-heading">Shop Fizz</h1>
-          <p class="shop-lead fizz-lead">
-            Portable carbonation, flavor packs, and everything you need to add some fizz to your
-            day.
-          </p>
-        </div>
-
-        <section class="shop-catalog" aria-label="Products">
-          <p class="shop-catalog-note fizz-caption">Full catalog launching soon — check back for bottles and flavor packs.</p>
+          <div class="shop-controls">
+            <button type="button" class="slide-arrow shop-control--prev" aria-label="Previous slide">
+              <span class="slider-arrow-wrapper">
+                <img src="/images/arrow-left24x242x-5.svg" alt="" class="slider-arrow" />
+              </span>
+            </button>
+            <button type="button" class="slide-arrow right shop-control--next" aria-label="Next slide">
+              <span class="slider-arrow-wrapper">
+                <img src="/images/arrow-right24x242x-5.svg" alt="" class="slider-arrow" />
+              </span>
+            </button>
+          </div>
         </section>
       </main>
     </div>

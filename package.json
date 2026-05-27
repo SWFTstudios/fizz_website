@@ -9,13 +9,19 @@
     "worker:dev": "npm run build && wrangler dev",
     "deploy": "npm run build && wrangler deploy",
     "lint": "eslint .",
+    "lint:css": "stylelint \"src/styles/**/*.css\"",
+    "lint:css:deprecated": "node scripts/check-deprecated-css-classes.mjs",
+    "lint:all": "npm run lint && npm run typecheck && npm run lint:css && npm run lint:css:deprecated",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "format": "prettier --write .",
-    "test:card-click": "node scripts/test-card-click.mjs"
+    "test:card-click": "node scripts/test-card-click.mjs",
+    "assets:bottles": "node scripts/import-bottle-renders.mjs"
   },
   "dependencies": {
     "@barba/core": "^2.10.3",
     "@barba/prefetch": "^2.2.0",
+    "@splidejs/splide": "^4.1.4",
+    "@splidejs/splide-extension-auto-scroll": "^0.5.3",
     "gsap": "^3.15.0",
     "lottie-web": "^5.13.0"
   },
@@ -26,6 +32,8 @@
     "@typescript-eslint/parser": "^8.24.0",
     "eslint": "^9.21.0",
     "prettier": "^3.4.2",
+    "stylelint": "^17.12.0",
+    "stylelint-config-standard": "^40.0.0",
     "typescript": "^5.7.3",
     "vite": "^6.0.7",
     "wrangler": "^3.92.0"

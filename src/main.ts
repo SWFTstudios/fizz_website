@@ -1,4 +1,5 @@
 import "./styles/typography.css"
+import "./styles/buttons.css"
 import "./styles/global.css"
 import "./styles/home-overrides.css"
 import "./styles/shop.css"
@@ -15,7 +16,7 @@ installClickDebug()
 
 gsap.registerPlugin(ScrollTrigger, Flip)
 
-const GATED_HASHES = new Set(["#shop-stub"])
+const GATED_HASHES = new Set(["#shop"])
 
 function prefersReducedMotion(): boolean {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches
@@ -26,6 +27,29 @@ function isSamePageHash(href: string | null): boolean {
   return href.startsWith("#")
 }
 
+function scrollToShopPanel(): void {
+  const el = document.getElementById("shop")
+  if (!el) return
+  el.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth", block: "center" })
+}
+
+function goToShopMarquee(): void {
+  unlockPostIntro()
+  void import("./lib/shop").then(({ openShopPanel }) => {
+    void openShopPanel().then(() => {
+      requestAnimationFrame(scrollToShopPanel)
+    })
+  })
+}
+
+function tryOpenShopDeepLink(): void {
+  if (location.hash !== "#shop") return
+  if (!document.getElementById("shop")) return
+  if (!isPostIntroUnlocked()) return
+
+  goToShopMarquee()
+}
+
 document.documentElement.classList.add("js")
 
 document.addEventListener("click", (e) => {
@@ -33,8 +57,8 @@ document.addEventListener("click", (e) => {
   const link = target?.closest?.('a[href^="#"]') as HTMLAnchorElement | null
   if (!link) return
 
-  const ctaTransitionLink = target?.closest?.("a.cta-link[data-transition]")
-  if (ctaTransitionLink) return
+  const shopCta = target?.closest?.('a.cta-link[href="#shop"]')
+  if (shopCta) return
 
   const hash = link.getAttribute("href")
   if (!hash || hash === "#") return
@@ -48,6 +72,12 @@ document.addEventListener("click", (e) => {
   if (!el) return
 
   e.preventDefault()
+
+  if (hash === "#shop") {
+    goToShopMarquee()
+    return
+  }
+
   el.scrollIntoView({ behavior: "smooth", block: "start" })
 })
 
@@ -66,6 +96,7 @@ function refreshHomePage(): void {
   initHeroSlider()
   initHeroScroll()
   ScrollTrigger.refresh()
+  tryOpenShopDeepLink()
 }
 
 initExploreTransition(refreshHomePage)
@@ -74,6 +105,7 @@ function runCtaTransition(href: string | null): void {
   const afterUnlock = (): void => {
     unlockPostIntro()
     if (!href) return
+
     requestAnimationFrame(() => {
       const el = document.querySelector(href)
       el?.scrollIntoView({ behavior: "smooth", block: "start" })
@@ -98,3 +130,14 @@ document.querySelectorAll<HTMLAnchorElement>("a.cta-link[data-transition]").forE
     runCtaTransition(href)
   })
 })
+
+const shopCta = document.querySelector<HTMLAnchorElement>('a.cta-link[href="#shop"]')
+shopCta?.addEventListener("click", (e) => {
+  e.preventDefault()
+  e.stopPropagation()
+  goToShopMarquee()
+})
+
+if (document.getElementById("hero--content")) {
+  tryOpenShopDeepLink()
+}
