@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" role="img" aria-label="Purple hero placeholder">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#26124f"/>
+      <stop offset="53%" stop-color="#5b32bf"/>
+      <stop offset="100%" stop-color="#a282ff"/>
+    </linearGradient>
+    <radialGradient id="bubbleA" cx="22%" cy="20%" r="34%">
+      <stop offset="0%" stop-color="#ecd9ff" stop-opacity="0.46"/>
+      <stop offset="100%" stop-color="#ecd9ff" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="bubbleB" cx="80%" cy="76%" r="30%">
+      <stop offset="0%" stop-color="#dfcdff" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#dfcdff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#bg)"/>
+  <rect width="1920" height="1080" fill="url(#bubbleA)"/>
+  <rect width="1920" height="1080" fill="url(#bubbleB)"/>
+</svg>

@@ -1,7 +1,12 @@
 const SLIDE_THEMES: Record<string, { bg: string; color: string; contentColor: string }> = {
   "is--slide--1": { bg: "#a8d0e4", color: "#204b6d", contentColor: "#204b6d" },
   "is--slide--2": { bg: "#030303", color: "#ffffff", contentColor: "#ffffff" },
+  "is--slide--3": { bg: "#ff8b2c", color: "#2e1600", contentColor: "#2e1600" },
+  "is--slide--4": { bg: "#37bb6f", color: "#0b2d1b", contentColor: "#0b2d1b" },
+  "is--slide--5": { bg: "#8f6bff", color: "#ffffff", contentColor: "#ffffff" },
 }
+
+let autoRotateTimer: number | null = null
 
 export function initHeroSlider(): void {
   const track = document.querySelector<HTMLElement>(".hero-track")
@@ -18,12 +23,13 @@ export function initHeroSlider(): void {
     if (!theme) return
     track.style.backgroundColor = theme.bg
     track.style.color = theme.color
+    track.dataset.slideTheme = slideId
     if (heroSection) {
       heroSection.style.backgroundColor = theme.bg
       heroSection.style.color = theme.color
     }
     if (heroSlider) {
-      heroSlider.dataset.slideTheme = slideId === "is--slide--1" ? "light" : "dark"
+      heroSlider.dataset.slideTheme = slideId
     }
     if (heroContent) {
       heroContent.style.transition = "color 200ms ease-in-out"
@@ -106,14 +112,21 @@ export function initHeroSlider(): void {
     setActiveSlide((activeIndex + 1) % slides.length)
   })
 
-  window.setInterval(() => {
+  if (autoRotateTimer !== null) {
+    window.clearInterval(autoRotateTimer)
+  }
+
+  autoRotateTimer = window.setInterval(() => {
     setActiveSlide((activeIndex + 1) % slides.length)
   }, 4000)
 }
 
 export function initLogoMarquee(): void {
   document.querySelectorAll<HTMLElement>(".carousel-div-wrapper .hflex").forEach((row) => {
+    // Prevent exponential DOM growth when Home re-inits after Barba navigation.
+    if (row.dataset.marqueeDuped === "1") return
     row.innerHTML = row.innerHTML + row.innerHTML
+    row.dataset.marqueeDuped = "1"
   })
 }
 

@@ -4,7 +4,6 @@ body.home-page {
   margin: 0;
   background: #030303;
   color: #f5f5f7;
-  font-family: Satoshi, ui-sans-serif, system-ui, sans-serif;
 }
 
 .page-wrapper .content {
@@ -18,6 +17,7 @@ body.home-page {
   pointer-events: auto;
   transition: none;
   display: block;
+  height: 280vh;
 }
 
 .sticky-track .overlay.gradient.top {
@@ -53,17 +53,21 @@ body.home-page {
 }
 
 .carousel-div-wrapper .hflex {
-  animation: logo-marquee 40s linear infinite;
+  animation: logo-marquee 12s linear infinite;
 }
 
 .carousel-div-wrapper.is--2 .hflex {
   animation-direction: reverse;
-  animation-duration: 45s;
+  animation-duration: 12s;
 }
 
 .hero-section,
 .hero-track {
   transition: background-color 600ms ease, color 600ms ease;
+}
+
+.hero-track {
+  height: 220vh;
 }
 
 /* Logo marquee sits behind the scaling video frame. */
@@ -93,6 +97,48 @@ body.home-page {
   pointer-events: none;
 }
 
+/* Match requested Webflow-like right-anchored hero overlay layout. */
+.hero-track #hero-content-container.container.is-hero {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: stretch;
+  min-height: 100dvh;
+  max-width: none;
+  padding-top: 3rem;
+  padding-bottom: 6rem;
+  text-align: left;
+}
+
+.hero-track #hero-content-container .column-2.is-hero,
+.hero-track #hero-content-container .column-2.is-hero-second {
+  width: min(34rem, 100%);
+  max-width: 34rem;
+}
+
+.hero-track #hero-content-container .column-2.is-hero {
+  margin-right: auto;
+}
+
+.hero-track #hero-content-container .column-2.is-hero-second {
+  margin-left: auto;
+  text-align: right;
+}
+
+.hero-track #hero-content-container .column-2.is-hero .overflow-hidden,
+.hero-track #hero-content-container .column-2.is-hero-second .overflow-hidden {
+  display: block;
+}
+
+.hero-track #hero-content-container .column-2.is-hero-second .overflow-hidden {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.hero-track #hero-content-container .button-group-2.margin-top.margin-medium {
+  justify-content: flex-end;
+}
+
 .hero-track .hero-content-wrap-padding a,
 .hero-track .hero-content-wrap-padding button {
   pointer-events: auto;
@@ -107,11 +153,13 @@ body.home-page {
 /* On-brand circular slider arrows (Webflow slide-arrow pattern). */
 .hero-track .video-bg_wrapper .slide-arrow {
   position: absolute;
-  top: auto;
-  bottom: 48px;
+  top: 50vh;
+  bottom: auto;
   left: auto;
   right: auto;
+  inset: auto;
   margin: 0;
+  transform: translateY(-50%);
   width: 48px;
   height: 48px;
   padding: 0;
@@ -134,19 +182,19 @@ body.home-page {
 }
 
 .hero-track .video-bg_wrapper .slide-arrow.w-slider-arrow-left {
-  left: 0;
+  left: 20px;
   right: auto;
 }
 
 .hero-track .video-bg_wrapper .slide-arrow.w-slider-arrow-right {
   left: auto;
-  right: 0;
+  right: 20px;
 }
 
 .hero-track .video-bg_wrapper .slide-arrow:hover {
   border-color: rgba(255, 255, 255, 0.55);
   background: rgba(255, 255, 255, 0.12);
-  transform: scale(1.05);
+  transform: translateY(-50%) scale(1.05);
 }
 
 .hero-track .video-bg_wrapper .slider-arrow-wrapper {
@@ -189,11 +237,15 @@ body.home-page {
   background: #fff;
 }
 
-.hero-track .hero-slider[data-slide-theme="light"] .fizz-slider-dot.w-active {
+.hero-track .hero-slider[data-slide-theme="is--slide--1"] .fizz-slider-dot.w-active,
+.hero-track .hero-slider[data-slide-theme="is--slide--3"] .fizz-slider-dot.w-active,
+.hero-track .hero-slider[data-slide-theme="is--slide--4"] .fizz-slider-dot.w-active {
   background: #204b6d;
 }
 
-.hero-track .hero-slider[data-slide-theme="light"] .fizz-slider-dot:not(.w-active) {
+.hero-track .hero-slider[data-slide-theme="is--slide--1"] .fizz-slider-dot:not(.w-active),
+.hero-track .hero-slider[data-slide-theme="is--slide--3"] .fizz-slider-dot:not(.w-active),
+.hero-track .hero-slider[data-slide-theme="is--slide--4"] .fizz-slider-dot:not(.w-active) {
   background: rgba(32, 75, 109, 0.35);
 }
 
@@ -221,15 +273,77 @@ body.is-post-intro-unlocked .post-intro.is-gated {
 }
 
 .hero-video_container,
-.hero-video_container video {
+.hero-video_container video,
+.hero-video_container .hero-media-placeholder {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
 }
 
-.hero-video_container video {
+.hero-video_container video,
+.hero-video_container .hero-media-placeholder {
   object-fit: cover;
+}
+
+.hero-media-placeholder {
+  background-size: cover;
+  background-position: center;
+}
+
+.hero-media-placeholder--orange {
+  background-image:
+    radial-gradient(circle at 18% 20%, rgba(255, 245, 220, 0.48) 0%, rgba(255, 245, 220, 0) 32%),
+    radial-gradient(circle at 82% 74%, rgba(255, 214, 170, 0.36) 0%, rgba(255, 214, 170, 0) 30%),
+    linear-gradient(140deg, #632a00 0%, #d95d07 52%, #ffb066 100%);
+}
+
+.hero-media-placeholder--green {
+  background-image:
+    radial-gradient(circle at 20% 18%, rgba(223, 255, 232, 0.46) 0%, rgba(223, 255, 232, 0) 34%),
+    radial-gradient(circle at 78% 82%, rgba(190, 255, 210, 0.38) 0%, rgba(190, 255, 210, 0) 30%),
+    linear-gradient(135deg, #073922 0%, #1d8f4f 50%, #74e39a 100%);
+}
+
+.hero-media-placeholder--purple {
+  background-image:
+    radial-gradient(circle at 22% 20%, rgba(236, 218, 255, 0.43) 0%, rgba(236, 218, 255, 0) 34%),
+    radial-gradient(circle at 80% 76%, rgba(223, 205, 255, 0.36) 0%, rgba(223, 205, 255, 0) 30%),
+    linear-gradient(138deg, #26124f 0%, #5b32bf 53%, #a282ff 100%);
+}
+
+.hero-track .carousel-image {
+  transition: filter 450ms ease, opacity 450ms ease;
+}
+
+.hero-track .carousel-div-wrapper.is--2 .carousel-image {
+  opacity: 0.85;
+}
+
+.hero-track[data-slide-theme="is--slide--1"] .carousel-div:nth-child(odd) .carousel-image {
+  /* Dark-source logos shifted to navy on the light-blue slide. */
+  filter: sepia(1) hue-rotate(175deg) saturate(2.6) brightness(0.6) contrast(1.08);
+}
+
+.hero-track[data-slide-theme="is--slide--1"] .carousel-div:nth-child(even) .carousel-image {
+  /* Light-source logos stay bright white for contrast. */
+  filter: brightness(1.25) contrast(1.05);
+}
+
+.hero-track[data-slide-theme="is--slide--2"] .carousel-image {
+  filter: brightness(1.6) contrast(1.05);
+}
+
+.hero-track[data-slide-theme="is--slide--3"] .carousel-image {
+  filter: sepia(1) hue-rotate(326deg) saturate(3.2) brightness(1.05) contrast(1.05);
+}
+
+.hero-track[data-slide-theme="is--slide--4"] .carousel-image {
+  filter: sepia(1) hue-rotate(62deg) saturate(3.4) brightness(0.98) contrast(1.02);
+}
+
+.hero-track[data-slide-theme="is--slide--5"] .carousel-image {
+  filter: sepia(1) hue-rotate(242deg) saturate(3.1) brightness(1.04) contrast(1.04);
 }
 
 .w-nav-menu.is-open {

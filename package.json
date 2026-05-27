@@ -10,7 +10,8 @@
     "deploy": "npm run build && wrangler deploy",
     "lint": "eslint .",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "test:card-click": "node scripts/test-card-click.mjs"
   },
   "dependencies": {
     "@barba/core": "^2.10.3",

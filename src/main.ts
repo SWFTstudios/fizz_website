@@ -1,13 +1,19 @@
+import "./styles/typography.css"
 import "./styles/global.css"
 import "./styles/home-overrides.css"
+import "./styles/shop.css"
 import gsap from "gsap"
+import { Flip } from "gsap/Flip"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 import { initHeroSlider, initLogoMarquee, initNavToggle } from "./lib/heroHome"
 import { initHeroScroll } from "./lib/heroScroll"
+import { installClickDebug } from "./lib/clickDebug"
 import { initExploreTransition } from "./lib/exploreTransition"
 import { isPostIntroUnlocked, unlockPostIntro } from "./lib/lottieScroll"
 
-gsap.registerPlugin(ScrollTrigger)
+installClickDebug()
+
+gsap.registerPlugin(ScrollTrigger, Flip)
 
 const GATED_HASHES = new Set(["#shop-stub"])
 
