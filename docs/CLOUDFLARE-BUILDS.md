@@ -33,6 +33,16 @@ If you previously deployed manually as `fizz5`, either:
 4. **Root directory** — must point at this repo root (where `package.json` and `wrangler.jsonc` live).
 5. **Git integration** — disconnect/reconnect the repo if webhooks stopped firing.
 
+## Branch previews (e.g. `fizz6`)
+
+| Resource | Link |
+|----------|------|
+| Git branch | https://github.com/SWFTstudios/fizz_website/tree/fizz6 |
+| PR + Workers Builds check | https://github.com/SWFTstudios/fizz_website/pull/6 |
+| Presentation cheat sheet | [`FIZZ6-PRESENTATION.md`](FIZZ6-PRESENTATION.md) |
+
+Non-`main` pushes run **Workers Builds**; the preview URL appears in the GitHub check (or Cloudflare build log). For an immediate URL without waiting on CI, run `npm run build && npx wrangler versions upload` and use the **Version Preview URL** from the CLI.
+
 ## Local parity
 
 ```bash
