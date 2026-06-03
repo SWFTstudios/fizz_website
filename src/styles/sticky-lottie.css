@@ -1,0 +1,34 @@
+.sticky-track {
+  position: relative;
+  width: 100%;
+  height: 500vh;
+  background: #000;
+  z-index: 2;
+}
+
+.sticky-track.is-reduced-motion {
+  height: 100vh;
+}
+
+.sticky-track__inner {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
+
+.sticky-track [data-sticky-lottie] {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sticky-track .overlay.gradient.top {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.35) 0%, transparent 40%);
+}

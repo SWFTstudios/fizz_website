@@ -1,12 +1,60 @@
-const SLIDE_THEMES: Record<string, { bg: string; color: string; contentColor: string }> = {
-  "is--slide--1": { bg: "#a8d0e4", color: "#204b6d", contentColor: "#204b6d" },
-  "is--slide--2": { bg: "#030303", color: "#ffffff", contentColor: "#ffffff" },
-  "is--slide--3": { bg: "#ff8b2c", color: "#2e1600", contentColor: "#2e1600" },
-  "is--slide--4": { bg: "#37bb6f", color: "#0b2d1b", contentColor: "#0b2d1b" },
-  "is--slide--5": { bg: "#8f6bff", color: "#ffffff", contentColor: "#ffffff" },
-}
+import { HERO_SLIDE_THEMES } from "../data/heroSlides"
 
 let autoRotateTimer: number | null = null
+let navToggleBound = false
+let autoRotatePaused = false
+let scrollControlsSlides = true
+
+let setActiveSlideRef: ((index: number) => void) | null = null
+let slidesRef: HTMLElement[] = []
+let activeIndexRef = 0
+
+function syncHeroSlideVideos(slides: HTMLElement[], activeIndex: number): void {
+  slides.forEach((slide, i) => {
+    const video = slide.querySelector<HTMLVideoElement>("video")
+    if (!video) return
+    if (i === activeIndex) {
+      video.preload = "auto"
+      void video.play().catch(() => {
+        /* Autoplay may be blocked until user gesture. */
+      })
+    } else {
+      video.pause()
+      video.preload = "none"
+    }
+  })
+}
+
+export function pauseHeroAutoRotate(): void {
+  autoRotatePaused = true
+  if (autoRotateTimer !== null) {
+    window.clearInterval(autoRotateTimer)
+    autoRotateTimer = null
+  }
+}
+
+export function resumeHeroAutoRotate(): void {
+  if (!scrollControlsSlides) return
+  autoRotatePaused = false
+  scrollControlsSlides = false
+  if (autoRotateTimer !== null) window.clearInterval(autoRotateTimer)
+  if (!setActiveSlideRef || slidesRef.length === 0) return
+  autoRotateTimer = window.setInterval(() => {
+    if (autoRotatePaused) return
+    setActiveSlideRef!((activeIndexRef + 1) % slidesRef.length)
+  }, 4000)
+}
+
+/** Scroll choreography may drive slides before auto-rotate resumes. */
+export function goToHeroSlide(index: number): void {
+  if (setActiveSlideRef && index >= 0 && index < slidesRef.length) {
+    setActiveSlideRef(index)
+  }
+}
+
+export function isHeroScrollControllingSlides(): boolean {
+  return scrollControlsSlides
+}
 
 export function initHeroSlider(): void {
   const track = document.querySelector<HTMLElement>(".hero-track")
@@ -16,10 +64,13 @@ export function initHeroSlider(): void {
   const slides = Array.from(document.querySelectorAll<HTMLElement>(".hero-slider .w-slide"))
   if (!track || slides.length === 0) return
 
-  let activeIndex = 0
+  slidesRef = slides
+  let activeIndex = slides.findIndex((s) => s.classList.contains("is-active"))
+  if (activeIndex < 0) activeIndex = 0
+  activeIndexRef = activeIndex
 
   const applyTheme = (slideId: string): void => {
-    const theme = SLIDE_THEMES[slideId]
+    const theme = HERO_SLIDE_THEMES[slideId]
     if (!theme) return
     track.style.backgroundColor = theme.bg
     track.style.color = theme.color
@@ -37,57 +88,62 @@ export function initHeroSlider(): void {
     }
   }
 
-  const ensureNavDots = (): HTMLElement | null => {
-    const existingNav = document.querySelector<HTMLElement>(".hero-slider .w-slider-nav")
-    if (existingNav) return existingNav
-
-    const nav = document.createElement("div")
-    nav.className = "w-slider-nav w-slider-nav-invert w-round"
-    const slider = document.querySelector<HTMLElement>(".hero-slider")
-    if (!slider) return null
-    slider.appendChild(nav)
-    return nav
-  }
-
-  const nav = ensureNavDots()
-
-  const setActiveDots = (): void => {
-    if (!nav) return
-    const dots = Array.from(nav.querySelectorAll<HTMLElement>(".w-slider-dot"))
-    dots.forEach((dot, i) => {
-      dot.classList.toggle("w-active", i === activeIndex)
-      dot.setAttribute("aria-current", i === activeIndex ? "true" : "false")
-    })
-  }
-
-  // Create dots if they're missing (Webflow usually injects these via its runtime JS).
-  if (nav && nav.querySelectorAll(".w-slider-dot").length === 0) {
-    nav.innerHTML = ""
-    slides.forEach((_, i) => {
-      const dot = document.createElement("button")
-      dot.type = "button"
-      dot.className = "w-slider-dot fizz-slider-dot"
-      dot.setAttribute("aria-label", `Go to slide ${i + 1}`)
-      dot.setAttribute("aria-current", i === 0 ? "true" : "false")
-      dot.addEventListener("click", () => setActiveSlide(i))
-      nav.appendChild(dot)
-    })
-  }
-
   const setActiveSlide = (index: number): void => {
     activeIndex = index
+    activeIndexRef = index
     slides.forEach((slide, i) => {
       slide.classList.toggle("is-active", i === index)
       slide.setAttribute("aria-hidden", i === index ? "false" : "true")
     })
-    setActiveDots()
+    syncHeroSlideVideos(slides, index)
     const id = slides[index]?.id
-    if (id) applyTheme(id)
+    if (id) {
+      applyTheme(id)
+      track.dispatchEvent(new CustomEvent("hero-slide-change", { detail: { slideId: id } }))
+    }
   }
 
-  setActiveSlide(0)
+  setActiveSlideRef = setActiveSlide
 
-  // Theme sync using IntersectionObserver (avoid relying solely on the timer).
+  track.addEventListener("hero-goto-slide", ((e: CustomEvent<{ index: number }>) => {
+    const idx = e.detail?.index
+    if (typeof idx === "number" && idx >= 0 && idx < slides.length) {
+      setActiveSlide(idx)
+    }
+  }) as EventListener)
+
+  if (heroSlider) heroSlider.dataset.sliderReady = "1"
+
+  const startAutoRotate = (): void => {
+    if (autoRotatePaused || scrollControlsSlides) return
+    if (autoRotateTimer !== null) window.clearInterval(autoRotateTimer)
+    autoRotateTimer = window.setInterval(() => {
+      if (autoRotatePaused) return
+      setActiveSlide((activeIndex + 1) % slides.length)
+    }, 4000)
+  }
+
+  if (track.dataset.heroSliderInited === "1") {
+    pauseHeroAutoRotate()
+    scrollControlsSlides = !track.hasAttribute("data-hero-scroll-complete")
+    if (!scrollControlsSlides) {
+      autoRotatePaused = false
+      startAutoRotate()
+    }
+    setActiveSlide(activeIndex)
+    return
+  }
+  track.dataset.heroSliderInited = "1"
+
+  pauseHeroAutoRotate()
+
+  setActiveSlide(activeIndex)
+
+  const initialId = slides[activeIndex]?.id
+  if (initialId) {
+    track.dispatchEvent(new CustomEvent("hero-slide-change", { detail: { slideId: initialId } }))
+  }
+
   const observer = new IntersectionObserver(
     (entries) => {
       for (const entry of entries) {
@@ -100,7 +156,7 @@ export function initHeroSlider(): void {
     { threshold: 0.5 },
   )
   slides.forEach((s) => {
-    if (s.id && SLIDE_THEMES[s.id]) observer.observe(s)
+    if (s.id && HERO_SLIDE_THEMES[s.id]) observer.observe(s)
   })
 
   const left = document.querySelector<HTMLElement>(".video-bg_wrapper .w-slider-arrow-left")
@@ -111,19 +167,10 @@ export function initHeroSlider(): void {
   right?.addEventListener("click", () => {
     setActiveSlide((activeIndex + 1) % slides.length)
   })
-
-  if (autoRotateTimer !== null) {
-    window.clearInterval(autoRotateTimer)
-  }
-
-  autoRotateTimer = window.setInterval(() => {
-    setActiveSlide((activeIndex + 1) % slides.length)
-  }, 4000)
 }
 
 export function initLogoMarquee(): void {
   document.querySelectorAll<HTMLElement>(".carousel-div-wrapper .hflex").forEach((row) => {
-    // Prevent exponential DOM growth when Home re-inits after Barba navigation.
     if (row.dataset.marqueeDuped === "1") return
     row.innerHTML = row.innerHTML + row.innerHTML
     row.dataset.marqueeDuped = "1"
@@ -134,6 +181,8 @@ export function initNavToggle(): void {
   const button = document.querySelector<HTMLElement>(".w-nav-button")
   const menu = document.querySelector<HTMLElement>(".w-nav-menu")
   if (!button || !menu) return
+  if (navToggleBound) return
+  navToggleBound = true
 
   button.addEventListener("click", () => {
     const open = menu.classList.toggle("is-open")

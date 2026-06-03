@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Features | fizz5</title>
+    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+    <link rel="apple-touch-icon" href="/images/webclip.png" />
+    <link rel="stylesheet" href="/css/normalize.css" />
+    <link rel="stylesheet" href="/css/webflow.css" />
+    <link rel="stylesheet" href="/css/fizz5.webflow.css" />
+  </head>
+  <body data-barba="wrapper" class="features-page">
+    <div id="main" data-barba="container" data-barba-namespace="features">
+      <header role="banner" class="navbar w-nav navbar--eco-glass">
+        <div class="nav-base">
+          <div class="grid-wrapper">
+            <div class="nav-content">
+              <div class="nav-eco-pill nav-eco-pill--left">
+                <a href="/" class="brand w-nav-brand" aria-label="fizz5 home">
+                  <img src="/images/Fizz_Logo.png" loading="eager" alt="fizz5" class="brand-logo" />
+                </a>
+                <nav role="navigation" class="nav-menu w-nav-menu" aria-label="Primary">
+                  <div class="menu-base">
+                    <div class="menu-wrapper">
+                      <a href="/features.html" class="nav-link-2 w-inline-block" aria-current="page">Features</a>
+                      <a href="/shop.html" class="nav-link-2 w-inline-block" data-transition>Shop</a>
+                      <a href="/about.html" class="nav-link-2 w-inline-block" data-transition>About</a>
+                    </div>
+                  </div>
+                </nav>
+              </div>
+              <div class="nav-eco-pill nav-eco-pill--right">
+                <a href="/" class="nav-eco-cart" data-transition>Home</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div data-features-root>
+        <header class="features-page__header">
+          <h1 class="features-page__title fizz-heading">Features <span class="features-page__display">(display)</span></h1>
+          <span class="fizz-caption">(00.03)</span>
+        </header>
+
+        <div class="features-page__stage">
+          <div class="features-page__pin" data-features-pin>
+            <aside class="features-panel">
+              <h2 class="features-panel__title fizz-heading--md" data-features-panel-title></h2>
+              <div class="features-panel__body" data-features-panel-body></div>
+            </aside>
+            <div class="features-card-wrap">
+              <div class="features-card">
+                <p class="features-card__heading" data-features-card-heading></p>
+                <div class="features-card__row">
+                  <div>
+                    <p class="features-card__label" data-features-card-left-label></p>
+                    <p class="features-card__value" data-features-card-left-value></p>
+                  </div>
+                  <div>
+                    <p class="features-card__label" data-features-card-right-label></p>
+                    <p class="features-card__value" data-features-card-right-value></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="features-rail" data-features-rail role="tablist" aria-label="Feature chapters">
+            <button type="button" class="features-rail__btn" data-features-index="0" role="tab">
+              <span class="features-rail__time">(00.01)</span>
+              <span class="features-rail__label">Latest update</span>
+            </button>
+            <button type="button" class="features-rail__btn" data-features-index="1" role="tab">
+              <span class="features-rail__time">(00.02)</span>
+              <span class="features-rail__label">pH level</span>
+            </button>
+            <button type="button" class="features-rail__btn is-active" data-features-index="2" role="tab" aria-current="true">
+              <span class="features-rail__time">(00.03)</span>
+              <span class="features-rail__label">Temperature</span>
+            </button>
+            <button type="button" class="features-rail__btn" data-features-index="3" role="tab">
+              <span class="features-rail__time">(00.04)</span>
+              <span class="features-rail__label">Purity score</span>
+            </button>
+            <button type="button" class="features-rail__btn" data-features-index="4" role="tab">
+              <span class="features-rail__time">(00.05)</span>
+              <span class="features-rail__label">TDS</span>
+            </button>
+            <button type="button" class="features-rail__btn" data-features-index="5" role="tab">
+              <span class="features-rail__time">(00.06)</span>
+              <span class="features-rail__label">Filter status</span>
+            </button>
+            <button type="button" class="features-rail__btn" data-features-index="6" role="tab">
+              <span class="features-rail__time">(00.07)</span>
+              <span class="features-rail__label">Reminder</span>
+            </button>
+            <button type="button" class="features-rail__btn" data-features-index="7" role="tab">
+              <span class="features-rail__time">(00.08)</span>
+              <span class="features-rail__label">Bluetooth</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="lottie-overlay" aria-hidden="true">
+      <div id="lottie-overlay-canvas"></div>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

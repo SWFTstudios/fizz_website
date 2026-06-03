@@ -10,39 +10,6 @@ body.home-page {
   display: none;
 }
 
-.sticky-track {
-  /* Let the section render immediately; animation start is controlled by scrollTrigger. */
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
-  transition: none;
-  display: block;
-  height: 280vh;
-}
-
-.sticky-track .overlay.gradient.top {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  pointer-events: none;
-}
-
-[data-lottie-scroll] {
-  width: 100%;
-  height: 100vh;
-  min-height: 100%;
-  overflow: hidden;
-}
-
-[data-lottie-scroll] svg {
-  display: block;
-  width: 100% !important;
-  height: 100% !important;
-  min-width: 100%;
-  min-height: 100%;
-}
-
 @keyframes logo-marquee {
   from {
     transform: translateX(0);
@@ -67,7 +34,32 @@ body.home-page {
 }
 
 .hero-track {
-  height: 220vh;
+  height: 300vh;
+}
+
+.hero-track[data-hero-phase="video"] .hero-eco-chrome__headline,
+.hero-track[data-hero-phase="video"] .hero-eco-chrome__sub {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.hero-track[data-hero-phase="video"] .hero-eco-chrome {
+  opacity: 1;
+  pointer-events: none;
+}
+
+.hero-track[data-hero-phase="video"] .hero-eco-chrome__dock-inner {
+  pointer-events: auto;
+}
+
+.hero-track[data-hero-scroll-complete] .hero-eco-chrome {
+  opacity: 1;
+  pointer-events: none;
+}
+
+.hero-track[data-hero-scroll-complete] .hero-eco-chrome__dock-inner {
+  pointer-events: auto;
 }
 
 /* Logo marquee sits behind the scaling video frame. */
@@ -144,8 +136,7 @@ body.home-page {
   pointer-events: auto;
 }
 
-.hero-track .video-bg_wrapper .slide-arrow,
-.hero-track .hero-slider .slide-nav {
+.hero-track .video-bg_wrapper .slide-arrow {
   z-index: 20;
   pointer-events: auto;
 }
@@ -212,41 +203,23 @@ body.home-page {
   pointer-events: none;
 }
 
-/* Bubble-style pagination dots. */
-.hero-track .hero-slider .slide-nav {
-  bottom: 16px;
+/* Hero slide nav lives in eco dock-inner (replaces w-slider-nav). */
+.hero-eco-chrome__headline.is-hidden,
+.hero-eco-chrome__sub.is-hidden,
+.hero-eco-chrome__product.is-hidden,
+.hero-eco-chrome__cta.is-hidden {
+  display: none !important;
 }
 
-.hero-track .hero-slider .fizz-slider-dot {
-  width: 8px;
-  height: 8px;
-  margin: 0 6px;
-  padding: 0;
-  border: none;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.35);
-  cursor: pointer;
-  transition:
-    width 250ms ease,
-    background-color 250ms ease,
-    opacity 250ms ease;
+.hero-track[data-hero-phase="video"] .hero-eco-chrome__dock-inner {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: min(100% - 2rem, 20rem);
+  justify-content: center;
 }
 
-.hero-track .hero-slider .fizz-slider-dot.w-active {
-  width: 24px;
-  background: #fff;
-}
-
-.hero-track .hero-slider[data-slide-theme="is--slide--1"] .fizz-slider-dot.w-active,
-.hero-track .hero-slider[data-slide-theme="is--slide--3"] .fizz-slider-dot.w-active,
-.hero-track .hero-slider[data-slide-theme="is--slide--4"] .fizz-slider-dot.w-active {
-  background: #204b6d;
-}
-
-.hero-track .hero-slider[data-slide-theme="is--slide--1"] .fizz-slider-dot:not(.w-active),
-.hero-track .hero-slider[data-slide-theme="is--slide--3"] .fizz-slider-dot:not(.w-active),
-.hero-track .hero-slider[data-slide-theme="is--slide--4"] .fizz-slider-dot:not(.w-active) {
-  background: rgba(32, 75, 109, 0.35);
+.hero-track[data-hero-phase="video"] .hero-eco-chrome__dots {
+  flex: 0 1 auto;
 }
 
 /* Post-intro content hidden until Explore/Shop CTA. */
@@ -256,6 +229,16 @@ body.home-page {
 
 body.is-post-intro-unlocked .post-intro.is-gated {
   display: block !important;
+}
+
+/*
+ * Webflow `.carousel-wrapper` is position:fixed at z-index:1. Only post-intro
+ * (revealed after Explore) needs to stack above it — leave intro-section on Webflow CSS.
+ */
+.post-intro {
+  position: relative;
+  z-index: 2;
+  isolation: isolate;
 }
 
 .hero-slider .w-slider-mask {
@@ -268,48 +251,45 @@ body.is-post-intro-unlocked .post-intro.is-gated {
   height: 100%;
 }
 
-.hero-slider .w-slide.is-active {
+/* First slide visible before initHeroSlider (LCP poster) */
+.hero-slider:not([data-slider-ready]) .w-slide:first-child {
+  display: block;
+}
+
+.hero-slider[data-slider-ready] .w-slide.is-active {
   display: block;
 }
 
 .hero-video_container,
 .hero-video_container video,
-.hero-video_container .hero-media-placeholder {
+.hero-video_container .hero-slide-photo {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
 }
 
-.hero-video_container video,
-.hero-video_container .hero-media-placeholder {
+.hero-video_container video {
   object-fit: cover;
 }
 
-.hero-media-placeholder {
-  background-size: cover;
-  background-position: center;
+.hero-slide--product:not(.hero-slide--eco) {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  background-color: #030303;
 }
 
-.hero-media-placeholder--orange {
-  background-image:
-    radial-gradient(circle at 18% 20%, rgba(255, 245, 220, 0.48) 0%, rgba(255, 245, 220, 0) 32%),
-    radial-gradient(circle at 82% 74%, rgba(255, 214, 170, 0.36) 0%, rgba(255, 214, 170, 0) 30%),
-    linear-gradient(140deg, #632a00 0%, #d95d07 52%, #ffb066 100%);
+.hero-slide-photo {
+  object-fit: cover;
+  object-position: center center;
 }
 
-.hero-media-placeholder--green {
-  background-image:
-    radial-gradient(circle at 20% 18%, rgba(223, 255, 232, 0.46) 0%, rgba(223, 255, 232, 0) 34%),
-    radial-gradient(circle at 78% 82%, rgba(190, 255, 210, 0.38) 0%, rgba(190, 255, 210, 0) 30%),
-    linear-gradient(135deg, #073922 0%, #1d8f4f 50%, #74e39a 100%);
-}
-
-.hero-media-placeholder--purple {
-  background-image:
-    radial-gradient(circle at 22% 20%, rgba(236, 218, 255, 0.43) 0%, rgba(236, 218, 255, 0) 34%),
-    radial-gradient(circle at 80% 76%, rgba(223, 205, 255, 0.36) 0%, rgba(223, 205, 255, 0) 30%),
-    linear-gradient(138deg, #26124f 0%, #5b32bf 53%, #a282ff 100%);
+.hero-video_container.hero-slide--eco {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
 }
 
 .hero-track .carousel-image {
@@ -339,11 +319,38 @@ body.is-post-intro-unlocked .post-intro.is-gated {
 }
 
 .hero-track[data-slide-theme="is--slide--4"] .carousel-image {
-  filter: sepia(1) hue-rotate(62deg) saturate(3.4) brightness(0.98) contrast(1.02);
+  filter: brightness(1.6) contrast(1.05);
 }
 
 .hero-track[data-slide-theme="is--slide--5"] .carousel-image {
-  filter: sepia(1) hue-rotate(242deg) saturate(3.1) brightness(1.04) contrast(1.04);
+  filter: sepia(1) hue-rotate(62deg) saturate(3.4) brightness(0.98) contrast(1.02);
+}
+
+.hero-track[data-slide-theme="is--slide--6"] .carousel-image {
+  filter: sepia(1) hue-rotate(195deg) saturate(2.4) brightness(0.95) contrast(1.05);
+}
+
+.hero-track[data-slide-theme="is--slide--7"] .carousel-image {
+  filter: brightness(1.2) contrast(1.02);
+}
+
+.hero-track[data-slide-theme="is--slide--8"] .carousel-image {
+  filter: sepia(1) hue-rotate(175deg) saturate(2.6) brightness(0.6) contrast(1.08);
+}
+
+.hero-track[data-slide-theme="is--slide--3"] .hero-eco-chrome__dot:not(.is-active),
+.hero-track[data-slide-theme="is--slide--4"] .hero-eco-chrome__dot:not(.is-active),
+.hero-track[data-slide-theme="is--slide--5"] .hero-eco-chrome__dot:not(.is-active),
+.hero-track[data-slide-theme="is--slide--6"] .hero-eco-chrome__dot:not(.is-active),
+.hero-track[data-slide-theme="is--slide--7"] .hero-eco-chrome__dot:not(.is-active),
+.hero-track[data-slide-theme="is--slide--8"] .hero-eco-chrome__dot:not(.is-active) {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.45);
+}
+
+.hero-track[data-slide-theme="is--slide--7"] .hero-eco-chrome__dot.is-active {
+  background: #1a1a1a;
+  border-color: #1a1a1a;
 }
 
 .w-nav-menu.is-open {

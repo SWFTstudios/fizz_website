@@ -12,31 +12,32 @@
       <div id="cms-data" hidden aria-hidden="true"></div>
 
       <!-- #zs-water-base + #zs-water-backdrop injected at runtime by zScroll.ts -->
-      <div class="page-embed">
-        <div id="zs-cursor"></div>
-        <div id="zs-cursor-ring"></div>
+      <div class="page-embed" data-z-scroll-root="page">
+        <div data-zs="cursor" id="zs-cursor"></div>
+        <div data-zs="cursor-ring" id="zs-cursor-ring"></div>
 
-        <div id="zs-scroll-hint">
+        <div data-zs="scroll-hint" id="zs-scroll-hint">
           <div class="zs-scroll-hint-text">Scroll</div>
           <div class="zs-scroll-hint-line"></div>
         </div>
 
         <div
+          data-zs="fact-title"
           id="zs-fact-title"
           role="button"
           tabindex="0"
           aria-label="Open focused card details"
         >
-          <div id="zs-fact-title-text"></div>
+          <div data-zs="fact-title-text" id="zs-fact-title-text"></div>
         </div>
 
-        <div id="zs-scroll-track"></div>
+        <div data-zs="scroll-track" id="zs-scroll-track"></div>
 
-        <div id="zs-scene-container">
-          <div id="zs-scene"></div>
+        <div data-zs="scene-container" id="zs-scene-container">
+          <div data-zs="scene" id="zs-scene"></div>
         </div>
 
-        <div id="zs-end-screen">
+        <div data-zs="end-screen" id="zs-end-screen">
           <div class="zs-end-text">
             <h2>That's a wrap.</h2>
             <p>Scroll back up to explore — or jump straight to the shop.</p>
@@ -47,12 +48,12 @@
           </div>
         </div>
 
-        <div id="zs-empty-state">
+        <div data-zs="empty-state" id="zs-empty-state">
           <p>Add Product Facts in Webflow CMS to populate this experience.</p>
         </div>
 
-        <div id="zs-card-backdrop" aria-hidden="true"></div>
-        <div id="zs-card-overlay" aria-hidden="true"></div>
+        <div data-zs="card-backdrop" id="zs-card-backdrop" aria-hidden="true"></div>
+        <div data-zs="card-overlay" id="zs-card-overlay" aria-hidden="true"></div>
       </div>
     </div>
 

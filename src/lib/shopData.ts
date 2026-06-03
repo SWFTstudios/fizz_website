@@ -209,28 +209,41 @@ export const BOTTLE_PRODUCTS: BottleProduct[] = [
 export type ShopCategorySlide = {
   title: string
   href: string
+  description: string
+  ctaLabel: string
   backgroundImage?: string
   backgroundGradient: string
 }
 
 export const SHOP_CATEGORY_SLIDES: ShopCategorySlide[] = [
   {
+    title: "CO₂ Refills",
+    href: "/co2.html",
+    description:
+      "Keep the bubbles going. Swap in a fresh cartridge and stay ready for your next pour.",
+    ctaLabel: "View refills",
+    backgroundImage: "/images/categories/co2-refills.jpg",
+    backgroundGradient:
+      "linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.75) 70%)",
+  },
+  {
     title: "Bottles",
     href: "/bottles.html",
-    backgroundImage: "/images/bottles/lineup.png",
+    description:
+      "Six finishes, one system. Pick the bottle that fits your routine and your style.",
+    ctaLabel: "View bottles",
+    backgroundImage: "/images/categories/bottles.jpg",
     backgroundGradient:
-      "linear-gradient(180deg, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.65) 100%)",
+      "linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.7) 70%)",
   },
   {
     title: "Flavors",
     href: "/flavors.html",
+    description:
+      "Bright, clean flavor packs made to mix fast—no syrups, no fuss, just Fizz.",
+    ctaLabel: "View flavors",
+    backgroundImage: "/images/categories/flavors.jpg",
     backgroundGradient:
-      "linear-gradient(135deg, #ff6b4a 0%, #c44d38 40%, #2c4557 100%)",
-  },
-  {
-    title: "CO₂ Refills",
-    href: "/co2.html",
-    backgroundGradient:
-      "linear-gradient(135deg, #4a5ca6 0%, #2c4557 50%, #1e2530 100%)",
+      "linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.75) 70%)",
   },
 ]

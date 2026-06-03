@@ -2,29 +2,41 @@ import "./styles/typography.css"
 import "./styles/buttons.css"
 import "./styles/global.css"
 import "./styles/home-overrides.css"
+import "./styles/hero-eco.css"
+import "./styles/sticky-lottie.css"
+import "./styles/feature-spotlight.css"
+import "./styles/z-scroll.css"
+import "./styles/home-z-scroll.css"
+import "./styles/home-offerings.css"
+import "./styles/features-page.css"
+import "./styles/about-page.css"
 import "./styles/shop.css"
+import "./styles/shop-menu.css"
+import "./styles/product-pdp.css"
 import gsap from "gsap"
 import { Flip } from "gsap/Flip"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
+import { initFeatureSpotlight } from "./lib/featureSpotlight"
+import { initHeroEcoChrome } from "./lib/heroEco"
 import { initHeroSlider, initLogoMarquee, initNavToggle } from "./lib/heroHome"
-import { initHeroScroll } from "./lib/heroScroll"
+import { initHomeScrollStory, killHomeScrollTriggers } from "./lib/homeScrollStory"
+import { initIntroScroll } from "./lib/introScroll"
 import { installClickDebug } from "./lib/clickDebug"
-import { initExploreTransition } from "./lib/exploreTransition"
-import { isPostIntroUnlocked, unlockPostIntro } from "./lib/lottieScroll"
+import { initHomeCategoryCarousel } from "./lib/categoryCarousel"
+import { destroyZScroll, initHomeZScroll } from "./lib/zScroll"
+import {
+  destroyStickyLottieScrub,
+  initStickyLottieScrub,
+  registerLottieTransitionHook,
+} from "./lib/lottieScroll"
 
 installClickDebug()
+registerLottieTransitionHook()
 
 gsap.registerPlugin(ScrollTrigger, Flip)
 
-const GATED_HASHES = new Set(["#shop"])
-
 function prefersReducedMotion(): boolean {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches
-}
-
-function isSamePageHash(href: string | null): boolean {
-  if (!href) return false
-  return href.startsWith("#")
 }
 
 function scrollToShopPanel(): void {
@@ -34,7 +46,6 @@ function scrollToShopPanel(): void {
 }
 
 function goToShopMarquee(): void {
-  unlockPostIntro()
   void import("./lib/shop").then(({ openShopPanel }) => {
     void openShopPanel().then(() => {
       requestAnimationFrame(scrollToShopPanel)
@@ -45,8 +56,6 @@ function goToShopMarquee(): void {
 function tryOpenShopDeepLink(): void {
   if (location.hash !== "#shop") return
   if (!document.getElementById("shop")) return
-  if (!isPostIntroUnlocked()) return
-
   goToShopMarquee()
 }
 
@@ -63,11 +72,6 @@ document.addEventListener("click", (e) => {
   const hash = link.getAttribute("href")
   if (!hash || hash === "#") return
 
-  if (GATED_HASHES.has(hash) && !isPostIntroUnlocked()) {
-    e.preventDefault()
-    return
-  }
-
   const el = document.querySelector(hash)
   if (!el) return
 
@@ -81,54 +85,66 @@ document.addEventListener("click", (e) => {
   el.scrollIntoView({ behavior: "smooth", block: "start" })
 })
 
-function refreshHomePage(): void {
+function initHomePageModules(): void {
   if (!document.getElementById("hero--content")) return
-
-  ScrollTrigger.getAll().forEach((trigger) => {
-    const el = trigger.trigger
-    if (el instanceof Element && el.closest(".hero-track, .sticky-track")) {
-      trigger.kill()
-    }
-  })
 
   initNavToggle()
   initLogoMarquee()
   initHeroSlider()
-  initHeroScroll()
+  initHeroEcoChrome()
+  initHomeScrollStory()
+  initIntroScroll()
+  initStickyLottieScrub()
+  initHomeZScroll()
+  initFeatureSpotlight()
+  initHomeCategoryCarousel()
   ScrollTrigger.refresh()
   tryOpenShopDeepLink()
 }
 
-initExploreTransition(refreshHomePage)
+function refreshHomePage(): void {
+  if (!document.getElementById("hero--content")) return
 
-function runCtaTransition(href: string | null): void {
-  const afterUnlock = (): void => {
-    unlockPostIntro()
-    if (!href) return
-
-    requestAnimationFrame(() => {
-      const el = document.querySelector(href)
-      el?.scrollIntoView({ behavior: "smooth", block: "start" })
-    })
-  }
-
-  if (prefersReducedMotion()) {
-    afterUnlock()
-    return
-  }
-
-  window.__fizzTransition?.(afterUnlock)
+  killHomeScrollTriggers()
+  destroyStickyLottieScrub()
+  destroyZScroll()
+  initHomePageModules()
 }
 
-document.querySelectorAll<HTMLAnchorElement>("a.cta-link[data-transition]").forEach((link) => {
-  link.addEventListener("click", (e) => {
-    const href = link.getAttribute("href")
-    if (!isSamePageHash(href)) return
+function bootstrapHomeHero(): void {
+  if (!document.getElementById("hero--content")) return
+  initNavToggle()
+  initLogoMarquee()
+  initHeroSlider()
+  initHeroEcoChrome()
+  initHomeScrollStory()
+}
 
-    e.preventDefault()
-    e.stopPropagation()
-    runCtaTransition(href)
-  })
+bootstrapHomeHero()
+
+if (document.getElementById("post-intro")) {
+  document.body.classList.add("is-post-intro-unlocked")
+}
+
+function bootSecondaryHomeModules(): void {
+  initIntroScroll()
+  initStickyLottieScrub()
+  initHomeZScroll()
+  initFeatureSpotlight()
+  initHomeCategoryCarousel()
+  ScrollTrigger.refresh()
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", () => {
+    if (document.getElementById("hero--content")) bootSecondaryHomeModules()
+  }, { once: true })
+} else if (document.getElementById("hero--content")) {
+  bootSecondaryHomeModules()
+}
+
+void import("./lib/exploreTransition").then(({ initExploreTransition }) => {
+  initExploreTransition(refreshHomePage)
 })
 
 const shopCta = document.querySelector<HTMLAnchorElement>('a.cta-link[href="#shop"]')

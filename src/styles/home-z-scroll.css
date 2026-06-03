@@ -1,0 +1,170 @@
+/* Homepage embed of Explore z-scroll (before Feature Spotlight) */
+
+.home-z-scroll {
+  position: relative;
+  z-index: 2;
+  background: var(--zs-page-black, #000);
+  color: var(--fizz-text, #fff);
+}
+
+.home-z-scroll__viewport {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
+
+.home-z-scroll .page-embed--home {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 100vh;
+}
+
+.home-z-scroll__fallback {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  min-height: 100vh;
+  padding: 2rem clamp(1.25rem, 5vw, 4rem);
+  text-align: center;
+}
+
+.home-z-scroll.is-reduced-motion .home-z-scroll__viewport {
+  display: none;
+}
+
+.home-z-scroll.is-reduced-motion .home-z-scroll__fallback {
+  display: flex;
+}
+
+.home-z-scroll__fallback-lead {
+  margin: 0;
+  max-width: 36ch;
+  color: var(--fizz-text-muted, rgba(255, 255, 255, 0.65));
+}
+
+/* Embed: scene + HUD live inside sticky viewport (not viewport-fixed) */
+.page-embed--home [data-zs="scene-container"],
+.page-embed--home [data-zs="end-screen"],
+.page-embed--home [data-zs="water-base"],
+.page-embed--home [data-zs="water-backdrop"] {
+  position: absolute;
+}
+
+.page-embed--home [data-zs="scene-container"] {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.page-embed--home [data-zs="end-screen"] {
+  inset: 0;
+}
+
+.page-embed--home [data-zs="water-base"] {
+  inset: 0;
+}
+
+.page-embed--home [data-zs="water-backdrop"] {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 60vh;
+}
+
+.page-embed--home [data-zs="scroll-hint"],
+.page-embed--home [data-zs="fact-title"],
+.page-embed--home [data-zs="card-backdrop"],
+.page-embed--home [data-zs="card-overlay"] {
+  position: absolute;
+}
+
+.page-embed--home [data-zs="scroll-hint"] {
+  left: 50%;
+  bottom: 12vh;
+  transform: translateX(-50%);
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.4s ease;
+}
+
+.page-embed--home [data-zs="scroll-hint"].hidden {
+  opacity: 0;
+}
+
+.page-embed--home [data-zs="fact-title"] {
+  left: 50%;
+  top: 18vh;
+  transform: translateX(-50%);
+  z-index: 6;
+  text-align: center;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+
+.page-embed--home [data-zs="fact-title"].visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.page-embed--home [data-zs="fact-title-text"] {
+  font-size: var(--fizz-heading-size-md, 28px);
+  font-weight: var(--fizz-heading-weight, 300);
+  letter-spacing: var(--fizz-heading-tracking, 0.04em);
+  text-transform: uppercase;
+}
+
+.page-embed--home [data-zs="card-backdrop"] {
+  inset: 0;
+  z-index: 20;
+}
+
+.page-embed--home [data-zs="card-overlay"] {
+  inset: 0;
+  z-index: 21;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.page-embed--home [data-zs="card-overlay"].is-active {
+  pointer-events: auto;
+}
+
+/* End screen: hint only, do not block scroll */
+.page-embed--home .zs-end-screen--embed,
+.page-embed--home [data-zs="end-screen"].zs-end-screen--embed {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 14vh;
+  z-index: 8;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.page-embed--home [data-zs="end-screen"].visible {
+  opacity: 1;
+}
+
+.page-embed--home .zs-end-screen--embed .zs-end-text {
+  pointer-events: none;
+}
+
+.home-z-scroll:not(.is-active) .page-embed--home [data-zs="scene-container"] {
+  visibility: hidden;
+}

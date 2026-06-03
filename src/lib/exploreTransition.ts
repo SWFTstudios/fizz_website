@@ -6,7 +6,6 @@ import { getBottleBySlug } from "./shopData"
 import { clickDebugLog } from "./clickDebug"
 import {
   dismissLottieOverlay,
-  initLottieTransition,
   playLottieTransition,
   playPageLoadTransition,
 } from "./lottieScroll"
@@ -19,6 +18,8 @@ const SHOP_TITLE = "Shop Fizz | fizz5"
 const BOTTLES_TITLE = "Bottles | Shop Fizz"
 const FLAVORS_TITLE = "Flavors | Shop Fizz"
 const CO2_TITLE = "CO₂ Refills | Shop Fizz"
+const FEATURES_TITLE = "Features | fizz5"
+const ABOUT_TITLE = "About | fizz5"
 
 function prefersReducedMotion(): boolean {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches
@@ -72,7 +73,7 @@ export function applyShopPageShell(): void {
     "product-detail-page",
     "shop-collection-page",
   )
-  document.body.classList.add("shop-page")
+  document.body.classList.add("shop-page", "shop-layout-full")
   document.documentElement.classList.remove("z-scroll-page")
   document.title = SHOP_TITLE
 }
@@ -84,6 +85,9 @@ function applyShopCollectionShell(title: string): void {
     "modal-open",
     "cursor-hover",
     "product-detail-page",
+    "shop-layout-full",
+    "shop-menu-open",
+    "shop-cursor-active",
   )
   document.body.classList.add("shop-page", "shop-collection-page")
   document.documentElement.classList.remove("z-scroll-page")
@@ -111,7 +115,7 @@ export function applyProductDetailPageShell(title: string): void {
     "cursor-hover",
     "shop-collection-page",
   )
-  document.body.classList.add("shop-page", "product-detail-page")
+  document.body.classList.add("shop-page", "product-detail-page", "shop-surface")
   document.documentElement.classList.remove("z-scroll-page")
 
   const slug = resolveProductSlugFromPath()
@@ -143,6 +147,16 @@ async function teardownExplorePage(): Promise<void> {
 
 function bootCurrentPage(onHomeEnter: () => void): void {
   const namespace = getCurrentNamespace()
+  if (namespace === "features") {
+    void import("./featuresPage").then(({ bootFeaturesPage }) => bootFeaturesPage())
+    return
+  }
+
+  if (namespace === "about") {
+    void import("./aboutPage").then(({ bootAboutPage }) => bootAboutPage())
+    return
+  }
+
   if (namespace === "explore") {
     void bootExplorePage()
     return
@@ -183,18 +197,27 @@ function bootCurrentPage(onHomeEnter: () => void): void {
   }
 }
 
-function killHomeScrollTriggers(): void {
-  ScrollTrigger.getAll().forEach((trigger) => {
-    const el = trigger.trigger
-    if (el instanceof Element && el.closest(".hero-track, .sticky-track")) {
-      trigger.kill()
-    }
-  })
+async function killHomeScrollTriggers(): Promise<void> {
+  const { killHomeScrollTriggers: kill } = await import("./homeScrollStory")
+  const { destroyStickyLottieScrub } = await import("./lottieScroll")
+  kill()
+  destroyStickyLottieScrub()
+}
+
+const PREFETCH_IGNORE_PATHS = ["/explore.html", "/shop.html", "/bottles.html"]
+
+function shouldIgnorePrefetch(url: string): boolean {
+  try {
+    const pathname = new URL(url, window.location.href).pathname
+    return PREFETCH_IGNORE_PATHS.some(
+      (path) => pathname === path || pathname.endsWith(path.replace(/^\//, "")),
+    )
+  } catch {
+    return true
+  }
 }
 
 export function initExploreTransition(onHomeEnter: () => void): void {
-  initLottieTransition()
-
   if (barbaInitialized) return
   barbaInitialized = true
 
@@ -206,7 +229,7 @@ export function initExploreTransition(onHomeEnter: () => void): void {
 
   barba.init({
     preventRunning: true,
-    prefetchIgnore: false,
+    prefetchIgnore: shouldIgnorePrefetch,
     prevent: ({ el, href }: { el?: HTMLElement; href?: string }) => shouldPreventBarba(el, href),
     transitions: [
       {
@@ -228,7 +251,7 @@ export function initExploreTransition(onHomeEnter: () => void): void {
       {
         namespace: "home",
         beforeLeave() {
-          killHomeScrollTriggers()
+          void killHomeScrollTriggers()
           void import("./shop").then(({ destroyShopPage }) => destroyShopPage())
         },
         beforeEnter() {
@@ -236,6 +259,36 @@ export function initExploreTransition(onHomeEnter: () => void): void {
         },
         afterEnter() {
           onHomeEnter()
+        },
+      },
+      {
+        namespace: "features",
+        beforeEnter() {
+          document.body.classList.remove("home-page", "z-scroll-page", "shop-page")
+          unlockPageScroll()
+          document.title = FEATURES_TITLE
+        },
+        afterEnter() {
+          void import("./featuresPage").then(({ bootFeaturesPage }) => bootFeaturesPage())
+        },
+        beforeLeave() {
+          void import("./featuresPage").then(({ destroyFeaturesPage }) => destroyFeaturesPage())
+          document.body.classList.remove("features-page")
+        },
+      },
+      {
+        namespace: "about",
+        beforeEnter() {
+          document.body.classList.remove("home-page", "z-scroll-page", "shop-page")
+          unlockPageScroll()
+          document.title = ABOUT_TITLE
+        },
+        afterEnter() {
+          void import("./aboutPage").then(({ bootAboutPage }) => bootAboutPage())
+        },
+        beforeLeave() {
+          void import("./aboutPage").then(({ destroyAboutPage }) => destroyAboutPage())
+          document.body.classList.remove("about-page")
         },
       },
       {
@@ -260,7 +313,7 @@ export function initExploreTransition(onHomeEnter: () => void): void {
         },
         beforeLeave() {
           void import("./shop").then(({ destroyShopPage }) => destroyShopPage())
-          document.body.classList.remove("shop-page")
+          document.body.classList.remove("shop-page", "shop-layout-full", "shop-menu-open", "shop-cursor-active")
         },
       },
       {
@@ -292,7 +345,7 @@ export function initExploreTransition(onHomeEnter: () => void): void {
         },
         beforeLeave() {
           void import("./shop").then(({ destroyShopPage }) => destroyShopPage())
-          document.body.classList.remove("shop-page", "product-detail-page")
+          document.body.classList.remove("shop-page", "product-detail-page", "shop-surface")
           delete document.body.dataset.productSlug
         },
       },

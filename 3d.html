@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Fizz — 3D Experience | fizz5</title>
+    <meta
+      name="description"
+      content="Explore the Fizz carbonating bottle in 3D. Instant bubbles on-the-go."
+    />
+    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+    <link rel="apple-touch-icon" href="/images/webclip.png" />
+  </head>
+  <body
+    class="b3d-page b3d-page--dark"
+    data-active-variant="charcoal-black"
+  >
+    <canvas id="b3d-canvas" aria-label="Interactive 3D Fizz scene"></canvas>
+    <p id="b3d-load-hint" class="b3d-load-hint" hidden></p>
+
+    <header class="b3d-header">
+      <a href="/" class="b3d-logo">FIZZ</a>
+      <nav class="b3d-nav" aria-label="Primary">
+        <a href="/about.html">About</a>
+        <a href="/shop.html">Shop</a>
+      </nav>
+      <div class="b3d-header-actions">
+        <a href="/shop.html" class="b3d-icon-btn" aria-label="Search">⌕</a>
+        <a href="/shop.html" class="b3d-icon-btn" aria-label="Account">◎</a>
+        <a href="/shop.html" class="b3d-icon-btn b3d-icon-btn--cart" aria-label="Cart">
+          🛒
+          <span class="b3d-cart-count">1</span>
+        </a>
+      </div>
+    </header>
+
+    <aside class="b3d-glass b3d-nav-panel" aria-label="Site navigation">
+      <nav class="b3d-nav-panel__links">
+        <a href="/">Home</a>
+        <a href="/about.html">About</a>
+        <a href="/shop.html">Shop</a>
+        <a href="/explore.html">Explore</a>
+      </nav>
+    </aside>
+
+    <aside class="b3d-glass b3d-product-panel" aria-labelledby="b3d-panel-title">
+      <h2 id="b3d-panel-title" class="b3d-panel-title fizz-heading">
+        …
+      </h2>
+      <p id="b3d-panel-lead" class="b3d-panel-lead fizz-lead">…</p>
+      <a id="b3d-shop-cta" class="fizz-btn b3d-buy-cta" href="/products/charcoal-black.html">
+        Buy Now
+      </a>
+      <div
+        id="b3d-variant-buttons"
+        class="b3d-variant-swatches"
+        role="tablist"
+        aria-label="Bottle colors"
+      ></div>
+      <details class="b3d-dev-controls">
+        <summary>View options</summary>
+        <label class="b3d-toggle">
+          <input id="b3d-toggle-internals" type="checkbox" />
+          <span>Show internals</span>
+        </label>
+      </details>
+    </aside>
+
+    <button type="button" class="b3d-scroll-chevron" id="b3d-scroll-chevron" aria-label="Scroll down">
+      <span aria-hidden="true">⌄</span>
+    </button>
+
+    <div id="b3d-scroll-track" class="b3d-scroll-track" aria-hidden="true"></div>
+
+    <p id="b3d-legal" class="b3d-legal"></p>
+
+    <div id="b3d-loader" class="b3d-loader" role="status" aria-live="polite">
+      <span class="b3d-loader-text">Loading scene…</span>
+      <span id="b3d-loader-progress" class="b3d-loader-progress"></span>
+    </div>
+
+    <section class="b3d-fallback-panel" hidden aria-hidden="true">
+      <p>
+        WebGL is not available in this browser.
+        <a href="/products/charcoal-black.html">View product page</a>
+      </p>
+    </section>
+
+    <script type="module" src="/src/3d-main.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>About | fizz5</title>
+    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+    <link rel="apple-touch-icon" href="/images/webclip.png" />
+    <link rel="stylesheet" href="/css/normalize.css" />
+    <link rel="stylesheet" href="/css/webflow.css" />
+    <link rel="stylesheet" href="/css/fizz5.webflow.css" />
+  </head>
+  <body data-barba="wrapper" class="about-page">
+    <div id="main" data-barba="container" data-barba-namespace="about">
+      <header role="banner" class="navbar w-nav navbar--eco-glass">
+        <div class="nav-base">
+          <div class="grid-wrapper">
+            <div class="nav-content">
+              <div class="nav-eco-pill nav-eco-pill--left">
+                <a href="/" class="brand w-nav-brand" aria-label="fizz5 home">
+                  <img src="/images/Fizz_Logo.png" loading="eager" alt="fizz5" class="brand-logo" />
+                </a>
+                <nav role="navigation" class="nav-menu w-nav-menu" aria-label="Primary">
+                  <div class="menu-base">
+                    <div class="menu-wrapper">
+                      <a href="/features.html" class="nav-link-2 w-inline-block" data-transition>Features</a>
+                      <a href="/shop.html" class="nav-link-2 w-inline-block" data-transition>Shop</a>
+                      <a href="/about.html" class="nav-link-2 w-inline-block" aria-current="page">About</a>
+                    </div>
+                  </div>
+                </nav>
+              </div>
+              <div class="nav-eco-pill nav-eco-pill--right">
+                <a href="/" class="nav-eco-cart" data-transition>Home</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <section class="about-page__hero">
+        <p class="about-page__tag" data-about-tag></p>
+        <h1 class="about-page__headline fizz-heading" data-about-headline></h1>
+        <p class="about-page__sub fizz-lead" data-about-sub></p>
+      </section>
+
+      <section class="about-path" data-about-root aria-label="Community stories">
+        <svg class="about-path__svg" viewBox="0 0 1200 800" preserveAspectRatio="none" aria-hidden="true">
+          <path
+            data-about-path
+            d="M 40 720 C 200 400, 350 600, 500 320 S 850 200, 1160 120"
+          />
+        </svg>
+        <div class="about-path__cards">
+          <article class="about-path__card" data-about-card>
+            <h2 class="about-path__card-title" data-about-card-title></h2>
+            <p class="about-path__card-body" data-about-card-body></p>
+          </article>
+          <article class="about-path__card" data-about-card>
+            <h2 class="about-path__card-title" data-about-card-title></h2>
+            <p class="about-path__card-body" data-about-card-body></p>
+          </article>
+          <article class="about-path__card" data-about-card>
+            <h2 class="about-path__card-title" data-about-card-title></h2>
+            <p class="about-path__card-body" data-about-card-body></p>
+          </article>
+        </div>
+      </section>
+
+      <footer id="contact" class="about-page__contact">
+        <h2 class="fizz-heading--md">Contact</h2>
+        <p class="fizz-lead">
+          Questions about bottles, flavor packs, or CO₂ refills?
+          <a href="mailto:hello@fizz5.com">hello@fizz5.com</a>
+        </p>
+      </footer>
+    </div>
+
+    <div id="lottie-overlay" aria-hidden="true">
+      <div id="lottie-overlay-canvas"></div>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

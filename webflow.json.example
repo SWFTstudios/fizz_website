@@ -1,0 +1,13 @@
+{
+  "devlink": {
+    "host": "https://api.webflow.com",
+    "rootDir": "./webflow/components",
+    "cssModules": true,
+    "fileExtensions": {
+      "js": ".jsx",
+      "ts": ".tsx"
+    },
+    "components": "^(ShopNav|ShopHero|ShopCategorySlider|ShopCursor|ShopControl|ShopNavLink|ShopSublink|ShopSlideCard)$"
+  },
+  "siteId": "6a03870d6aa42355105ab9ae"
+}

@@ -1,4 +1,23 @@
-import { getBottleBySlug } from "./shopData"
+import { getFuturisticBackgroundCss } from "../data/bottleGradients"
+import { BOTTLE_PRODUCTS, getBottleBySlug, productHrefForSlug } from "./shopData"
+
+const SIZE_OPTIONS = ["1 L", "750 ML", "500 ML", "350 ML"] as const
+const DEFAULT_SIZE = "750 ML"
+
+const SWATCH_COLORS: Record<string, string> = {
+  "coral-orange": "#e8724f",
+  "charcoal-black": "#1e2530",
+  "sage-green": "#8fa888",
+  "steel-navy": "#2c4557",
+  "arctic-white": "#e8e8e8",
+  "electric-blue": "#4a5ca6",
+}
+
+const GALLERY_CROPS = [
+  { label: "Full bottle", objectPosition: "50% 50%" },
+  { label: "Cap detail", objectPosition: "50% 12%" },
+  { label: "Base detail", objectPosition: "50% 88%" },
+] as const
 
 function resolveProductSlug(): string | null {
   const match = window.location.pathname.match(/\/products\/([^/]+)\.html$/)
@@ -21,8 +40,89 @@ function escapeHtml(text: string): string {
     .replace(/"/g, "&quot;")
 }
 
+function initProductGallery(bottle: NonNullable<ReturnType<typeof getBottleBySlug>>): void {
+  const hero = document.querySelector<HTMLElement>("[data-product-hero]")
+  const thumbsRoot = document.querySelector<HTMLElement>("[data-product-thumbs]")
+  if (!hero || !thumbsRoot) return
+
+  hero.style.background = getFuturisticBackgroundCss(bottle.slug)
+
+  const setMainImage = (cropIndex: number): void => {
+    const crop = GALLERY_CROPS[cropIndex] ?? GALLERY_CROPS[0]
+    hero.innerHTML = `
+      <img
+        class="product-pdp__img"
+        src="${escapeHtml(bottle.image)}"
+        alt="Fizz5 Bottle – ${escapeHtml(bottle.name)}"
+        width="680"
+        height="680"
+        style="object-position: ${crop.objectPosition}"
+      />
+    `
+    thumbsRoot.querySelectorAll<HTMLButtonElement>("[data-thumb-index]").forEach((btn, i) => {
+      btn.classList.toggle("is-active", i === cropIndex)
+      btn.setAttribute("aria-selected", i === cropIndex ? "true" : "false")
+    })
+  }
+
+  thumbsRoot.innerHTML = ""
+  GALLERY_CROPS.forEach((crop, i) => {
+    const btn = document.createElement("button")
+    btn.type = "button"
+    btn.className = "product-pdp__thumb"
+    btn.dataset.thumbIndex = String(i)
+    btn.setAttribute("role", "tab")
+    btn.setAttribute("aria-label", crop.label)
+    btn.innerHTML = `
+      <img src="${escapeHtml(bottle.image)}" alt="" style="object-position: ${crop.objectPosition}" />
+    `
+    btn.addEventListener("click", () => setMainImage(i))
+    thumbsRoot.appendChild(btn)
+  })
+
+  setMainImage(0)
+}
+
+function initProductSizes(): void {
+  const root = document.querySelector<HTMLElement>("[data-product-sizes]")
+  if (!root) return
+
+  root.innerHTML = ""
+  SIZE_OPTIONS.forEach((size) => {
+    const btn = document.createElement("button")
+    btn.type = "button"
+    btn.className = "product-pdp__size"
+    btn.textContent = size
+    if (size === DEFAULT_SIZE) btn.classList.add("is-active")
+    btn.addEventListener("click", () => {
+      root.querySelectorAll<HTMLElement>(".product-pdp__size").forEach((el) => {
+        el.classList.toggle("is-active", el === btn)
+      })
+    })
+    root.appendChild(btn)
+  })
+}
+
+function initProductSwatches(activeSlug: string): void {
+  const root = document.querySelector<HTMLElement>("[data-product-swatches]")
+  if (!root) return
+
+  root.innerHTML = ""
+  BOTTLE_PRODUCTS.forEach((b) => {
+    const link = document.createElement("a")
+    link.href = productHrefForSlug(b.slug)
+    link.className = "product-pdp__swatch"
+    link.dataset.transition = ""
+    link.setAttribute("aria-label", b.colorOption)
+    link.style.setProperty("--swatch-color", SWATCH_COLORS[b.slug] ?? "#888")
+    if (b.slug === activeSlug) link.classList.add("is-active")
+    link.innerHTML = `<span class="product-pdp__swatch-dot"></span>`
+    root.appendChild(link)
+  })
+}
+
 export function bootProductPage(): void {
-  document.body.classList.add("shop-page", "product-detail-page")
+  document.body.classList.add("shop-page", "product-detail-page", "shop-surface")
   unlockPageScroll()
 
   const slug = resolveProductSlug()
@@ -40,19 +140,9 @@ export function bootProductPage(): void {
   pdp.dataset.shopifyVariantId = bottle.shopifyVariantId
   pdp.dataset.productSlug = bottle.slug
 
-  const hero = document.querySelector<HTMLElement>("[data-product-hero]")
-  if (hero) {
-    hero.style.background = bottle.gradient
-    hero.innerHTML = `
-      <img
-        class="product-pdp__img"
-        src="${escapeHtml(bottle.image)}"
-        alt="Fizz5 Bottle – ${escapeHtml(bottle.name)}"
-        width="680"
-        height="680"
-      />
-    `
-  }
+  initProductGallery(bottle)
+  initProductSizes()
+  initProductSwatches(slug)
 
   const title = document.querySelector<HTMLElement>("[data-product-title]")
   if (title) title.textContent = bottle.name
@@ -65,13 +155,6 @@ export function bootProductPage(): void {
 
   const desc = document.querySelector<HTMLElement>("[data-product-desc]")
   if (desc) desc.textContent = bottle.description
-
-  const info = document.querySelector<HTMLElement>(".product-pdp__info")
-  if (info) {
-    info.style.setProperty("--card-text", bottle.textColor)
-    const isLightText = bottle.textColor.toLowerCase() !== "#1a1a1a"
-    info.classList.toggle("product-pdp__info--light-bg", !isLightText)
-  }
 
   const featuresRoot = document.querySelector<HTMLElement>("[data-product-features]")
   if (featuresRoot) {
@@ -112,20 +195,6 @@ export function bootProductPage(): void {
             <h3 class="product-pdp__step-title">${escapeHtml(step.title)}</h3>
             <p class="product-pdp__step-desc fizz-body--sm">${escapeHtml(step.description)}</p>
           </div>
-        </li>
-      `,
-      )
-      .join("")
-  }
-
-  const careRoot = document.querySelector<HTMLElement>("[data-product-care]")
-  if (careRoot) {
-    careRoot.innerHTML = bottle.care
-      .map(
-        (item) => `
-        <li class="product-pdp__care-item">
-          <h3 class="product-pdp__care-title fizz-label">${escapeHtml(item.title)}</h3>
-          <p class="product-pdp__care-desc fizz-body--sm">${escapeHtml(item.description)}</p>
         </li>
       `,
       )

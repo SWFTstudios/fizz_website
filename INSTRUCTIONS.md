@@ -20,7 +20,16 @@ This file also acts as the single source of truth for the project work queue.
 
 - [Migration] Port explore flow (`explore.html` / z-scroll 3D) — uses site scripts `fizzzscrollcss0/1`, `fizzzscrolljs01/02` (separate from homepage Lottie).
 
-## Webflow MCP reference (2026-05-26)
+## Webflow MCP reference
+
+### FIZZ6 (active — 2026-06-03)
+
+- Site ID: `6a20489a38de438c1b0f83e5` | Home page ID: `6a20489f38de438c1b0f83fe`
+- MCP doc: [`docs/WEBFLOW-MCP-FIZZ6.md`](docs/WEBFLOW-MCP-FIZZ6.md)
+- Preview (after publish): https://fizz6.webflow.io/
+- Designer: open FIZZ6 + launch **MCP Bridge App** for canvas tools
+
+### fizz5 (legacy reference — 2026-05-26)
 
 - Site ID: `6a03870d6aa42355105ab9ae` | Home page ID: `6a0387116aa42355105ab9fa`
 - Full inspection report: [`docs/WEBFLOW-MCP-INSPECTION.md`](docs/WEBFLOW-MCP-INSPECTION.md)

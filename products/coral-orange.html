@@ -9,69 +9,87 @@
   </head>
   <body
     data-barba="wrapper"
-    class="shop-page product-detail-page"
+    class="shop-page product-detail-page shop-surface"
     data-product-slug="coral-orange"
   >
-    <div id="main" data-barba="container" data-barba-namespace="product">
-      <nav class="shop-top-nav" aria-label="Shop">
-        <a href="/shop.html" class="shop-top-nav-link fizz-label">Shop</a>
-        <a href="/" class="shop-top-nav-link fizz-label">Home</a>
-      </nav>
+    <div id="main" data-barba="container" data-barba-namespace="product" class="product-pdp-page">
+      <header class="shop-pdp-nav" aria-label="Shop">
+        <a href="/" class="shop-pdp-nav__logo fizz-heading">FIZZ5</a>
+        <nav class="shop-pdp-nav__links" aria-label="Shop pages">
+          <a href="/bottles.html" class="shop-pdp-nav__link fizz-label">Bottles</a>
+          <a href="/shop.html" class="shop-pdp-nav__link fizz-label">Shop</a>
+          <a href="/" class="shop-pdp-nav__link fizz-label">Home</a>
+        </nav>
+      </header>
 
-      <article
-        class="product-pdp"
-        data-shopify-product-id=""
-        data-shopify-variant-id=""
-      >
-        <div class="product-pdp__hero" data-product-hero></div>
-        <div class="product-pdp__info">
+      <article class="product-pdp product-pdp--split" data-shopify-product-id="" data-shopify-variant-id="">
+        <div class="product-pdp__gallery">
+          <div class="product-pdp__thumbs" data-product-thumbs role="tablist" aria-label="Product angles"></div>
+          <div class="product-pdp__hero-wrap">
+            <div class="product-pdp__hero" data-product-hero></div>
+          </div>
+        </div>
+
+        <div class="product-pdp__buy-box">
           <p class="product-pdp__eyebrow fizz-eyebrow">Fizz5 Bottle</p>
           <h1 class="product-pdp__title fizz-heading" data-product-title></h1>
           <div class="product-pdp__price-row">
             <p class="product-pdp__price" data-product-price></p>
             <p class="product-pdp__compare-at fizz-caption" data-product-compare-at></p>
           </div>
+
+          <div class="product-pdp__option-group">
+            <span class="product-pdp__option-label fizz-label">Size</span>
+            <div class="product-pdp__sizes" data-product-sizes role="group" aria-label="Bottle size"></div>
+          </div>
+
+          <div class="product-pdp__option-group">
+            <span class="product-pdp__option-label fizz-label">Color</span>
+            <div class="product-pdp__swatches" data-product-swatches role="group" aria-label="Bottle color"></div>
+          </div>
+
           <p class="product-pdp__desc fizz-lead" data-product-desc></p>
-          <button type="button" class="product-pdp__buy fizz-btn fizz-btn--primary" data-shopify-add-to-cart>
-            Add to Cart
-          </button>
+
+          <div class="product-pdp__actions">
+            <button type="button" class="product-pdp__buy fizz-btn fizz-btn--primary" data-shopify-add-to-cart>
+              Checkout
+            </button>
+            <button type="button" class="product-pdp__wish fizz-btn fizz-btn--outline" aria-label="Add to favorites">
+              ♥
+            </button>
+          </div>
+
           <a href="/bottles.html" class="product-pdp__back fizz-label">All bottles</a>
         </div>
       </article>
 
-      <div class="product-pdp-detail">
-        <section class="product-pdp__section product-pdp__features" aria-labelledby="pdp-features-heading">
-          <h2 id="pdp-features-heading" class="product-pdp__section-title fizz-heading--md">
-            Why this bottle
-          </h2>
-          <div class="product-pdp__features-grid" data-product-features></div>
-        </section>
-
-        <section class="product-pdp__section product-pdp__specs-block" aria-labelledby="pdp-specs-heading">
-          <h2 id="pdp-specs-heading" class="product-pdp__section-title fizz-heading--md">
-            Specifications
-          </h2>
-          <dl class="product-pdp__specs" data-product-specs></dl>
-        </section>
-
-        <section class="product-pdp__section product-pdp__how" aria-labelledby="pdp-how-heading">
-          <h2 id="pdp-how-heading" class="product-pdp__section-title fizz-heading--md">
-            How it works
-          </h2>
-          <ol class="product-pdp__steps" data-product-steps></ol>
-        </section>
-
-        <section class="product-pdp__section product-pdp__care-block" aria-labelledby="pdp-care-heading">
-          <h2 id="pdp-care-heading" class="product-pdp__section-title fizz-heading--md">
-            Care &amp; maintenance
-          </h2>
-          <ul class="product-pdp__care-list" data-product-care></ul>
-        </section>
-
-        <footer class="product-pdp__footer">
-          <a href="/bottles.html" class="product-pdp__footer-link fizz-label">View all bottles</a>
-        </footer>
+      <div class="product-pdp-accordions">
+        <details class="product-pdp-accordion" open>
+          <summary class="product-pdp-accordion__summary fizz-label">Product overview</summary>
+          <div class="product-pdp-accordion__body" data-product-features></div>
+        </details>
+        <details class="product-pdp-accordion">
+          <summary class="product-pdp-accordion__summary fizz-label">Specifications</summary>
+          <div class="product-pdp-accordion__body">
+            <dl class="product-pdp__specs" data-product-specs></dl>
+          </div>
+        </details>
+        <details class="product-pdp-accordion">
+          <summary class="product-pdp-accordion__summary fizz-label">Delivery &amp; returns</summary>
+          <div class="product-pdp-accordion__body fizz-body--sm">
+            <p>Free shipping on all bottle orders. Returns accepted within 30 days in unused condition.</p>
+          </div>
+        </details>
       </div>
+
+      <section class="product-pdp__section product-pdp__how" aria-labelledby="pdp-how-heading">
+        <h2 id="pdp-how-heading" class="product-pdp__section-title fizz-heading--md">How it works</h2>
+        <ol class="product-pdp__steps" data-product-steps></ol>
+      </section>
+
+      <footer class="product-pdp__footer">
+        <a href="/bottles.html" class="product-pdp__footer-link fizz-label">View all bottles</a>
+      </footer>
     </div>
 
     <div id="lottie-overlay" aria-hidden="true">

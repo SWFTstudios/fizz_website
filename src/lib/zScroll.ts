@@ -37,6 +37,44 @@ interface ZScrollConfig {
 
 type CardPosition = { v: string; h: string }
 
+export type ZScrollVariant = "page" | "embed"
+
+export interface ZScrollInitOptions {
+  root?: HTMLElement
+  variant?: ZScrollVariant
+}
+
+const ZS = {
+  scene: '[data-zs="scene"]',
+  sceneContainer: '[data-zs="scene-container"]',
+  scrollTrack: '[data-zs="scroll-track"]',
+  scrollHint: '[data-zs="scroll-hint"]',
+  factTitle: '[data-zs="fact-title"]',
+  factTitleText: '[data-zs="fact-title-text"]',
+  endScreen: '[data-zs="end-screen"]',
+  emptyState: '[data-zs="empty-state"]',
+  cursor: '[data-zs="cursor"]',
+  cursorRing: '[data-zs="cursor-ring"]',
+  cardOverlay: '[data-zs="card-overlay"]',
+  cardBackdrop: '[data-zs="card-backdrop"]',
+} as const
+
+function clamp(value: number, min: number, max: number): number {
+  return Math.max(min, Math.min(max, value))
+}
+
+function qs<T extends Element>(root: ParentNode, selector: string): T | null {
+  return root.querySelector<T>(selector)
+}
+
+function resolveZScrollRoot(options?: ZScrollInitOptions): HTMLElement | null {
+  if (options?.root) return options.root
+  return (
+    document.querySelector<HTMLElement>('[data-z-scroll-root="page"]') ??
+    document.querySelector<HTMLElement>(".page-embed:not(.page-embed--home)")
+  )
+}
+
 const FALLBACK_FACTS: Fact[] = [
   {
     title: "Add Some Fizz",
@@ -170,16 +208,16 @@ function mountWaterBackdrop(container: HTMLElement): {
   backdrop: HTMLDivElement
   video: HTMLVideoElement | null
 } {
-  document.getElementById("zs-water-base")?.remove()
-  document.getElementById("zs-water-backdrop")?.remove()
+  container.querySelector('[data-zs="water-base"]')?.remove()
+  container.querySelector('[data-zs="water-backdrop"]')?.remove()
 
   const base = document.createElement("div")
-  base.id = "zs-water-base"
+  base.dataset.zs = "water-base"
   base.className = "zs-water-base"
   base.setAttribute("aria-hidden", "true")
 
   const backdrop = document.createElement("div")
-  backdrop.id = "zs-water-backdrop"
+  backdrop.dataset.zs = "water-backdrop"
   backdrop.className = "zs-water-backdrop"
   backdrop.setAttribute("aria-hidden", "true")
 
@@ -238,13 +276,18 @@ function mountWaterBackdrop(container: HTMLElement): {
 
 let isInitialized = false
 let activeCleanup: (() => void) | null = null
+let activeRoot: HTMLElement | null = null
+let activeEmbedSection: HTMLElement | null = null
 
 export function destroyZScroll(): void {
   activeCleanup?.()
   activeCleanup = null
 
-  const scene = document.getElementById("zs-scene")
-  const expanded = document.querySelector<HTMLDivElement>(".zs-card--expanded")
+  const root = activeRoot
+  const scene = root ? qs<HTMLElement>(root, ZS.scene) : document.getElementById("zs-scene")
+  const expanded = root?.querySelector<HTMLDivElement>(".zs-card--expanded") ??
+    document.querySelector<HTMLDivElement>(".zs-card--expanded")
+
   if (expanded && scene) {
     clearExpandedContent(expanded)
     expanded.classList.remove("zs-card--expanded")
@@ -252,27 +295,48 @@ export function destroyZScroll(): void {
     expanded.style.transform = `translateZ(${z}px)`
     scene.appendChild(expanded)
   }
+
+  root?.querySelector(ZS.cardBackdrop)?.classList.remove("is-active")
+  root?.querySelector(ZS.cardOverlay)?.classList.remove("is-active")
   document.getElementById("zs-card-backdrop")?.classList.remove("is-active")
   document.getElementById("zs-card-overlay")?.classList.remove("is-active")
 
   scene?.replaceChildren()
 
-  const waterVideo = document.querySelector<HTMLVideoElement>("#zs-water-backdrop video")
-  waterVideo?.pause()
+  const waterHost = root ?? document
+  waterHost.querySelector<HTMLVideoElement>('[data-zs="water-backdrop"] video')?.pause()
+  waterHost.querySelector('[data-zs="water-backdrop"]')?.remove()
+  waterHost.querySelector('[data-zs="water-base"]')?.remove()
+  document.querySelector<HTMLVideoElement>("#zs-water-backdrop video")?.pause()
   document.getElementById("zs-water-backdrop")?.remove()
   document.getElementById("zs-water-base")?.remove()
 
+  if (activeEmbedSection) {
+    activeEmbedSection.style.height = ""
+    activeEmbedSection.classList.remove("is-active", "is-ready")
+  }
+
   document.body.classList.remove("modal-open", "cursor-hover")
+  activeRoot = null
+  activeEmbedSection = null
   isInitialized = false
 }
 
-export function initZScroll(): void {
+export function initZScroll(options?: ZScrollInitOptions): void {
   if (isInitialized) return
 
+  const variant: ZScrollVariant = options?.variant ?? "page"
+  const isEmbed = variant === "embed"
+  const root = resolveZScrollRoot(options)
+  if (!root) return
+
+  const cmsRoot =
+    (isEmbed ? document.getElementById("home-cms-data") : null) ??
+    document.getElementById("cms-data") ??
+    document
+
   const cmsItems = Array.from(
-    document.querySelectorAll<HTMLElement>(
-      "#cms-data .cms-fact-item, #cms-data [data-title]",
-    ),
+    cmsRoot.querySelectorAll<HTMLElement>("#cms-data .cms-fact-item, #cms-data [data-title], #home-cms-data .cms-fact-item, #home-cms-data [data-title], .cms-fact-item, [data-title]"),
   )
 
   let facts: Fact[] = cmsItems
@@ -346,18 +410,20 @@ export function initZScroll(): void {
     EASE: 0.1,
   }
 
-  const scene = document.getElementById("zs-scene")
-  const sceneContainer = document.getElementById("zs-scene-container")
-  const scrollTrack = document.getElementById("zs-scroll-track")
-  const scrollHint = document.getElementById("zs-scroll-hint")
-  const factTitle = document.getElementById("zs-fact-title")
-  const factTitleText = document.getElementById("zs-fact-title-text")
-  const endScreen = document.getElementById("zs-end-screen")
-  const emptyState = document.getElementById("zs-empty-state")
-  const cursorEl = document.getElementById("zs-cursor")
-  const cursorRing = document.getElementById("zs-cursor-ring")
-  const cardOverlay = document.getElementById("zs-card-overlay")
-  const cardBackdrop = document.getElementById("zs-card-backdrop")
+  const scene = qs<HTMLElement>(root, ZS.scene)
+  const sceneContainer = qs<HTMLElement>(root, ZS.sceneContainer)
+  const scrollTrack = qs<HTMLElement>(root, ZS.scrollTrack)
+  const scrollHint = qs<HTMLElement>(root, ZS.scrollHint)
+  const factTitle = qs<HTMLElement>(root, ZS.factTitle)
+  const factTitleText = qs<HTMLElement>(root, ZS.factTitleText)
+  const endScreen = qs<HTMLElement>(root, ZS.endScreen)
+  const emptyState = qs<HTMLElement>(root, ZS.emptyState)
+  const cursorEl = qs<HTMLElement>(root, ZS.cursor)
+  const cursorRing = qs<HTMLElement>(root, ZS.cursorRing)
+  const cardOverlay = qs<HTMLElement>(root, ZS.cardOverlay)
+  const cardBackdrop = qs<HTMLElement>(root, ZS.cardBackdrop)
+
+  const embedSection = isEmbed ? root.closest<HTMLElement>(".home-z-scroll") : null
 
   if (
     !scene ||
@@ -368,12 +434,12 @@ export function initZScroll(): void {
     !factTitleText ||
     !endScreen ||
     !emptyState ||
-    !cursorEl ||
-    !cursorRing ||
     !cardOverlay ||
-    !cardBackdrop
+    !cardBackdrop ||
+    (isEmbed && !embedSection)
   ) {
     console.warn("[z-scroll] Missing required DOM elements", {
+      variant,
       scene: !!scene,
       sceneContainer: !!sceneContainer,
       scrollTrack: !!scrollTrack,
@@ -386,11 +452,16 @@ export function initZScroll(): void {
       cursorRing: !!cursorRing,
       cardOverlay: !!cardOverlay,
       cardBackdrop: !!cardBackdrop,
+      embedSection: !!embedSection,
     })
     return
   }
 
-  clickDebugLog("initZScroll:start", { factCount: facts.length })
+  activeRoot = root
+  activeEmbedSection = embedSection
+  root.classList.toggle("page-embed--home", isEmbed)
+
+  clickDebugLog("initZScroll:start", { factCount: facts.length, variant })
 
   const sceneEl = scene
   const sceneContainerEl = sceneContainer
@@ -407,8 +478,9 @@ export function initZScroll(): void {
   const cursorRingEl = cursorRing
   const cardOverlayEl = cardOverlay
   const cardBackdropEl = cardBackdrop
+  const embedSectionEl = embedSection!
 
-  const pageEmbed = sceneEl.closest<HTMLElement>(".page-embed")
+  const pageEmbed = root
   let waterVideoEl: HTMLVideoElement | null = null
   if (pageEmbed) {
     ;({ video: waterVideoEl } = mountWaterBackdrop(pageEmbed))
@@ -427,7 +499,25 @@ export function initZScroll(): void {
   emptyStateEl.classList.remove("visible")
   const totalScrollHeight =
     CONFIG.SCROLL_PER_CARD * facts.length + CONFIG.Z_OFFSET + 600
-  scrollTrackEl.style.height = totalScrollHeight + "px"
+
+  if (isEmbed) {
+    embedSectionEl.style.height = `${totalScrollHeight}px`
+    scrollTrackEl.style.height = "0"
+    embedSectionEl.classList.add("is-ready")
+  } else {
+    scrollTrackEl.style.height = `${totalScrollHeight}px`
+  }
+
+  const getSectionTop = (): number =>
+    embedSectionEl.getBoundingClientRect().top + window.scrollY
+
+  const getMaxLocalScroll = (): number =>
+    Math.max(0, totalScrollHeight - window.innerHeight)
+
+  const getLocalScrollY = (): number => {
+    if (!isEmbed) return window.scrollY
+    return clamp(window.scrollY - getSectionTop(), 0, getMaxLocalScroll())
+  }
 
   const positions: CardPosition[] = [
     { v: "pos-top", h: "pos-right" },
@@ -489,8 +579,8 @@ export function initZScroll(): void {
     const card = cardEls[index]
     if (!card) return
     const z = parseFloat(card.dataset.z ?? "0")
-    const targetScroll = -z
-    clickDebugLog("scrollToCard", { index, targetScroll })
+    const targetScroll = isEmbed ? getSectionTop() + -z : -z
+    clickDebugLog("scrollToCard", { index, targetScroll, isEmbed })
     window.scrollTo({ top: targetScroll, behavior: "smooth" })
   }
 
@@ -694,32 +784,47 @@ export function initZScroll(): void {
   let animating = true
 
   const onScroll = (): void => {
-    currentScrollY = window.scrollY
+    currentScrollY = getLocalScrollY()
     scrollHintEl.classList.toggle("hidden", currentScrollY > 50)
+
+    if (isEmbed) {
+      const inSection =
+        window.scrollY >= getSectionTop() - 2 &&
+        window.scrollY <= getSectionTop() + getMaxLocalScroll() + window.innerHeight
+      embedSectionEl.classList.toggle("is-active", inSection)
+    }
   }
 
   window.addEventListener("scroll", onScroll, { passive: true })
+  onScroll()
 
   const onMouseMove = (e: MouseEvent): void => {
     mouseX = e.clientX / window.innerWidth
     mouseY = e.clientY / window.innerHeight
-    cursorElNode.style.left = e.clientX + "px"
-    cursorElNode.style.top = e.clientY + "px"
-    cursorRingEl.style.left = e.clientX + "px"
-    cursorRingEl.style.top = e.clientY + "px"
-    const overCard = hitTestCardAt(e.clientX, e.clientY)
-    const overTitle =
-      e.target instanceof Element ? e.target.closest("#zs-fact-title.visible") : null
-    const over =
-      overCard ||
-      overTitle ||
-      (e.target instanceof Element
-        ? e.target.closest("button, a, .zs-card-close, .fizz-btn")
-        : null)
-    document.body.classList.toggle("cursor-hover", !!over)
+
+    if (cursorElNode && cursorRingEl && !isEmbed) {
+      cursorElNode.style.left = e.clientX + "px"
+      cursorElNode.style.top = e.clientY + "px"
+      cursorRingEl.style.left = e.clientX + "px"
+      cursorRingEl.style.top = e.clientY + "px"
+      const overCard = hitTestCardAt(e.clientX, e.clientY)
+      const overTitle =
+        e.target instanceof Element
+          ? e.target.closest(`${ZS.factTitle}.visible`)
+          : null
+      const over =
+        overCard ||
+        overTitle ||
+        (e.target instanceof Element
+          ? e.target.closest("button, a, .zs-card-close, .fizz-btn")
+          : null)
+      document.body.classList.toggle("cursor-hover", !!over)
+    }
   }
 
-  window.addEventListener("mousemove", onMouseMove)
+  if (!isEmbed && cursorElNode && cursorRingEl) {
+    window.addEventListener("mousemove", onMouseMove)
+  }
 
   function animate(): void {
     if (!animating) return
@@ -825,7 +930,7 @@ export function initZScroll(): void {
       factTitleEl.classList.remove("visible")
       factTitleEl.setAttribute("aria-label", "Open focused card details")
     }
-    const denom = Math.max(1, totalScrollHeight - window.innerHeight)
+    const denom = isEmbed ? Math.max(1, getMaxLocalScroll()) : Math.max(1, totalScrollHeight - window.innerHeight)
     const frac = currentScrollY / denom
     endScreenEl.classList.toggle("visible", frac > 0.96)
   }
@@ -837,7 +942,9 @@ export function initZScroll(): void {
     animating = false
     cancelAnimationFrame(animFrameId)
     window.removeEventListener("scroll", onScroll)
-    window.removeEventListener("mousemove", onMouseMove)
+    if (!isEmbed && cursorElNode && cursorRingEl) {
+      window.removeEventListener("mousemove", onMouseMove)
+    }
     document.removeEventListener("keydown", onKeyDown)
     sceneContainerEl.removeEventListener("click", onSceneClick)
     factTitleEl.removeEventListener("click", onFactTitleActivate)
@@ -861,7 +968,25 @@ export function initZScroll(): void {
 }
 
 export function runLoaderThenInit(): void {
-  if (!document.getElementById("zs-scene")) return
+  const root = resolveZScrollRoot({ variant: "page" })
+  if (!root || !qs(root, ZS.scene)) return
   if (isInitialized) return
-  initZScroll()
+  initZScroll({ root, variant: "page" })
+}
+
+export function initHomeZScroll(): void {
+  const section = document.getElementById("home-z-scroll")
+  if (!section) return
+
+  if (prefersReducedMotion()) {
+    section.classList.add("is-reduced-motion")
+    return
+  }
+
+  section.classList.remove("is-reduced-motion")
+  const root = section.querySelector<HTMLElement>('[data-z-scroll-root="home"]')
+  if (!root || !qs(root, ZS.scene)) return
+
+  destroyZScroll()
+  initZScroll({ root, variant: "embed" })
 }

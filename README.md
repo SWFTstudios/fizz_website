@@ -360,8 +360,11 @@ npm run build
 | `npm run typecheck` | `tsc --noEmit` |
 | `npm run assets:bottles` | Copy bottle renders into `public/images/bottles/` |
 
+**Performance / Lighthouse QA:** Run audits in **Chrome Incognito** (extensions off). Wallet/shopping extensions (MetaMask, Honey, etc.) can add 100ms+ main-thread time and freeze tabs; production users without those extensions see normal behavior.
+
 **Manual test checklist:**
 
+- [ ] Home hero LCP poster loads from `/images/hero/hero-slide-1-poster.jpg` (preload in `<head>`) before `main` runs
 - [ ] Home → Explore — Lottie plays, fades out, 3D cards work
 - [ ] Explore → Home — back button or `/`; hero re-inits
 - [ ] Home → Shop (`#shop`) — post-intro marquee unlocks; no Barba intercept

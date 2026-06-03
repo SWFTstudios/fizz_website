@@ -8,7 +8,7 @@
     <link rel="apple-touch-icon" href="/images/webclip.png" />
   </head>
   <body data-barba="wrapper" class="shop-page shop-collection-page">
-    <div id="main" data-barba="container" data-barba-namespace="bottles">
+    <div id="main" data-barba="container" data-barba-namespace="bottles" data-bottles-collection>
       <header class="shop-top-nav" aria-label="Shop">
         <a href="/shop.html" class="shop-top-nav-link fizz-label">Shop</a>
         <a href="/" class="shop-top-nav-link fizz-label">Home</a>
@@ -22,7 +22,81 @@
         </p>
       </section>
 
-      <section class="collection-grid" aria-label="Bottle products"></section>
+      <div class="collection-toolbar">
+        <div class="collection-view-toggle" role="group" aria-label="Product view">
+          <button
+            type="button"
+            class="collection-view-btn is-active"
+            data-bottles-view="carousel"
+            aria-pressed="true"
+          >
+            Carousel
+          </button>
+          <button
+            type="button"
+            class="collection-view-btn"
+            data-bottles-view="grid"
+            aria-pressed="false"
+          >
+            Grid
+          </button>
+        </div>
+        <div class="collection-toolbar__actions">
+          <label class="collection-autoscroll fizz-label">
+            <input
+              type="checkbox"
+              id="bottles-autoscroll"
+              class="collection-autoscroll__input"
+              checked
+            />
+            <span class="collection-autoscroll__text">Auto scroll</span>
+          </label>
+          <div class="collection-sort">
+            <label class="collection-sort__label fizz-label" for="bottles-sort">Sort by</label>
+            <select id="bottles-sort" class="collection-sort__select" name="sort">
+              <option value="catalog">Featured</option>
+              <option value="name-asc">Name (A–Z)</option>
+              <option value="name-desc">Name (Z–A)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <section class="collection-carousel is-active" aria-label="Bottle products carousel">
+        <div class="collection-carousel__inner">
+          <div class="bottles-splide splide" data-bottles-splide>
+            <div class="splide__track">
+              <ul class="splide__list"></ul>
+            </div>
+          </div>
+          <div class="bottles-controls">
+            <button type="button" class="bottles-control bottles-control--prev" aria-label="Previous bottle">
+              <span class="bottles-control__fill" aria-hidden="true"></span>
+              <span class="bottles-control__arrow" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 18">
+                  <path
+                    fill="currentColor"
+                    d="M23.999,8H5.481c5.009-2.91,6.349-7.311,6.416-7.548L9.976-0.102C9.9,0.156,8.03,6.213-0.073,8.024L0.146,9l-0.218,0.976C8.03,11.787,9.9,17.844,9.976,18.101l1.922-0.554C11.83,17.31,10.49,12.91,5.481,10h18.518V8z"
+                  />
+                </svg>
+              </span>
+            </button>
+            <button type="button" class="bottles-control bottles-control--next" aria-label="Next bottle">
+              <span class="bottles-control__fill" aria-hidden="true"></span>
+              <span class="bottles-control__arrow bottles-control__arrow--flipped" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 18">
+                  <path
+                    fill="currentColor"
+                    d="M23.999,8H5.481c5.009-2.91,6.349-7.311,6.416-7.548L9.976-0.102C9.9,0.156,8.03,6.213-0.073,8.024L0.146,9l-0.218,0.976C8.03,11.787,9.9,17.844,9.976,18.101l1.922-0.554C11.83,17.31,10.49,12.91,5.481,10h18.518V8z"
+                  />
+                </svg>
+              </span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="collection-grid" aria-label="Bottle products grid" hidden></section>
     </div>
 
     <div id="lottie-overlay" aria-hidden="true">

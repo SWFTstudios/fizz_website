@@ -18,7 +18,9 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "format": "prettier --write .",
     "test:card-click": "node scripts/test-card-click.mjs",
-    "assets:bottles": "node scripts/import-bottle-renders.mjs"
+    "assets:bottles": "node scripts/import-bottle-renders.mjs",
+    "assets:hero-slides": "node scripts/generate-hero-slides.mjs",
+    "assets:hero-ai": "node scripts/apply-hero-ai-atmospheres.mjs"
   },
   "dependencies": {
     "@barba/core": "^2.10.3",
@@ -26,15 +28,18 @@
     "@splidejs/splide": "^4.1.4",
     "@splidejs/splide-extension-auto-scroll": "^0.5.3",
     "gsap": "^3.15.0",
-    "lottie-web": "^5.13.0"
+    "lottie-web": "^5.13.0",
+    "three": "^0.184.0"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20250219.0",
     "@types/node": "^22.10.2",
+    "@types/three": "^0.184.1",
     "@typescript-eslint/eslint-plugin": "^8.24.0",
     "@typescript-eslint/parser": "^8.24.0",
     "eslint": "^9.21.0",
     "prettier": "^3.4.2",
+    "sharp": "^0.34.3",
     "stylelint": "^17.12.0",
     "stylelint-config-standard": "^40.0.0",
     "typescript": "^5.7.3",

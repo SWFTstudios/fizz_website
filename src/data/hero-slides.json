@@ -1,0 +1,100 @@
+{
+  "videoSlides": {
+    "is--slide--1": {
+      "bg": "#a8d0e4",
+      "color": "#204b6d",
+      "contentColor": "#204b6d"
+    },
+    "is--slide--2": {
+      "bg": "#030303",
+      "color": "#ffffff",
+      "contentColor": "#ffffff"
+    }
+  },
+  "productSlides": [
+    {
+      "id": "is--slide--3",
+      "slug": "orange",
+      "shopSlug": "coral-orange",
+      "productName": "Coral Orange",
+      "bottleFile": "bottle-orange.png",
+      "alt": "Fizz5 bottle — Coral Orange",
+      "gradientKey": "orange",
+      "theme": {
+        "bg": "#e8724f",
+        "color": "#ffffff",
+        "contentColor": "#ffffff"
+      }
+    },
+    {
+      "id": "is--slide--4",
+      "slug": "black",
+      "shopSlug": "charcoal-black",
+      "productName": "Charcoal Black",
+      "bottleFile": "bottle-black.png",
+      "alt": "Fizz5 bottle — Charcoal Black",
+      "gradientKey": "black",
+      "theme": {
+        "bg": "#1e2530",
+        "color": "#ffffff",
+        "contentColor": "#ffffff"
+      }
+    },
+    {
+      "id": "is--slide--5",
+      "slug": "green",
+      "shopSlug": "sage-green",
+      "productName": "Sage Green",
+      "bottleFile": "bottle-green.png",
+      "alt": "Fizz5 bottle — Sage Green",
+      "gradientKey": "green",
+      "theme": {
+        "bg": "#37bb6f",
+        "color": "#ffffff",
+        "contentColor": "#ffffff"
+      }
+    },
+    {
+      "id": "is--slide--6",
+      "slug": "navy",
+      "shopSlug": "steel-navy",
+      "productName": "Steel Navy",
+      "bottleFile": "bottle-navy.png",
+      "alt": "Fizz5 bottle — Steel Navy",
+      "gradientKey": "navy",
+      "theme": {
+        "bg": "#2c4557",
+        "color": "#ffffff",
+        "contentColor": "#ffffff"
+      }
+    },
+    {
+      "id": "is--slide--7",
+      "slug": "white",
+      "shopSlug": "arctic-white",
+      "productName": "Arctic White",
+      "bottleFile": "bottle-white.png",
+      "alt": "Fizz5 bottle — Arctic White",
+      "gradientKey": "white",
+      "theme": {
+        "bg": "#e4e8f0",
+        "color": "#1a1a1a",
+        "contentColor": "#1a1a1a"
+      }
+    },
+    {
+      "id": "is--slide--8",
+      "slug": "blue",
+      "shopSlug": "electric-blue",
+      "productName": "Electric Blue",
+      "bottleFile": "bottle-blue.png",
+      "alt": "Fizz5 bottle — Electric Blue",
+      "gradientKey": "blue",
+      "theme": {
+        "bg": "#4a5ca6",
+        "color": "#ffffff",
+        "contentColor": "#ffffff"
+      }
+    }
+  ]
+}

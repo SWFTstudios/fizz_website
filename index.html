@@ -4,6 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>fizz5</title>
+    <link
+      rel="preload"
+      as="image"
+      href="/images/hero/hero-slide-1-poster.jpg"
+      fetchpriority="high"
+    />
     <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
     <link rel="apple-touch-icon" href="/images/webclip.png" />
     <link rel="stylesheet" href="/css/normalize.css" />
@@ -14,14 +20,16 @@
     <div id="main" data-barba="container" data-barba-namespace="home">
     <div id="content" class="page-wrapper">
       <div class="main-wrapper">
-        <header role="banner" class="navbar w-nav">
+        <header role="banner" class="navbar w-nav navbar--eco-glass">
           <div class="nav-base">
             <div class="grid-wrapper">
               <div class="nav-content">
+                <div class="nav-eco-pill nav-eco-pill--left">
                 <a href="/" class="brand w-nav-brand" aria-label="fizz5 home">
                   <img
                     src="/images/Fizz_Logo.png"
-                    loading="lazy"
+                    loading="eager"
+                    fetchpriority="low"
                     sizes="(max-width: 2000px) 100vw, 2000px"
                     srcset="/images/Fizz_Logo-p-500.png 500w, /images/Fizz_Logo-p-800.png 800w, /images/Fizz_Logo-p-1080.png 1080w, /images/Fizz_Logo-p-1600.png 1600w, /images/Fizz_Logo.png 2000w"
                     alt="fizz5"
@@ -38,10 +46,17 @@
                           </div>
                         </div>
                       </a>
-                      <a href="#flavor-packs" class="nav-link-2 w-inline-block" data-barba-prevent="self">
+                      <a href="/flavors.html" class="nav-link-2 w-inline-block" data-transition>
                         <div class="nav-link-text">
                           <div class="button-text-wrapper">
                             <div class="button-text">Flavor Packs</div>
+                          </div>
+                        </div>
+                      </a>
+                      <a href="/features.html" class="nav-link-2 w-inline-block" data-transition>
+                        <div class="nav-link-text">
+                          <div class="button-text-wrapper">
+                            <div class="button-text">Features</div>
                           </div>
                         </div>
                       </a>
@@ -52,14 +67,14 @@
                           </div>
                         </div>
                       </a>
-                      <a href="#about" class="nav-link-2 w-inline-block" data-barba-prevent="self">
+                      <a href="/about.html" class="nav-link-2 w-inline-block" data-transition>
                         <div class="nav-link-text">
                           <div class="button-text-wrapper">
                             <div class="button-text">About</div>
                           </div>
                         </div>
                       </a>
-                      <a href="#contact" class="nav-link-2 w-inline-block" data-barba-prevent="self">
+                      <a href="/about.html#contact" class="nav-link-2 w-inline-block" data-transition>
                         <div class="nav-link-text">
                           <div class="button-text-wrapper">
                             <div class="button-text">Contact</div>
@@ -69,15 +84,17 @@
                     </div>
                   </div>
                 </nav>
-                <div class="right-nav">
-                  <button
-                    type="button"
-                    class="menu-button-2 w-nav-button"
-                    aria-label="Open menu"
-                    aria-expanded="false"
-                  >
-                    <img src="/images/menu-224x242x.svg" loading="lazy" alt="" class="menu-icon" />
-                  </button>
+                <button
+                  type="button"
+                  class="menu-button-2 w-nav-button nav-eco-menu"
+                  aria-label="Open menu"
+                  aria-expanded="false"
+                >
+                  <img src="/images/menu-224x242x.svg" loading="lazy" alt="" class="menu-icon" />
+                </button>
+                </div>
+                <div class="nav-eco-pill nav-eco-pill--right">
+                  <a href="/shop.html" class="nav-eco-cart" data-transition>Shop</a>
                 </div>
               </div>
             </div>
@@ -201,15 +218,16 @@
 
               <div class="hero-slider w-slider" data-autoplay="true">
                 <div class="w-slider-mask">
-                  <div id="is--slide--1" class="w-slide">
+                  <div id="is--slide--1" class="w-slide is-active" aria-hidden="false">
                     <div class="hero-video_container w-background-video w-background-video-atom">
                       <video
                         autoplay
                         loop
                         muted
                         playsinline
+                        preload="auto"
                         data-object-fit="cover"
-                        poster="https://cdn.prod.website-files.com/69f88c02240c0cd6011f809d%2F69fb6ab828d94dcf19a4cf3a_sparkling-blue-bokeh-light-abstract-background-2025-12-17-06-46-25-utc_v1%20%281080p%29_poster.0000000.jpg"
+                        poster="/images/hero/hero-slide-1-poster.jpg"
                       >
                         <source
                           src="https://cdn.prod.website-files.com/69f88c02240c0cd6011f809d%2F69fb6ab828d94dcf19a4cf3a_sparkling-blue-bokeh-light-abstract-background-2025-12-17-06-46-25-utc_v1%20%281080p%29_mp4.mp4"
@@ -229,6 +247,7 @@
                         loop
                         muted
                         playsinline
+                        preload="none"
                         data-object-fit="cover"
                         poster="/videos/rising-air-bubbles-on-black-background-2025-12-17-20-54-19-utc-1080p_poster.0000000.jpg"
                       >
@@ -247,50 +266,134 @@
                       </div>
                     </div>
                   </div>
-                  <div id="is--slide--3" class="w-slide">
-                    <div class="hero-video_container w-background-video w-background-video-atom">
+                  <div id="is--slide--3" class="w-slide" data-gradient-key="orange">
+                    <div class="hero-video_container hero-slide--product hero-slide--eco">
+                      <div class="hero-slide__bg" aria-hidden="true"></div>
+                      <picture class="hero-slide__atmosphere" hidden>
+                        <source srcset="/images/hero/hero-atmosphere-orange.webp" type="image/webp" />
+                        <img src="/images/hero/hero-atmosphere-orange.jpg" alt="" class="hero-slide__atmosphere-img" decoding="async" />
+                      </picture>
                       <img
-                        src="/images/hero/placeholder-orange.svg"
-                        alt="Orange themed beverage placeholder"
-                        class="hero-media-placeholder hero-media-placeholder--orange"
+                        class="hero-slide__bottle"
+                        src="/images/bottles/bottle-orange.png"
+                        alt="Fizz5 bottle — Coral Orange"
+                        width="680"
+                        height="680"
                         loading="lazy"
+                        decoding="async"
                       />
-                      <div class="hero-content-container is-hero">
-                        <div class="background-image-overlay"></div>
-                        <div class="background-image-overlay bottom"></div>
-                      </div>
+                      <div class="hero-slide__mist" aria-hidden="true"></div>
                     </div>
                   </div>
-                  <div id="is--slide--4" class="w-slide">
-                    <div class="hero-video_container w-background-video w-background-video-atom">
+                  <div id="is--slide--4" class="w-slide" data-gradient-key="black">
+                    <div class="hero-video_container hero-slide--product hero-slide--eco">
+                      <div class="hero-slide__bg" aria-hidden="true"></div>
+                      <picture class="hero-slide__atmosphere" hidden>
+                        <source srcset="/images/hero/hero-atmosphere-black.webp" type="image/webp" />
+                        <img src="/images/hero/hero-atmosphere-black.jpg" alt="" class="hero-slide__atmosphere-img" decoding="async" />
+                      </picture>
                       <img
-                        src="/images/hero/placeholder-green.svg"
-                        alt="Green themed beverage placeholder"
-                        class="hero-media-placeholder hero-media-placeholder--green"
+                        class="hero-slide__bottle"
+                        src="/images/bottles/bottle-black.png"
+                        alt="Fizz5 bottle — Charcoal Black"
+                        width="680"
+                        height="680"
                         loading="lazy"
+                        decoding="async"
                       />
-                      <div class="hero-content-container is-hero">
-                        <div class="background-image-overlay"></div>
-                        <div class="background-image-overlay bottom"></div>
-                      </div>
+                      <div class="hero-slide__mist" aria-hidden="true"></div>
                     </div>
                   </div>
-                  <div id="is--slide--5" class="w-slide">
-                    <div class="hero-video_container w-background-video w-background-video-atom">
+                  <div id="is--slide--5" class="w-slide" data-gradient-key="green">
+                    <div class="hero-video_container hero-slide--product hero-slide--eco">
+                      <div class="hero-slide__bg" aria-hidden="true"></div>
+                      <picture class="hero-slide__atmosphere" hidden>
+                        <source srcset="/images/hero/hero-atmosphere-green.webp" type="image/webp" />
+                        <img src="/images/hero/hero-atmosphere-green.jpg" alt="" class="hero-slide__atmosphere-img" decoding="async" />
+                      </picture>
                       <img
-                        src="/images/hero/placeholder-purple.svg"
-                        alt="Purple themed beverage placeholder"
-                        class="hero-media-placeholder hero-media-placeholder--purple"
+                        class="hero-slide__bottle"
+                        src="/images/bottles/bottle-green.png"
+                        alt="Fizz5 bottle — Sage Green"
+                        width="680"
+                        height="680"
                         loading="lazy"
+                        decoding="async"
                       />
-                      <div class="hero-content-container is-hero">
-                        <div class="background-image-overlay"></div>
-                        <div class="background-image-overlay bottom"></div>
-                      </div>
+                      <div class="hero-slide__mist" aria-hidden="true"></div>
+                    </div>
+                  </div>
+                  <div id="is--slide--6" class="w-slide" data-gradient-key="navy">
+                    <div class="hero-video_container hero-slide--product hero-slide--eco">
+                      <div class="hero-slide__bg" aria-hidden="true"></div>
+                      <picture class="hero-slide__atmosphere" hidden>
+                        <source srcset="/images/hero/hero-atmosphere-navy.webp" type="image/webp" />
+                        <img src="/images/hero/hero-atmosphere-navy.jpg" alt="" class="hero-slide__atmosphere-img" decoding="async" />
+                      </picture>
+                      <img
+                        class="hero-slide__bottle"
+                        src="/images/bottles/bottle-navy.png"
+                        alt="Fizz5 bottle — Steel Navy"
+                        width="680"
+                        height="680"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                      <div class="hero-slide__mist" aria-hidden="true"></div>
+                    </div>
+                  </div>
+                  <div id="is--slide--7" class="w-slide" data-gradient-key="white">
+                    <div class="hero-video_container hero-slide--product hero-slide--eco">
+                      <div class="hero-slide__bg" aria-hidden="true"></div>
+                      <picture class="hero-slide__atmosphere" hidden>
+                        <source srcset="/images/hero/hero-atmosphere-white.webp" type="image/webp" />
+                        <img src="/images/hero/hero-atmosphere-white.jpg" alt="" class="hero-slide__atmosphere-img" decoding="async" />
+                      </picture>
+                      <img
+                        class="hero-slide__bottle"
+                        src="/images/bottles/bottle-white.png"
+                        alt="Fizz5 bottle — Arctic White"
+                        width="680"
+                        height="680"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                      <div class="hero-slide__mist" aria-hidden="true"></div>
+                    </div>
+                  </div>
+                  <div id="is--slide--8" class="w-slide" data-gradient-key="blue">
+                    <div class="hero-video_container hero-slide--product hero-slide--eco">
+                      <div class="hero-slide__bg" aria-hidden="true"></div>
+                      <picture class="hero-slide__atmosphere" hidden>
+                        <source srcset="/images/hero/hero-atmosphere-blue.webp" type="image/webp" />
+                        <img src="/images/hero/hero-atmosphere-blue.jpg" alt="" class="hero-slide__atmosphere-img" decoding="async" />
+                      </picture>
+                      <img
+                        class="hero-slide__bottle"
+                        src="/images/bottles/bottle-blue.png"
+                        alt="Fizz5 bottle — Electric Blue"
+                        width="680"
+                        height="680"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                      <div class="hero-slide__mist" aria-hidden="true"></div>
                     </div>
                   </div>
                 </div>
-                <div class="slide-nav w-slider-nav w-slider-nav-invert w-round"></div>
+              </div>
+              <div class="hero-eco-chrome" aria-hidden="false">
+                <p class="hero-eco-chrome__headline" data-hero-eco-headline>Because you deserve better hydration</p>
+                <div class="hero-eco-chrome__dock">
+                  <p class="hero-eco-chrome__sub" data-hero-eco-sub>
+                    Enjoy healthy, hydrating flavor. Now with a sparkling twist.
+                  </p>
+                  <div class="hero-eco-chrome__dock-inner" data-hero-eco-dock>
+                    <span class="hero-eco-chrome__product" data-hero-product-name></span>
+                    <div class="hero-eco-chrome__dots" data-hero-eco-dots role="tablist" aria-label="Hero slides"></div>
+                    <a href="/shop.html" class="hero-eco-chrome__cta" data-hero-cta data-transition>Order now</a>
+                  </div>
+                </div>
               </div>
               <button type="button" class="slide-arrow w-slider-arrow-left" aria-label="Previous slide">
                 <span class="slider-arrow-wrapper">
@@ -340,12 +443,194 @@
           </div>
         </section>
 
-        <div id="post-intro" class="post-intro is-gated" hidden>
-        <section class="sticky-track" aria-label="Product transition">
-          <div class="lottie-animation-3">
-            <div data-lottie-scroll aria-hidden="true"></div>
+        <div class="sticky-track" aria-hidden="true">
+          <div class="sticky-track__inner">
+            <div class="lottie-animation-3" data-sticky-lottie></div>
+            <div class="overlay gradient top" aria-hidden="true"></div>
           </div>
-          <div class="overlay gradient top"></div>
+        </div>
+
+        <section id="home-z-scroll" class="home-z-scroll" aria-label="Explore Fizz in 3D">
+          <div class="home-z-scroll__fallback">
+            <p class="home-z-scroll__fallback-lead fizz-lead">
+              Prefer a calmer view? Open the full Explore experience.
+            </p>
+            <a href="/explore.html" class="fizz-btn fizz-btn--outline" data-transition>Explore in 3D</a>
+          </div>
+          <div class="home-z-scroll__viewport">
+            <div class="page-embed page-embed--home" data-z-scroll-root="home">
+              <div data-zs="scroll-hint" id="home-zs-scroll-hint">
+                <div class="zs-scroll-hint-text">Scroll</div>
+                <div class="zs-scroll-hint-line"></div>
+              </div>
+
+              <div
+                data-zs="fact-title"
+                id="home-zs-fact-title"
+                role="button"
+                tabindex="0"
+                aria-label="Open focused card details"
+              >
+                <div data-zs="fact-title-text" id="home-zs-fact-title-text"></div>
+              </div>
+
+              <div data-zs="scroll-track" id="home-zs-scroll-track" aria-hidden="true"></div>
+
+              <div data-zs="scene-container" id="home-zs-scene-container">
+                <div data-zs="scene" id="home-zs-scene"></div>
+              </div>
+
+              <div data-zs="end-screen" id="home-zs-end-screen" class="zs-end-screen--embed">
+                <div class="zs-end-text">
+                  <h2>Keep scrolling</h2>
+                  <p>More about Fizz is just below.</p>
+                </div>
+              </div>
+
+              <div data-zs="empty-state" id="home-zs-empty-state">
+                <p>Add Product Facts in Webflow CMS to populate this experience.</p>
+              </div>
+
+              <div data-zs="card-backdrop" id="home-zs-card-backdrop" aria-hidden="true"></div>
+              <div data-zs="card-overlay" id="home-zs-card-overlay" aria-hidden="true"></div>
+            </div>
+          </div>
+        </section>
+
+        <section id="feature-spotlight" class="feature-spotlight" aria-label="Product features">
+          <div class="feature-spotlight__pin">
+            <div class="feature-spotlight__grid">
+              <div class="feature-spotlight__copy">
+                <div class="feature-spotlight__pills" role="tablist" aria-label="Feature highlights">
+                  <button type="button" class="feature-spotlight__pill is-active" data-spotlight-index="0" role="tab" aria-selected="true">Carbonation</button>
+                  <button type="button" class="feature-spotlight__pill" data-spotlight-index="1" role="tab" aria-selected="false">Flavor packs</button>
+                  <button type="button" class="feature-spotlight__pill" data-spotlight-index="2" role="tab" aria-selected="false">Portable design</button>
+                  <button type="button" class="feature-spotlight__pill" data-spotlight-index="3" role="tab" aria-selected="false">Quick refill</button>
+                </div>
+                <h2 class="feature-spotlight__headline fizz-heading" data-spotlight-title></h2>
+                <p class="feature-spotlight__body fizz-lead" data-spotlight-body></p>
+                <a href="/features.html" class="fizz-btn fizz-btn--outline feature-spotlight__link" data-transition>All features</a>
+              </div>
+              <div class="feature-spotlight__visual">
+                <img
+                  class="feature-spotlight__bottle"
+                  src="/images/bottles/bottle-blue.png"
+                  alt=""
+                  width="520"
+                  height="520"
+                  loading="lazy"
+                />
+                <div class="feature-spotlight__callout" data-spotlight-callout>
+                  <p class="feature-spotlight__callout-kicker" data-spotlight-kicker></p>
+                  <p class="feature-spotlight__callout-title" data-spotlight-callout-title></p>
+                  <p class="feature-spotlight__callout-body" data-spotlight-callout-body></p>
+                </div>
+                <svg class="feature-spotlight__leader" viewBox="0 0 120 80" aria-hidden="true">
+                  <line x1="8" y1="72" x2="112" y2="12" stroke="currentColor" stroke-width="1" />
+                  <circle cx="112" cy="12" r="4" fill="currentColor" />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div id="post-intro" class="post-intro">
+        <section
+          id="featured-explore"
+          class="home-editorial orientation-left"
+          aria-label="Explore Fizz"
+        >
+          <div class="home-editorial__inner">
+            <div class="home-editorial__media">
+              <img
+                src="/images/bottles/lineup.png"
+                alt=""
+                loading="lazy"
+                width="960"
+                height="720"
+                class="home-editorial__img"
+              />
+            </div>
+            <div class="home-editorial__copy">
+              <h2 class="home-editorial__title fizz-heading">See how Fizz comes together</h2>
+              <p class="home-editorial__lead fizz-lead">
+                From the first hiss of carbonation to your favorite flavor pack, every detail is
+                built for a quick ritual you can take anywhere. Scroll through the full experience
+                when you are ready to go deeper.
+              </p>
+              <a href="/explore.html" class="fizz-btn fizz-btn--outline" data-transition
+                >Explore the experience</a
+              >
+            </div>
+          </div>
+        </section>
+
+        <section class="home-categories" aria-label="Shop by category">
+          <header class="home-categories__header shop-hero__container">
+            <div class="shop-hero__wrap">
+              <h2 class="home-categories__title shop-hero__title fizz-heading">Shop by category</h2>
+              <p class="home-categories__lead shop-hero__lead fizz-lead">
+                Bottles, flavors, and refills—everything you need to keep the bubbles going.
+              </p>
+            </div>
+          </header>
+          <div class="shop-hero-slider shop-slider-chrome home-categories__slider">
+            <div class="shop-container-slider">
+              <div class="shop-slider-wave shop-slider-wave--top" aria-hidden="true">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 804 50.167"
+                  aria-hidden="true"
+                >
+                  <path
+                    fill="currentColor"
+                    d="M804,0v16.671c0,0-204.974,33.496-401.995,33.496C204.974,50.167,0,16.671,0,16.671V0H804z"
+                  />
+                </svg>
+              </div>
+              <div class="shop-splide splide" data-category-splide="home">
+                <div class="splide__track">
+                  <ul class="splide__list"></ul>
+                </div>
+              </div>
+            </div>
+            <div class="shop-slider-wave shop-slider-wave--bottom" aria-hidden="true">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 804 50.167"
+                aria-hidden="true"
+              >
+                <path
+                  fill="currentColor"
+                  d="M804,0v16.671c0,0-204.974,33.496-401.995,33.496C204.974,50.167,0,16.671,0,16.671V0H804z"
+                />
+              </svg>
+            </div>
+            <div class="shop-controls">
+              <button type="button" class="shop-control shop-control--prev" aria-label="Previous category">
+                <span class="shop-control__fill" aria-hidden="true"></span>
+                <span class="shop-control__arrow" aria-hidden="true">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 18">
+                    <path
+                      fill="currentColor"
+                      d="M23.999,8H5.481c5.009-2.91,6.349-7.311,6.416-7.548L9.976-0.102C9.9,0.156,8.03,6.213-0.073,8.024L0.146,9l-0.218,0.976C8.03,11.787,9.9,17.844,9.976,18.101l1.922-0.554C11.83,17.31,10.49,12.91,5.481,10h18.518V8z"
+                    />
+                  </svg>
+                </span>
+              </button>
+              <button type="button" class="shop-control shop-control--next" aria-label="Next category">
+                <span class="shop-control__fill" aria-hidden="true"></span>
+                <span class="shop-control__arrow shop-control__arrow--flipped" aria-hidden="true">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 18">
+                    <path
+                      fill="currentColor"
+                      d="M23.999,8H5.481c5.009-2.91,6.349-7.311,6.416-7.548L9.976-0.102C9.9,0.156,8.03,6.213-0.073,8.024L0.146,9l-0.218,0.976C8.03,11.787,9.9,17.844,9.976,18.101l1.922-0.554C11.83,17.31,10.49,12.91,5.481,10h18.518V8z"
+                    />
+                  </svg>
+                </span>
+              </button>
+            </div>
+          </div>
         </section>
 
         <section

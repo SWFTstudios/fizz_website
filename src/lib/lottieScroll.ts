@@ -1,6 +1,9 @@
-import lottie, { type AnimationItem } from "lottie-web"
+import type { AnimationItem } from "lottie-web"
 import gsap from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
+import { initHomeCategoryCarousel } from "./categoryCarousel"
+
+const LOTTIE_PATH = "/lottie/fizz-lottie-transition.json"
 
 const FULL_VIEWPORT_LOTTIE = {
   rendererSettings: {
@@ -23,15 +26,39 @@ function bindLottieResize(anim: AnimationItem, container: HTMLElement): void {
 
 gsap.registerPlugin(ScrollTrigger)
 
-let scrollLottieInitialized = false
+let lottieModulePromise: Promise<{
+  loadAnimation: (params: object) => AnimationItem
+}> | null = null
+let animationDataPromise: Promise<object> | null = null
+
+async function getLottie(): Promise<{
+  loadAnimation: (params: object) => AnimationItem
+}> {
+  lottieModulePromise ??= import("lottie-web").then((mod) => {
+    const player = mod.default as unknown as {
+      loadAnimation: (params: object) => AnimationItem
+    }
+    return player
+  })
+  return lottieModulePromise
+}
+
+async function getAnimationData(): Promise<object> {
+  animationDataPromise ??= fetch(LOTTIE_PATH).then((res) => {
+    if (!res.ok) throw new Error(`Lottie fetch failed: ${res.status}`)
+    return res.json() as Promise<object>
+  })
+  return animationDataPromise
+}
 
 export function isPostIntroUnlocked(): boolean {
   return document.body.classList.contains("is-post-intro-unlocked")
 }
 
-/** Reveal sticky-track and lower sections; lazy-load scroll-scrub Lottie. */
+/** Reveal Onyx-style sections (and shop marquee) after Explore / Shop CTA. */
 export function unlockPostIntro(): void {
   if (isPostIntroUnlocked()) {
+    initHomeCategoryCarousel()
     ScrollTrigger.refresh()
     return
   }
@@ -43,54 +70,8 @@ export function unlockPostIntro(): void {
   postIntro.classList.remove("is-gated")
   document.body.classList.add("is-post-intro-unlocked")
 
-  if (!scrollLottieInitialized) {
-    initLottieScroll()
-    scrollLottieInitialized = true
-  }
-
+  initHomeCategoryCarousel()
   ScrollTrigger.refresh()
-}
-
-export function initLottieScroll(): void {
-  const track = document.querySelector<HTMLElement>(".sticky-track")
-  const container = document.querySelector<HTMLElement>("[data-lottie-scroll]")
-  if (!track || !container) return
-
-  if (prefersReducedMotion()) {
-    container.setAttribute("aria-hidden", "true")
-    return
-  }
-
-  let anim: AnimationItem | null = null
-
-  anim = lottie.loadAnimation({
-    container,
-    renderer: "svg",
-    loop: false,
-    autoplay: false,
-    path: "/lottie/fizz-lottie-transition.json",
-    ...FULL_VIEWPORT_LOTTIE,
-  })
-
-  anim.addEventListener("DOMLoaded", () => {
-    const totalFrames = anim?.totalFrames ?? 0
-    if (totalFrames <= 0 || !anim) return
-
-    bindLottieResize(anim, container)
-
-    ScrollTrigger.create({
-      trigger: track,
-      start: "top top",
-      end: "bottom bottom",
-      scrub: true,
-      onUpdate: (self) => {
-        const frame = Math.round(self.progress * (totalFrames - 1))
-        anim?.goToAndStop(frame, true)
-      },
-    })
-
-    ScrollTrigger.refresh()
-  })
 }
 
 declare global {
@@ -125,6 +106,46 @@ function showLottieOverlay(overlay: HTMLElement): void {
   overlay.classList.remove("is-fading", "is-waiting")
   overlay.classList.add("is-active")
   overlay.setAttribute("aria-hidden", "false")
+}
+
+async function ensureTransitionAnim(): Promise<AnimationItem | null> {
+  if (transitionAnim) return transitionAnim
+  if (prefersReducedMotion()) return null
+
+  const elements = getOverlayElements()
+  if (!elements) return null
+
+  const { canvas } = elements
+  const [lottie, animationData] = await Promise.all([getLottie(), getAnimationData()])
+
+  transitionAnim = lottie.loadAnimation({
+    container: canvas,
+    renderer: "svg",
+    loop: false,
+    autoplay: false,
+    animationData,
+    ...FULL_VIEWPORT_LOTTIE,
+  })
+
+  const finishReady = (): void => {
+    if (transitionAnim) bindLottieResize(transitionAnim, canvas)
+    transitionReady = true
+    transitionReadyCallbacks.splice(0).forEach((cb) => cb())
+  }
+
+  const anim = transitionAnim
+
+  return new Promise((resolve) => {
+    if (anim.isLoaded) {
+      finishReady()
+      resolve(anim)
+      return
+    }
+    anim.addEventListener("DOMLoaded", () => {
+      finishReady()
+      resolve(anim)
+    })
+  })
 }
 
 /** Fade out overlay and fully dismiss so it cannot block clicks. */
@@ -173,13 +194,14 @@ export function dismissLottieOverlay(): Promise<void> {
 }
 
 /** Barba leave: play forward and resolve when the Lottie animation completes. */
-export function playLottieTransition(): Promise<void> {
+export async function playLottieTransition(): Promise<void> {
   if (prefersReducedMotion()) return Promise.resolve()
 
   const elements = getOverlayElements()
   if (!elements) return Promise.resolve()
 
   const { overlay } = elements
+  await ensureTransitionAnim()
 
   return new Promise((resolve) => {
     whenTransitionReady(() => {
@@ -211,49 +233,125 @@ export function playPageLoadTransition(): Promise<void> {
   return dismissLottieOverlay()
 }
 
-export function initLottieTransition(): void {
-  const elements = getOverlayElements()
-  if (!elements) return
+/** Registers CTA transition hook; Lottie loads on first use. */
+let stickyAnim: AnimationItem | null = null
+let stickyScrollTrigger: ScrollTrigger | null = null
+let stickyObserver: IntersectionObserver | null = null
 
-  const { overlay, canvas } = elements
+export function destroyStickyLottieScrub(): void {
+  stickyScrollTrigger?.kill()
+  stickyScrollTrigger = null
+  stickyObserver?.disconnect()
+  stickyObserver = null
+  stickyAnim?.destroy()
+  stickyAnim = null
+}
 
-  if (transitionAnim) return
+export function initStickyLottieScrub(): void {
+  const track = document.querySelector<HTMLElement>(".sticky-track")
+  const host = document.querySelector<HTMLElement>("[data-sticky-lottie]")
+  if (!track || !host) return
 
-  transitionAnim = lottie.loadAnimation({
-    container: canvas,
+  if (prefersReducedMotion()) {
+    track.style.height = "auto"
+    track.classList.add("is-reduced-motion")
+    return
+  }
+
+  const mount = (): void => {
+    if (stickyAnim) return
+    void ensureStickyAnim(host, track)
+  }
+
+  stickyObserver?.disconnect()
+  stickyObserver = new IntersectionObserver(
+    (entries) => {
+      if (entries.some((e) => e.isIntersecting)) mount()
+    },
+    { rootMargin: "200px 0px" },
+  )
+  stickyObserver.observe(track)
+}
+
+async function ensureStickyAnim(
+  host: HTMLElement,
+  track: HTMLElement,
+): Promise<void> {
+  const [lottie, animationData] = await Promise.all([getLottie(), getAnimationData()])
+
+  stickyAnim = lottie.loadAnimation({
+    container: host,
     renderer: "svg",
     loop: false,
     autoplay: false,
-    path: "/lottie/fizz-lottie-transition.json",
+    animationData,
     ...FULL_VIEWPORT_LOTTIE,
   })
 
-  transitionAnim.addEventListener("DOMLoaded", () => {
-    if (transitionAnim) bindLottieResize(transitionAnim, canvas)
-    transitionReady = true
-    transitionReadyCallbacks.splice(0).forEach((cb) => cb())
+  await new Promise<void>((resolve) => {
+    if (stickyAnim!.isLoaded) {
+      resolve()
+      return
+    }
+    stickyAnim!.addEventListener("DOMLoaded", () => resolve(), { once: true })
   })
 
+  bindLottieResize(stickyAnim, host)
+
+  const totalFrames = Math.max(1, stickyAnim.totalFrames - 1)
+
+  stickyScrollTrigger = ScrollTrigger.create({
+    trigger: track,
+    start: "top top",
+    end: "bottom bottom",
+    scrub: true,
+    onUpdate(self) {
+      const frame = Math.round(self.progress * totalFrames)
+      stickyAnim?.goToAndStop(frame, true)
+    },
+  })
+
+  track.classList.add("is-lottie-ready")
+}
+
+export function registerLottieTransitionHook(): void {
+  if (window.__fizzTransition) return
+
   window.__fizzTransition = (onComplete?: () => void): void => {
-    whenTransitionReady(() => {
-      if (!transitionAnim) {
-        onComplete?.()
-        return
-      }
+    if (prefersReducedMotion()) {
+      onComplete?.()
+      return
+    }
 
-      showLottieOverlay(overlay)
+    const elements = getOverlayElements()
+    if (!elements) {
+      onComplete?.()
+      return
+    }
 
-      const canvas = document.getElementById("lottie-overlay-canvas")
-      if (canvas) transitionAnim.resize(canvas.clientWidth, canvas.clientHeight)
-      transitionAnim.goToAndStop(0, true)
-      transitionAnim.play()
+    const { overlay } = elements
 
-      const done = (): void => {
-        transitionAnim?.removeEventListener("complete", done)
-        void dismissLottieOverlay().then(() => onComplete?.())
-      }
+    void ensureTransitionAnim().then(() => {
+      whenTransitionReady(() => {
+        if (!transitionAnim) {
+          onComplete?.()
+          return
+        }
 
-      transitionAnim.addEventListener("complete", done)
+        showLottieOverlay(overlay)
+
+        const canvas = document.getElementById("lottie-overlay-canvas")
+        if (canvas) transitionAnim.resize(canvas.clientWidth, canvas.clientHeight)
+        transitionAnim.goToAndStop(0, true)
+        transitionAnim.play()
+
+        const done = (): void => {
+          transitionAnim?.removeEventListener("complete", done)
+          void dismissLottieOverlay().then(() => onComplete?.())
+        }
+
+        transitionAnim.addEventListener("complete", done)
+      })
     })
   }
 }
