@@ -1,0 +1,42 @@
+<section class="py-32 bg-surface-container-lowest ks-reveal opacity-0 translate-y-10 transition-all duration-1000">
+  <div class="px-margin-mobile md:px-margin-desktop max-w-max-width mx-auto grid grid-cols-1 md:grid-cols-3 gap-16">
+    {% for block in section.blocks %}
+      <div class="text-center" {{ block.shopify_attributes }}>
+        <div class="mb-8 flex justify-center">
+          <div class="w-20 h-20 rounded-full border border-outline-variant flex items-center justify-center">
+            <span class="material-symbols-outlined text-4xl text-primary">{{ block.settings.icon }}</span>
+          </div>
+        </div>
+        <h3 class="font-headline-lg-mobile text-2xl mb-4 uppercase tracking-tighter">{{ block.settings.title }}</h3>
+        <p class="text-on-surface-variant font-body-md">{{ block.settings.body }}</p>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "KS Benefits",
+  "blocks": [
+    {
+      "type": "benefit",
+      "name": "Benefit",
+      "settings": [
+        { "type": "text", "id": "icon", "label": "Material icon", "default": "bubbles" },
+        { "type": "text", "id": "title", "label": "Title", "default": "Carbonation on the go" },
+        { "type": "textarea", "id": "body", "label": "Body" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "KS Benefits",
+      "blocks": [
+        { "type": "benefit", "settings": { "icon": "bubbles", "title": "Carbonation on the go", "body": "Our patented compression tech maintains perfect fizz levels for up to 12 hours after opening." } },
+        { "type": "benefit", "settings": { "icon": "eco", "title": "Eco-friendly canister", "body": "100% infinitely recyclable aluminum with a low-impact manufacturing process." } },
+        { "type": "benefit", "settings": { "icon": "precision_manufacturing", "title": "Premium craftsmanship", "body": "Every bottle is leak-tested and quality-assured for peak performance in extreme conditions." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

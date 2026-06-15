@@ -1,0 +1,94 @@
+{% liquid
+  assign flavor_collection = collections[section.settings.collection]
+%}
+<section class="bg-black py-24 ks-reveal opacity-0 translate-y-10 transition-all duration-1000">
+  <div class="px-margin-mobile md:px-margin-desktop max-w-max-width mx-auto">
+    <div class="flex justify-between items-end mb-12 border-b border-outline-variant pb-4">
+      <h2 class="font-headline-lg text-headline-lg tracking-tight uppercase">{{ section.settings.heading }}</h2>
+      {% if flavor_collection %}
+        <a class="font-label-caps text-primary hover:opacity-80 transition-opacity flex items-center gap-2" href="{{ flavor_collection.url }}">
+          {{ section.settings.link_label }}
+          <span class="material-symbols-outlined text-sm">arrow_forward</span>
+        </a>
+      {% endif %}
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+      {% if flavor_collection and flavor_collection.products_count > 0 %}
+        {% for product in flavor_collection.products limit: 4 %}
+          <div class="glass-card--shop rounded-xl overflow-hidden flex flex-col md:flex-row bg-gradient-to-br from-surface-container to-surface-container-highest">
+            <div class="w-full md:w-1/2 p-8 flex items-center justify-center">
+              {% if product.featured_image %}
+                {{ product.featured_image | image_url: width: 400 | image_tag: class: 'max-h-[300px] object-contain drop-shadow-2xl' }}
+              {% endif %}
+            </div>
+            <div class="w-full md:w-1/2 p-8 flex flex-col justify-center">
+              <h3 class="font-headline-lg-mobile tracking-tight mb-2">{{ product.title }}</h3>
+              <p class="font-body-md text-on-surface-variant mb-6">{{ product.description | strip_html | truncate: 160 }}</p>
+              <div class="flex items-center justify-between mb-6">
+                <span class="font-label-caps text-primary">{{ product.price | money }}</span>
+              </div>
+              <button type="button" class="w-full py-3 rounded-full border border-white/20 text-on-surface font-label-caps uppercase tracking-widest hover:bg-white/5 transition-colors" data-ks-quick-add="{{ product.selected_or_first_available_variant.id }}">Quick Add</button>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        {% for block in section.blocks %}
+          <div class="glass-card--shop rounded-xl overflow-hidden flex flex-col md:flex-row bg-gradient-to-br from-surface-container to-surface-container-highest" {{ block.shopify_attributes }}>
+            <div class="w-full md:w-1/2 p-8 flex items-center justify-center">
+              {% render 'ks-stitch-img', name: block.settings.fallback_image, alt: block.settings.title, class: 'max-h-[300px] object-contain drop-shadow-2xl' %}
+            </div>
+            <div class="w-full md:w-1/2 p-8 flex flex-col justify-center">
+              {% if block.settings.badge != blank %}
+                <span class="px-2 py-1 rounded bg-[#FF7F50]/20 text-[#FF7F50] font-label-caps text-[10px] tracking-widest uppercase mb-2 inline-block border border-[#FF7F50]/30">{{ block.settings.badge }}</span>
+              {% endif %}
+              <h3 class="font-headline-lg-mobile tracking-tight mb-2">{{ block.settings.title }}</h3>
+              <p class="font-body-md text-on-surface-variant mb-6">{{ block.settings.body }}</p>
+              <div class="flex items-center justify-between mb-6">
+                <span class="font-label-caps text-primary">{{ block.settings.price_label }}</span>
+                <span class="text-sm text-on-surface-variant">{{ block.settings.pack_label }}</span>
+              </div>
+              {% if block.settings.product != blank %}
+                <button type="button" class="w-full py-3 rounded-full border border-white/20 text-on-surface font-label-caps uppercase tracking-widest hover:bg-white/5 transition-colors" data-ks-quick-add="{{ block.settings.product.selected_or_first_available_variant.id }}">Quick Add</button>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "KS Flavor Collection Grid",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Instant Flavors" },
+    { "type": "text", "id": "link_label", "label": "Link label", "default": "Explore All Flavors" },
+    { "type": "collection", "id": "collection", "label": "Flavors collection" }
+  ],
+  "blocks": [
+    {
+      "type": "flavor_card",
+      "name": "Flavor card",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Title", "default": "Orange Tangerine" },
+        { "type": "text", "id": "badge", "label": "Badge", "default": "Natural" },
+        { "type": "textarea", "id": "body", "label": "Body" },
+        { "type": "text", "id": "price_label", "label": "Price", "default": "$1.50 / SACHET" },
+        { "type": "text", "id": "pack_label", "label": "Pack label", "default": "Box of 10" },
+        { "type": "text", "id": "fallback_image", "label": "Fallback image", "default": "flavor-orange-tangerine" },
+        { "type": "product", "id": "product", "label": "Product" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "KS Flavor Collection Grid",
+      "blocks": [
+        { "type": "flavor_card", "settings": { "title": "Orange Tangerine", "fallback_image": "flavor-orange-tangerine", "body": "A bright, citrus burst crafted from real fruit extracts." } },
+        { "type": "flavor_card", "settings": { "title": "Citrus Collection Box", "badge": "Multipack", "price_label": "$15.00", "fallback_image": "flavor-orange-tangerine", "body": "Stock up on your favorite citrus notes." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

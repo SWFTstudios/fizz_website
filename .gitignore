@@ -4,6 +4,7 @@ dist
 .wrangler-state
 .env
 .dev.vars
+shopify-theme/fizz-kinetic-spark/node_modules
 
 # Logs
 npm-debug.log*

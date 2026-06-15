@@ -1,0 +1,38 @@
+<section class="relative h-[85vh] w-full flex items-center justify-start overflow-hidden ks-reveal opacity-0 translate-y-10 transition-all duration-1000">
+  <div class="absolute inset-0">
+    {% if section.settings.hero_image %}
+      {{ section.settings.hero_image | image_url: width: 2000 | image_tag: class: 'w-full h-full object-cover', loading: 'eager' }}
+    {% else %}
+      {% render 'ks-stitch-img', name: 'hero-hiker-sunrise', alt: section.settings.heading, class: 'w-full h-full object-cover' %}
+    {% endif %}
+    <div class="absolute inset-0 bg-gradient-to-r from-background via-background/40 to-transparent"></div>
+  </div>
+  <div class="relative z-10 px-margin-mobile md:px-margin-desktop max-w-2xl">
+    <h1 class="font-display-xl text-[48px] leading-tight md:text-display-xl mb-6 text-on-background">{{ section.settings.heading }}</h1>
+    <p class="text-on-surface-variant text-lg mb-8 max-w-md">{{ section.settings.subheading }}</p>
+    <div class="flex flex-wrap gap-4">
+      <a href="{{ section.settings.primary_url | default: routes.all_products_collection_url }}">
+        {% render 'ks-button', label: section.settings.primary_label, variant: 'primary', tag: 'span', class: 'sparkle-btn bg-on-background text-background font-bold' %}
+      </a>
+      <a href="{{ section.settings.secondary_url }}">
+        {% render 'ks-button', label: section.settings.secondary_label, variant: 'secondary', tag: 'span' %}
+      </a>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "KS Hero Sparkle",
+  "settings": [
+    { "type": "image_picker", "id": "hero_image", "label": "Hero image" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Elevate Every Drop." },
+    { "type": "textarea", "id": "subheading", "label": "Subheading", "default": "Engineered for high-performance living. Fizz delivers precision carbonation and essential minerals for your active journey." },
+    { "type": "text", "id": "primary_label", "label": "Primary CTA", "default": "SHOP THE COLLECTION" },
+    { "type": "url", "id": "primary_url", "label": "Primary URL" },
+    { "type": "text", "id": "secondary_label", "label": "Secondary CTA", "default": "OUR SCIENCE" },
+    { "type": "url", "id": "secondary_url", "label": "Secondary URL" }
+  ],
+  "presets": [{ "name": "KS Hero Sparkle" }]
+}
+{% endschema %}

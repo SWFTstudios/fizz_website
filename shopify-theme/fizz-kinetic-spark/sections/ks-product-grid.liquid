@@ -1,0 +1,48 @@
+<section class="px-margin-mobile md:px-margin-desktop max-w-max-width mx-auto py-24 ks-reveal opacity-0 translate-y-10 transition-all duration-1000">
+  <div class="flex justify-between items-end mb-12 border-b border-outline-variant pb-4">
+    <h2 class="font-headline-lg text-headline-lg tracking-tight uppercase">{{ section.settings.heading }}</h2>
+    {% if section.settings.link_url != blank %}
+      <a class="font-label-caps text-primary hover:opacity-80 transition-opacity flex items-center gap-2" href="{{ section.settings.link_url }}">
+        {{ section.settings.link_label }}
+        <span class="material-symbols-outlined text-sm">arrow_forward</span>
+      </a>
+    {% endif %}
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
+    {% if collection.products_count > 0 %}
+      {% for product in collection.products %}
+        {% render 'ks-product-card', product: product, style: 'full' %}
+      {% endfor %}
+    {% else %}
+      {% assign bottle_images = 'bottle-arctic-white-pool,bottle-sage-green-kitchen,bottle-steel-navy-desk,bottle-coral-orange-pool,bottle-electric-blue-water,bottle-charcoal-black-dinner' | split: ',' %}
+      {% assign bottle_names = 'Arctic White,Sage Green,Steel Navy,Coral Orange,Electric Blue,Charcoal Black' | split: ',' %}
+      {% for name in bottle_names %}
+        {% assign idx = forloop.index0 %}
+        <div class="glass-card--shop rounded-xl overflow-hidden group flex flex-col">
+          <div class="relative aspect-[4/5] bg-surface-container-highest overflow-hidden">
+            {% render 'ks-stitch-img', name: bottle_images[idx], alt: name, class: 'w-full h-full object-cover transition-all duration-500 group-hover:scale-105' %}
+          </div>
+          <div class="p-6 flex flex-col flex-grow">
+            <div class="flex justify-between items-start mb-4">
+              <h3 class="font-headline-lg-mobile tracking-tight">Fizz Origin — {{ name }}</h3>
+              <span class="font-label-caps text-primary">$450 USD</span>
+            </div>
+            <p class="font-body-md text-on-surface-variant mb-6">Add products to the {{ collection.title | default: 'bottles' }} collection in Shopify Admin.</p>
+          </div>
+        </div>
+      {% endfor %}
+    {% endif %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "KS Product Grid",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Bold Bottles" },
+    { "type": "text", "id": "link_label", "label": "Link label", "default": "View Technical Specs" },
+    { "type": "url", "id": "link_url", "label": "Link URL" }
+  ],
+  "presets": [{ "name": "KS Product Grid" }]
+}
+{% endschema %}

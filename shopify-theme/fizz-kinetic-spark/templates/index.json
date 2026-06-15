@@ -1,0 +1,64 @@
+{
+  "sections": {
+    "hero": {
+      "type": "ks-hero-sparkle",
+      "settings": {
+        "heading": "Elevate Every Drop.",
+        "subheading": "Engineered for high-performance living. Fizz delivers precision carbonation and essential minerals for your active journey.",
+        "primary_label": "SHOP THE COLLECTION",
+        "secondary_label": "OUR SCIENCE"
+      }
+    },
+    "bottles": {
+      "type": "ks-featured-bottles",
+      "settings": {
+        "eyebrow": "The Lineup",
+        "heading": "BOLD BOTTLES",
+        "view_all_label": "VIEW ALL BOTTLES",
+        "collection": "bottles",
+        "product_limit": 4
+      }
+    },
+    "mission": {
+      "type": "ks-brand-mission",
+      "settings": {}
+    },
+    "flavor_cta": {
+      "type": "ks-flavor-cta",
+      "settings": {}
+    },
+    "flavors": {
+      "type": "ks-flavor-grid",
+      "blocks": {
+        "f1": { "type": "flavor", "settings": { "title": "Blood Orange", "price_label": "$1.50 / SACHET", "fallback_image": "flavor-blood-orange" } },
+        "f2": { "type": "flavor", "settings": { "title": "Zesty Lime", "price_label": "$1.50 / SACHET", "fallback_image": "flavor-zesty-lime" } },
+        "f3": { "type": "flavor", "settings": { "title": "Crisp Cucumber", "price_label": "$1.50 / SACHET", "fallback_image": "flavor-crisp-cucumber" } }
+      },
+      "block_order": ["f1", "f2", "f3"]
+    },
+    "benefits": {
+      "type": "ks-benefits",
+      "blocks": {
+        "b1": { "type": "benefit", "settings": { "icon": "bubbles", "title": "Carbonation on the go", "body": "Our patented compression tech maintains perfect fizz levels for up to 12 hours after opening." } },
+        "b2": { "type": "benefit", "settings": { "icon": "eco", "title": "Eco-friendly canister", "body": "100% infinitely recyclable aluminum with a low-impact manufacturing process." } },
+        "b3": { "type": "benefit", "settings": { "icon": "precision_manufacturing", "title": "Premium craftsmanship", "body": "Every bottle is leak-tested and quality-assured for peak performance in extreme conditions." } }
+      },
+      "block_order": ["b1", "b2", "b3"]
+    },
+    "masonry": {
+      "type": "ks-lifestyle-masonry",
+      "blocks": {
+        "m1": { "type": "image", "settings": { "size": "large", "fallback_image": "hero-hiker-sunrise", "caption": "CITRUS GROVE / 08:45 AM" } },
+        "m2": { "type": "image", "settings": { "size": "wide", "fallback_image": "beach-arctic-white", "caption": "ARCTIC SHORE / 02:20 PM" } },
+        "m3": { "type": "image", "settings": { "fallback_image": "flavor-packs-lifestyle", "caption": "LIME SANCTUARY / 07:15 AM" } },
+        "m4": { "type": "social", "settings": { "caption": "TAG US @FIZZ_KINETIC" } }
+      },
+      "block_order": ["m1", "m2", "m3", "m4"]
+    },
+    "newsletter": {
+      "type": "ks-newsletter",
+      "settings": {}
+    }
+  },
+  "order": ["hero", "bottles", "mission", "flavor_cta", "flavors", "benefits", "masonry", "newsletter"]
+}

@@ -1,0 +1,61 @@
+<section class="py-32 px-margin-mobile md:px-margin-desktop max-w-max-width mx-auto ks-reveal opacity-0 translate-y-10 transition-all duration-1000">
+  <div class="flex flex-col md:flex-row items-center gap-16">
+    <div class="w-full md:w-1/2 order-2 md:order-1">
+      <h2 class="font-headline-lg text-headline-lg tracking-tight uppercase mb-6">{{ section.settings.heading }}</h2>
+      <p class="font-body-md text-on-surface-variant mb-8 text-lg">{{ section.settings.body }}</p>
+      <ul class="space-y-4 font-label-caps tracking-widest text-on-surface">
+        {% for block in section.blocks %}
+          <li class="flex items-center gap-4" {{ block.shopify_attributes }}>
+            <span class="material-symbols-outlined text-primary">{{ block.settings.icon }}</span>
+            <span>{{ block.settings.label }}</span>
+          </li>
+        {% endfor %}
+      </ul>
+      {% if section.settings.button_url != blank %}
+        <a href="{{ section.settings.button_url }}" class="inline-block mt-10 px-8 py-4 rounded-full border border-primary text-primary font-label-caps uppercase tracking-widest hover:bg-primary hover:text-on-primary transition-colors">{{ section.settings.button_label }}</a>
+      {% endif %}
+    </div>
+    <div class="w-full md:w-1/2 order-1 md:order-2">
+      <div class="relative rounded-2xl overflow-hidden glass-card p-2 border-white/10">
+        {% if section.settings.image %}
+          {{ section.settings.image | image_url: width: 1000 | image_tag: class: 'w-full h-auto rounded-xl object-cover' }}
+        {% else %}
+          {% render 'ks-stitch-img', name: 'science-carbonation', alt: 'Carbonation science', class: 'w-full h-auto rounded-xl object-cover' %}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "KS Science Block",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "The Science of Sparkle" },
+    { "type": "textarea", "id": "body", "label": "Body", "default": "Our patented carbonation core transforms ordinary water into a premium sparkling experience in seconds." },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Explore The Tech" },
+    { "type": "url", "id": "button_url", "label": "Button URL" },
+    { "type": "image_picker", "id": "image", "label": "Image" }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature",
+      "settings": [
+        { "type": "text", "id": "icon", "label": "Icon", "default": "water_drop" },
+        { "type": "text", "id": "label", "label": "Label", "default": "Micro-bubble technology" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "KS Science Block",
+      "blocks": [
+        { "type": "feature", "settings": { "icon": "water_drop", "label": "Micro-bubble technology" } },
+        { "type": "feature", "settings": { "icon": "speed", "label": "Instant carbonation" } },
+        { "type": "feature", "settings": { "icon": "recycling", "label": "Sustainable design" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,35 @@
+<section class="relative min-h-[600px] flex items-center overflow-hidden ks-reveal opacity-0 translate-y-10 transition-all duration-1000">
+  <div class="absolute inset-0">
+    {% if section.settings.image %}
+      {{ section.settings.image | image_url: width: 2000 | image_tag: class: 'w-full h-full object-cover' }}
+    {% else %}
+      {% render 'ks-stitch-img', name: 'hero-hiker-sunrise', alt: section.settings.heading, class: 'w-full h-full object-cover' %}
+    {% endif %}
+    <div class="absolute inset-0 bg-background/60"></div>
+  </div>
+  <div class="relative z-10 px-margin-mobile md:px-margin-desktop max-w-max-width mx-auto w-full">
+    <div class="max-w-xl">
+      <span class="font-label-caps text-primary tracking-widest uppercase mb-4 block">{{ section.settings.eyebrow }}</span>
+      <h2 class="font-display-xl text-[32px] md:text-[56px] leading-tight mb-8">{{ section.settings.heading }}</h2>
+      <p class="text-on-surface-variant text-xl leading-relaxed mb-10">{{ section.settings.body }}</p>
+      {% if section.settings.link_url != blank %}
+        <a href="{{ section.settings.link_url }}" class="border-b-2 border-primary text-primary font-label-caps pb-2 hover:opacity-70 transition-all">{{ section.settings.link_label }}</a>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "KS Brand Mission",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Background image" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Our Mission" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "HYDRATION FOR ANY JOURNEY." },
+    { "type": "textarea", "id": "body", "label": "Body", "default": "From the highest peaks to the most intense training sessions, Fizz is your constant companion." },
+    { "type": "text", "id": "link_label", "label": "Link label", "default": "READ OUR STORY" },
+    { "type": "url", "id": "link_url", "label": "Link URL" }
+  ],
+  "presets": [{ "name": "KS Brand Mission" }]
+}
+{% endschema %}

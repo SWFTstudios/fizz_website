@@ -1,0 +1,38 @@
+<nav class="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-md border-b border-outline-variant" aria-label="Main">
+  <div class="flex justify-between items-center px-margin-mobile md:px-margin-desktop h-20 max-w-max-width mx-auto">
+    <a href="{{ routes.root_url }}" class="font-headline-lg text-headline-lg-mobile md:text-headline-lg tracking-tighter text-on-background uppercase font-bold">
+      {{ shop.name | default: 'FIZZ' }}
+    </a>
+
+    <div class="hidden md:flex gap-8 font-label-caps text-label-caps uppercase">
+      {% for link in linklists[menu].links %}
+        <a
+          href="{{ link.url }}"
+          class="{% if link.active %}text-primary border-b border-primary{% else %}text-on-surface-variant hover:text-primary{% endif %} transition-colors duration-300 pb-1"
+        >
+          {{ link.title }}
+        </a>
+      {% endfor %}
+    </div>
+
+    <div class="flex items-center gap-6">
+      {% if show_cta %}
+        <div class="hidden md:block">
+          <a href="{{ cta_url | default: routes.all_products_collection_url }}">
+            {% render 'ks-button', label: cta_label | default: 'SHOP NOW', variant: 'primary', tag: 'span', class: 'text-[10px] px-6 py-3' %}
+          </a>
+        </div>
+      {% endif %}
+      <div class="flex gap-4 items-center">
+        <a href="{{ routes.account_url }}" class="material-symbols-outlined hover:text-primary transition-colors" aria-label="Account">person</a>
+        <a href="{{ routes.cart_url }}" class="material-symbols-outlined hover:text-primary transition-colors relative" aria-label="Cart">
+          shopping_bag
+          {% if cart.item_count > 0 %}
+            <span class="absolute -top-1 -right-1 text-[9px] bg-primary text-on-primary rounded-full w-4 h-4 flex items-center justify-center">{{ cart.item_count }}</span>
+          {% endif %}
+        </a>
+        <button type="button" class="md:hidden material-symbols-outlined" aria-label="Menu" data-ks-menu-toggle>menu</button>
+      </div>
+    </div>
+  </div>
+</nav>

@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}" class="dark">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% render 'meta-tags' %}
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+
+    {{ 'kinetic-spark.css' | asset_url | stylesheet_tag }}
+    {{ content_for_header }}
+  </head>
+
+  <body class="ks-theme overflow-x-hidden">
+    {% sections 'header-group' %}
+    <main id="main-content" class="pt-20">
+      {{ content_for_layout }}
+    </main>
+    {% sections 'footer-group' %}
+
+    <script src="{{ 'kinetic-spark.js' | asset_url }}" defer></script>
+  </body>
+</html>

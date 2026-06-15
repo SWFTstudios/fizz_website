@@ -1,0 +1,27 @@
+<section class="relative w-full h-[80vh] min-h-[600px] flex items-center justify-center overflow-hidden ks-reveal opacity-0 translate-y-10 transition-all duration-1000">
+  <div class="absolute inset-0 w-full h-full">
+    {% if section.settings.image %}
+      {{ section.settings.image | image_url: width: 2000 | image_tag: class: 'w-full h-full object-cover opacity-60 mix-blend-screen' }}
+    {% else %}
+      {% render 'ks-stitch-img', name: 'science-carbonation', alt: 'Macro bubbles', class: 'w-full h-full object-cover opacity-60 mix-blend-screen' %}
+    {% endif %}
+  </div>
+  <div class="absolute inset-0 bg-gradient-to-b from-background via-transparent to-background"></div>
+  <div class="relative z-10 text-center px-margin-mobile md:px-margin-desktop max-w-3xl mx-auto glass-card p-12 rounded-3xl">
+    <span class="material-symbols-outlined text-primary text-6xl mb-6">water_drop</span>
+    <h2 class="font-display-xl text-headline-lg-mobile md:text-headline-lg text-on-surface mb-6">{{ section.settings.heading }}</h2>
+    <p class="font-body-md text-on-surface-variant text-lg">{{ section.settings.body }}</p>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "KS Kinetic Spark Window",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Background image" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "The Kinetic Spark" },
+    { "type": "textarea", "id": "body", "label": "Body", "default": "Experience the visceral rush of true carbonation. Our proprietary capsule system infuses your water with micro-fine bubbles that dance on the palate." }
+  ],
+  "presets": [{ "name": "KS Kinetic Spark Window" }]
+}
+{% endschema %}

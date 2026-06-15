@@ -1,0 +1,31 @@
+{
+  "sections": {
+    "hero": {
+      "type": "ks-collection-hero",
+      "settings": {}
+    },
+    "products": {
+      "type": "ks-product-grid",
+      "settings": {}
+    },
+    "flavors": {
+      "type": "ks-flavor-collection-grid",
+      "settings": { "collection": "flavors" },
+      "blocks": {
+        "fc1": { "type": "flavor_card", "settings": { "title": "Orange Tangerine", "badge": "Natural", "body": "A bright, citrus burst crafted from real fruit extracts.", "price_label": "$1.50 / SACHET", "pack_label": "Box of 10", "fallback_image": "flavor-orange-tangerine" } },
+        "fc2": { "type": "flavor_card", "settings": { "title": "Citrus Collection Box", "badge": "Multipack", "body": "Stock up on your favorite citrus notes.", "price_label": "$15.00", "pack_label": "10 Sachets", "fallback_image": "flavor-orange-tangerine" } }
+      },
+      "block_order": ["fc1", "fc2"]
+    },
+    "science": {
+      "type": "ks-science-block",
+      "blocks": {
+        "sf1": { "type": "feature", "settings": { "icon": "water_drop", "label": "Micro-bubble technology" } },
+        "sf2": { "type": "feature", "settings": { "icon": "speed", "label": "Instant carbonation" } },
+        "sf3": { "type": "feature", "settings": { "icon": "recycling", "label": "Sustainable design" } }
+      },
+      "block_order": ["sf1", "sf2", "sf3"]
+    }
+  },
+  "order": ["hero", "products", "flavors", "science"]
+}

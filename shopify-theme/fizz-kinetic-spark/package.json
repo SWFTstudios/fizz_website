@@ -1,0 +1,16 @@
+{
+  "name": "fizz-kinetic-spark",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:css": "tailwindcss -i ./src/styles/kinetic-spark.css -o ./assets/kinetic-spark.css --minify",
+    "watch:css": "tailwindcss -i ./src/styles/kinetic-spark.css -o ./assets/kinetic-spark.css --watch",
+    "import:assets": "node ./scripts/import-stitch-assets.mjs",
+    "build": "npm run build:css"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^3.4.17"
+  }
+}

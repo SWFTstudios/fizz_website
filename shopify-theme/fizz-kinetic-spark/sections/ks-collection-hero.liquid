@@ -1,0 +1,21 @@
+<section
+  class="hero-pattern w-full h-[60vh] flex items-end justify-center pb-20 relative ks-reveal opacity-0 translate-y-10 transition-all duration-1000"
+  style="background-image: linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, #000 100%), url('{% if section.settings.image %}{{ section.settings.image | image_url: width: 2000 }}{% else %}{{ 'stitch-science-carbonation.jpg' | asset_url }}{% endif %}');"
+>
+  <div class="text-center z-10 px-margin-mobile">
+    <h1 class="font-display-xl text-display-xl tracking-tighter uppercase mb-4 text-on-surface">{{ section.settings.heading }}</h1>
+    <p class="font-body-md text-on-surface-variant max-w-2xl mx-auto">{{ section.settings.subheading }}</p>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "KS Collection Hero",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Hero background" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "THE COLLECTION" },
+    { "type": "textarea", "id": "subheading", "label": "Subheading", "default": "Precision-engineered hydration. Discover our range of premium carbonation bottles and instant flavor sachets." }
+  ],
+  "presets": [{ "name": "KS Collection Hero" }]
+}
+{% endschema %}

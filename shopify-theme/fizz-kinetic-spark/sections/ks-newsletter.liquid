@@ -1,0 +1,22 @@
+<section class="bg-primary py-24 ks-reveal opacity-0 translate-y-10 transition-all duration-1000">
+  <div class="px-margin-mobile md:px-margin-desktop max-w-max-width mx-auto text-center">
+    <h2 class="font-display-xl text-[40px] md:text-display-xl text-background mb-8">{{ section.settings.heading }}</h2>
+    <p class="text-background/80 text-xl mb-12 max-w-2xl mx-auto">{{ section.settings.body }}</p>
+    {% form 'customer', class: 'flex flex-col md:flex-row gap-4 max-w-xl mx-auto' %}
+      <input type="hidden" name="contact[tags]" value="newsletter">
+      <input class="flex-grow bg-transparent border-b-2 border-background placeholder:text-background/50 focus:ring-0 focus:border-background font-label-caps py-4 text-background" placeholder="EMAIL ADDRESS" type="email" name="contact[email]" required>
+      <button type="submit" class="bg-background text-primary font-label-caps px-12 py-4 rounded-full font-bold hover:opacity-90 transition-all">SUBSCRIBE</button>
+    {% endform %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "KS Newsletter",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "BOLD BOTTLES" },
+    { "type": "textarea", "id": "body", "label": "Body", "default": "Exclusive access to new flavor drops, performance tips, and sustainable living hacks." }
+  ],
+  "presets": [{ "name": "KS Newsletter" }]
+}
+{% endschema %}
