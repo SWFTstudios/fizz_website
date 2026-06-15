@@ -1,0 +1,29 @@
+<section class="relative h-[60vh] w-full flex items-center justify-center overflow-hidden ks-reveal opacity-0 translate-y-10 transition-all duration-1000">
+  <div class="absolute inset-0">
+    {% if section.settings.image %}
+      {{ section.settings.image | image_url: width: 2000 | image_tag: class: 'w-full h-full object-cover' }}
+    {% else %}
+      {% render 'ks-stitch-img', name: 'flavor-packs-lifestyle', alt: section.settings.heading, class: 'w-full h-full object-cover' %}
+    {% endif %}
+    <div class="absolute inset-0 bg-background/40"></div>
+  </div>
+  <div class="relative z-10 text-center px-margin-mobile">
+    <h2 class="font-display-xl text-[40px] md:text-display-xl mb-8">{{ section.settings.heading }}</h2>
+    <a href="{{ section.settings.button_url | default: routes.all_products_collection_url }}">
+      {% render 'ks-button', label: section.settings.button_label, variant: 'primary', tag: 'span', class: 'sparkle-btn font-bold' %}
+    </a>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "KS Flavor CTA Band",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Background image" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "VIBRANT FLAVORS. ZERO SUGAR." },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "SHOP THE LINEUP" },
+    { "type": "url", "id": "button_url", "label": "Button URL" }
+  ],
+  "presets": [{ "name": "KS Flavor CTA Band" }]
+}
+{% endschema %}

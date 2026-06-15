@@ -1,0 +1,15 @@
+{
+  "type": "header",
+  "name": "Header",
+  "sections": {
+    "header": {
+      "type": "ks-header",
+      "settings": {
+        "menu": "main-menu",
+        "show_cta": true,
+        "cta_label": "SHOP NOW"
+      }
+    }
+  },
+  "order": ["header"]
+}

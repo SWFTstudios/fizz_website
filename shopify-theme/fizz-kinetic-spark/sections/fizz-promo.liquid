@@ -1,0 +1,18 @@
+{% if section.settings.text != blank %}
+  <div class="fizz-promo">{{ section.settings.text }}</div>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Fizz promo strip",
+  "settings": [
+    {
+      "type": "text",
+      "id": "text",
+      "label": "Promo text",
+      "default": "Free shipping on orders $50+"
+    }
+  ],
+  "presets": [{ "name": "Fizz promo strip" }]
+}
+{% endschema %}

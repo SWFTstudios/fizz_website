@@ -1,0 +1,100 @@
+<section class="py-[120px] px-margin-mobile md:px-margin-desktop max-w-max-width mx-auto ks-reveal opacity-0 translate-y-10 transition-all duration-1000">
+  <div class="mb-16 text-center">
+    <h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-4">{{ section.settings.heading }}</h2>
+    <p class="font-body-md text-on-surface-variant max-w-2xl mx-auto">{{ section.settings.subheading }}</p>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-12 gap-gutter auto-rows-[400px]">
+    {% for block in section.blocks %}
+      {% liquid
+        case block.settings.col_span
+          when 4
+            assign col_class = 'md:col-span-4'
+          when 5
+            assign col_class = 'md:col-span-5'
+          when 6
+            assign col_class = 'md:col-span-6'
+          when 7
+            assign col_class = 'md:col-span-7'
+          when 8
+            assign col_class = 'md:col-span-8'
+          else
+            assign col_class = 'md:col-span-6'
+        endcase
+      %}
+      <div class="{{ col_class }} glass-card rounded-3xl overflow-hidden relative group" {{ block.shopify_attributes }}>
+        {% if block.settings.image %}
+          {{ block.settings.image | image_url: width: 1400 | image_tag: class: 'absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-80 mix-blend-luminosity group-hover:mix-blend-normal' }}
+        {% else %}
+          {% render 'ks-stitch-img', name: block.settings.fallback_image, alt: block.settings.title, class: 'absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-80 mix-blend-luminosity group-hover:mix-blend-normal' %}
+        {% endif %}
+        <div class="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent"></div>
+        <div class="absolute bottom-0 left-0 p-8">
+          {% if block.settings.badge != blank %}
+            <span class="inline-block px-3 py-1 bg-surface/50 backdrop-blur-md border border-white/10 rounded-full font-label-caps text-primary mb-4">{{ block.settings.badge }}</span>
+          {% endif %}
+          <h3 class="font-headline-lg-mobile text-on-surface mb-2">{{ block.settings.title }}</h3>
+          <p class="font-body-md text-on-surface-variant max-w-md">{{ block.settings.body }}</p>
+        </div>
+        {% if block.settings.product != blank %}
+          <div class="ks-hotspot absolute {{ block.settings.hotspot_position }} z-20">
+            <button type="button" class="ks-hotspot-trigger w-8 h-8 bg-white/20 backdrop-blur-md border border-white/40 rounded-full flex items-center justify-center text-white animate-pulse hover:scale-110 transition-transform" aria-label="Shop the look">
+              <span class="material-symbols-outlined text-sm">add</span>
+            </button>
+            <div class="ks-hotspot-popup absolute bottom-full left-1/2 -translate-x-1/2 mb-4">
+              <div class="glass-card p-4 rounded-2xl w-48 flex flex-col gap-3">
+                {% if block.settings.product.featured_image %}
+                  {{ block.settings.product.featured_image | image_url: width: 300 | image_tag: class: 'w-full h-32 object-contain bg-surface-container rounded-lg' }}
+                {% elsif block.settings.hotspot_image != blank %}
+                  {% render 'ks-stitch-img', name: block.settings.hotspot_image, alt: block.settings.product.title, class: 'w-full h-32 object-contain bg-surface-container rounded-lg' %}
+                {% endif %}
+                <div>
+                  <p class="text-label-caps font-label-caps text-primary mb-1">{{ block.settings.product.title }}</p>
+                  <p class="text-on-surface font-bold">{{ block.settings.product.price | money }}</p>
+                </div>
+                <button type="button" class="w-full py-2 bg-primary text-on-primary rounded-full text-label-caps uppercase tracking-widest hover:bg-surface-tint transition-colors" data-ks-quick-add="{{ block.settings.product.selected_or_first_available_variant.id }}">Quick Add</button>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "KS Moments Shop the Look",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Moments of Sparkle" },
+    { "type": "textarea", "id": "subheading", "label": "Subheading", "default": "Make sparkling water anywhere. Turn still water into fresh sparkling in seconds, right in your bottle." }
+  ],
+  "blocks": [
+    {
+      "type": "moment",
+      "name": "Moment tile",
+      "settings": [
+        { "type": "range", "id": "col_span", "min": 4, "max": 8, "step": 1, "default": 7, "label": "Column span (of 12)" },
+        { "type": "image_picker", "id": "image", "label": "Lifestyle image" },
+        { "type": "text", "id": "fallback_image", "label": "Fallback asset", "default": "hero-slideshow-1" },
+        { "type": "text", "id": "badge", "label": "Badge", "default": "Wellness" },
+        { "type": "text", "id": "title", "label": "Title", "default": "Find Your Flow" },
+        { "type": "textarea", "id": "body", "label": "Body" },
+        { "type": "product", "id": "product", "label": "Hotspot product" },
+        { "type": "text", "id": "hotspot_image", "label": "Hotspot fallback asset" },
+        { "type": "text", "id": "hotspot_position", "label": "Hotspot position classes", "default": "top-1/3 left-1/3" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "KS Moments Shop the Look",
+      "blocks": [
+        { "type": "moment", "settings": { "col_span": 7, "fallback_image": "hero-slideshow-1", "badge": "Wellness", "title": "Find Your Flow", "hotspot_image": "hotspot-sage-green", "hotspot_position": "top-1/3 left-1/3" } },
+        { "type": "moment", "settings": { "col_span": 5, "fallback_image": "hero-hiker-sunrise", "badge": "Family", "title": "Refreshing Sidelines", "hotspot_image": "hotspot-arctic-white", "hotspot_position": "top-1/2 right-1/4" } },
+        { "type": "moment", "settings": { "col_span": 5, "fallback_image": "beach-arctic-white", "badge": "Adventure", "title": "Peak Hydration", "hotspot_image": "hotspot-charcoal-black", "hotspot_position": "top-1/2 left-1/2" } },
+        { "type": "moment", "settings": { "col_span": 7, "fallback_image": "flavor-packs-lifestyle", "badge": "Relaxation", "title": "Pristine Bubbles", "hotspot_image": "hotspot-arctic-white", "hotspot_position": "top-1/3 right-1/3" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

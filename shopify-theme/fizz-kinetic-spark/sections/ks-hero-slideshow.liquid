@@ -1,0 +1,52 @@
+<section class="relative h-screen w-full flex items-center justify-center overflow-hidden ks-reveal opacity-0 translate-y-10 transition-all duration-1000" data-ks-hero-slideshow>
+  <div class="absolute inset-0 w-full h-full">
+    {% for block in section.blocks %}
+      <div
+        class="hero-slide {% if forloop.first %}active{% endif %} absolute inset-0 w-full h-full bg-cover bg-center"
+        style="background-image: url('{% if block.settings.image %}{{ block.settings.image | image_url: width: 2000 }}{% else %}{{ block.settings.fallback_image | prepend: 'stitch-' | append: '.jpg' | asset_url }}{% endif %}');"
+        {{ block.shopify_attributes }}
+      ></div>
+    {% endfor %}
+    <div class="absolute inset-0 bg-background/40 backdrop-blur-sm"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
+  </div>
+  <div class="relative z-10 text-center px-margin-mobile md:px-margin-desktop max-w-max-width mx-auto flex flex-col items-center">
+    <h1 class="font-display-xl text-headline-lg-mobile md:text-display-xl text-on-surface mb-6 drop-shadow-2xl">{{ section.settings.heading }}</h1>
+    <p class="font-body-md text-headline-lg-mobile md:text-headline-lg text-on-surface-variant max-w-3xl mb-12">{{ section.settings.subheading }}</p>
+    <a href="{{ section.settings.button_url | default: routes.all_products_collection_url }}">
+      {% render 'ks-button', label: section.settings.button_label, variant: 'ghost', tag: 'span' %}
+    </a>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "KS Hero Slideshow",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Elevate Every Drop." },
+    { "type": "textarea", "id": "subheading", "label": "Subheading", "default": "Your daily rituals, now with a sparkling twist. No Cords. No Counters. No Limits." },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Shop Systems" },
+    { "type": "url", "id": "button_url", "label": "Button URL" }
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Slide",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "text", "id": "fallback_image", "label": "Fallback asset name", "default": "hero-slideshow-1" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "KS Hero Slideshow",
+      "blocks": [
+        { "type": "slide", "settings": { "fallback_image": "hero-slideshow-1" } },
+        { "type": "slide", "settings": { "fallback_image": "hero-slideshow-2" } },
+        { "type": "slide", "settings": { "fallback_image": "hero-slideshow-3" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

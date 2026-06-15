@@ -1,0 +1,35 @@
+<section class="fizz-usp-grid" aria-label="Benefits">
+  {% for block in section.blocks %}
+    <div {{ block.shopify_attributes }}>
+      <h3>{{ block.settings.title }}</h3>
+      <p>{{ block.settings.body }}</p>
+    </div>
+  {% endfor %}
+</section>
+
+{% schema %}
+{
+  "name": "Fizz USP grid",
+  "max_blocks": 4,
+  "blocks": [
+    {
+      "type": "usp",
+      "name": "USP",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Title", "default": "Less waste" },
+        { "type": "textarea", "id": "body", "label": "Body", "default": "One cartridge makes up to 12L of seltzer." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Fizz USP grid",
+      "blocks": [
+        { "type": "usp", "settings": { "title": "12L per cartridge", "body": "One Fizz cartridge replaces a case of cans." } },
+        { "type": "usp", "settings": { "title": "Portable fizz", "body": "Carbonation you can take anywhere." } },
+        { "type": "usp", "settings": { "title": "Real flavor", "body": "In-house flavor packs in seconds." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

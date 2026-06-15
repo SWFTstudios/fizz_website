@@ -1,0 +1,52 @@
+{% comment %}
+  Product card for Kinetic Spark grids
+  product: Shopify product object
+  style: compact | full
+{% endcomment %}
+{% liquid
+  assign card_style = style | default: 'compact'
+  assign featured = product.featured_image
+%}
+<div class="glass-card kinetic-hover rounded-xl {% if card_style == 'full' %}overflow-hidden flex flex-col group{% else %}p-6 group{% endif %}">
+  <div class="{% if card_style == 'full' %}relative aspect-[4/5] bg-surface-container-highest overflow-hidden{% else %}aspect-square mb-6 overflow-hidden rounded-lg bg-surface-container{% endif %}">
+    {% if featured %}
+      {{
+        featured
+        | image_url: width: 800
+        | image_tag:
+          class: 'w-full h-full object-cover transition-transform duration-700 group-hover:scale-110',
+          loading: 'lazy',
+          alt: product.title
+      }}
+    {% else %}
+      {% render 'ks-stitch-img',
+        name: fallback_image | default: 'bottle-coral-orange-studio',
+        alt: product.title,
+        class: 'w-full h-full object-cover transition-transform duration-700 group-hover:scale-110'
+      %}
+    {% endif %}
+    {% if card_style == 'full' %}
+      <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+    {% endif %}
+  </div>
+  <div class="{% if card_style == 'full' %}p-6 flex flex-col flex-grow{% endif %}">
+    <div class="flex justify-between items-start mb-{% if card_style == 'full' %}4{% else %}1{% endif %}">
+      <h3 class="font-headline-lg-mobile text-xl uppercase tracking-tight">{{ product.title }}</h3>
+      <span class="font-label-caps text-on-surface-variant">{{ product.price | money }}</span>
+    </div>
+    {% if card_style == 'full' and product.description != blank %}
+      <p class="font-body-md text-on-surface-variant mb-6 line-clamp-2">{{ product.description | strip_html | truncate: 120 }}</p>
+    {% endif %}
+    {% if product.available and product.selected_or_first_available_variant %}
+      <button
+        type="button"
+        class="bg-primary-container border border-outline-variant font-label-caps text-[10px] px-4 py-2 rounded-full hover:bg-primary hover:text-background transition-all uppercase {% if card_style == 'full' %}mt-auto w-full py-4 text-label-caps{% endif %}"
+        data-ks-quick-add="{{ product.selected_or_first_available_variant.id }}"
+      >
+        Quick Add
+      </button>
+    {% else %}
+      <a href="{{ product.url }}" class="font-label-caps text-primary {% if card_style == 'full' %}mt-auto{% endif %}">View product</a>
+    {% endif %}
+  </div>
+</div>

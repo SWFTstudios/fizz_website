@@ -1,0 +1,26 @@
+{% comment %}
+  Pill CTA button
+  variant: primary | secondary | ghost
+{% endcomment %}
+{% liquid
+  assign btn_variant = variant | default: 'primary'
+  assign btn_tag = tag | default: 'button'
+  assign base = 'font-label-caps text-label-caps uppercase tracking-widest rounded-full transition-all inline-flex items-center justify-center'
+  case btn_variant
+    when 'primary'
+      assign btn_class = base | append: ' bg-primary text-on-primary px-10 py-4 hover:opacity-90'
+    when 'secondary'
+      assign btn_class = base | append: ' border border-outline text-on-surface px-10 py-4 hover:bg-white/5'
+    when 'ghost'
+      assign btn_class = base | append: ' border border-white/20 text-on-surface px-8 py-4 hover:bg-primary hover:text-on-primary backdrop-blur-md'
+    when 'quick'
+      assign btn_class = 'bg-primary-container border border-outline-variant font-label-caps text-[10px] px-4 py-2 rounded-full hover:bg-primary hover:text-background transition-all uppercase'
+  endcase
+%}
+{% if btn_tag == 'a' %}
+  <a href="{{ href | default: '#' }}" class="{{ btn_class }} {{ class }}">{{ label }}</a>
+{% else %}
+  <button type="{{ type | default: 'button' }}" class="{{ btn_class }} {{ class }}" {{ extra_attrs }}>
+    {{ label }}
+  </button>
+{% endif %}

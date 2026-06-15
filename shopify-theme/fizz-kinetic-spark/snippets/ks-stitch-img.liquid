@@ -1,0 +1,12 @@
+{% comment %}
+  Renders a Stitch-imported image from assets/stitch-{name}.jpg (flat assets folder)
+  Usage: {% render 'ks-stitch-img', name: 'hero-hiker-sunrise', alt: 'Hiker', class: 'w-full h-full object-cover' %}
+{% endcomment %}
+<img
+  src="{{ name | prepend: 'stitch-' | append: '.jpg' | asset_url }}"
+  alt="{{ alt | default: '' | escape }}"
+  class="{{ class }}"
+  loading="lazy"
+  width="1200"
+  height="800"
+>

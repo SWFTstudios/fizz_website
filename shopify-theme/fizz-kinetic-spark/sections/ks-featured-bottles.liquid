@@ -1,0 +1,44 @@
+{% liquid
+  assign collection = collections[section.settings.collection] | default: collections.all
+%}
+<section class="py-24 px-margin-mobile md:px-margin-desktop max-w-max-width mx-auto ks-reveal opacity-0 translate-y-10 transition-all duration-1000">
+  <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-4">
+    <div>
+      <span class="font-label-caps text-primary mb-2 block tracking-widest uppercase">{{ section.settings.eyebrow }}</span>
+      <h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg">{{ section.settings.heading }}</h2>
+    </div>
+    {% if collection %}
+      <a class="font-label-caps text-on-surface-variant border-b border-outline-variant pb-1 hover:text-primary transition-all" href="{{ collection.url }}">{{ section.settings.view_all_label }}</a>
+    {% endif %}
+  </div>
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
+    {% for product in collection.products limit: section.settings.product_limit %}
+      {% render 'ks-product-card', product: product, style: 'compact' %}
+    {% else %}
+      {% assign fallbacks = 'bottle-coral-orange-studio,bottle-charcoal-black-studio,bottle-sage-green-studio,bottle-arctic-white-studio' | split: ',' %}
+      {% for name in fallbacks %}
+        <div class="glass-card kinetic-hover rounded-xl p-6 group">
+          <div class="aspect-square mb-6 overflow-hidden rounded-lg bg-surface-container">
+            {% render 'ks-stitch-img', name: name, alt: name, class: 'w-full h-full object-cover' %}
+          </div>
+          <h3 class="font-headline-lg-mobile text-xl mb-1 uppercase tracking-tight">{{ name | replace: '-', ' ' }}</h3>
+          <p class="font-label-caps text-on-surface-variant">Add products in Shopify Admin</p>
+        </div>
+      {% endfor %}
+    {% endfor %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "KS Featured Bottles",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "The Lineup" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "BOLD BOTTLES" },
+    { "type": "text", "id": "view_all_label", "label": "View all label", "default": "VIEW ALL BOTTLES" },
+    { "type": "collection", "id": "collection", "label": "Collection" },
+    { "type": "range", "id": "product_limit", "min": 2, "max": 12, "step": 1, "default": 4, "label": "Product limit" }
+  ],
+  "presets": [{ "name": "KS Featured Bottles" }]
+}
+{% endschema %}

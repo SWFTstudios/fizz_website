@@ -1,0 +1,67 @@
+<section class="py-24 px-margin-mobile md:px-margin-desktop max-w-max-width mx-auto ks-reveal opacity-0 translate-y-10 transition-all duration-1000">
+  <div class="mb-16">
+    <h2 class="font-headline-lg text-center uppercase">{{ section.settings.heading }}</h2>
+  </div>
+  <div class="masonry-grid">
+    {% for block in section.blocks %}
+      <div class="{% if block.settings.size == 'large' %}masonry-item-large{% elsif block.settings.size == 'wide' %}masonry-item-wide{% endif %} relative rounded-xl overflow-hidden group" {{ block.shopify_attributes }}>
+        {% if block.type == 'social' %}
+          <div class="w-full h-full bg-primary-container flex items-center justify-center p-8">
+            <div class="text-center">
+              <span class="material-symbols-outlined text-5xl text-primary mb-4">infrared</span>
+              <p class="font-label-caps text-sm">{{ block.settings.caption }}</p>
+            </div>
+          </div>
+        {% else %}
+          {% if block.settings.image %}
+            {{ block.settings.image | image_url: width: 1200 | image_tag: class: 'w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700' }}
+          {% else %}
+            {% render 'ks-stitch-img', name: block.settings.fallback_image, alt: block.settings.caption, class: 'w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700' %}
+          {% endif %}
+          <div class="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
+            <p class="font-label-caps text-xs">{{ block.settings.caption }}</p>
+          </div>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "KS Lifestyle Masonry",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "BOLD BOTTLES" }
+  ],
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Image tile",
+      "settings": [
+        { "type": "select", "id": "size", "label": "Size", "options": [{ "value": "normal", "label": "Normal" }, { "value": "large", "label": "Large" }, { "value": "wide", "label": "Wide" }], "default": "normal" },
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "text", "id": "fallback_image", "label": "Fallback asset", "default": "hero-hiker-sunrise" },
+        { "type": "text", "id": "caption", "label": "Caption", "default": "CITRUS GROVE / 08:45 AM" }
+      ]
+    },
+    {
+      "type": "social",
+      "name": "Social tile",
+      "settings": [
+        { "type": "text", "id": "caption", "label": "Caption", "default": "TAG US @FIZZ_KINETIC" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "KS Lifestyle Masonry",
+      "blocks": [
+        { "type": "image", "settings": { "size": "large", "fallback_image": "hero-hiker-sunrise", "caption": "CITRUS GROVE / 08:45 AM" } },
+        { "type": "image", "settings": { "size": "wide", "fallback_image": "beach-arctic-white", "caption": "ARCTIC SHORE / 02:20 PM" } },
+        { "type": "image", "settings": { "fallback_image": "flavor-packs-lifestyle", "caption": "LIME SANCTUARY / 07:15 AM" } },
+        { "type": "social" }
+      ]
+    }
+  ]
+}
+{% endschema %}

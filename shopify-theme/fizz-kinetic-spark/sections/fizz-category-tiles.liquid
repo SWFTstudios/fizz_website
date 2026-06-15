@@ -1,0 +1,40 @@
+<section class="fizz-tiles" id="shop" aria-label="Shop categories">
+  <div class="fizz-tiles-grid">
+    {% for block in section.blocks %}
+      <a href="{{ block.settings.url | default: '#' }}" class="fizz-tile" {{ block.shopify_attributes }}>
+        {% if block.settings.image != blank %}
+          {{ block.settings.image | image_url: width: 800 | image_tag: loading: 'lazy' }}
+        {% endif %}
+        <span class="fizz-tile-label">{{ block.settings.title }}</span>
+      </a>
+    {% endfor %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Fizz category tiles",
+  "max_blocks": 6,
+  "blocks": [
+    {
+      "type": "tile",
+      "name": "Tile",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Title", "default": "Shop Bottles" },
+        { "type": "url", "id": "url", "label": "Link" },
+        { "type": "image_picker", "id": "image", "label": "Image" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Fizz category tiles",
+      "blocks": [
+        { "type": "tile", "settings": { "title": "Shop Bottles" } },
+        { "type": "tile", "settings": { "title": "Flavor Packs" } },
+        { "type": "tile", "settings": { "title": "CO₂ Refills" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

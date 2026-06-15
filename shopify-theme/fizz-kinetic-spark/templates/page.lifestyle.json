@@ -1,0 +1,33 @@
+{
+  "sections": {
+    "slideshow": {
+      "type": "ks-hero-slideshow",
+      "settings": {
+        "heading": "Elevate Every Drop.",
+        "subheading": "Your daily rituals, now with a sparkling twist. No Cords. No Counters. No Limits.",
+        "button_label": "Shop Systems"
+      },
+      "blocks": {
+        "s1": { "type": "slide", "settings": { "fallback_image": "hero-slideshow-1" } },
+        "s2": { "type": "slide", "settings": { "fallback_image": "hero-slideshow-2" } },
+        "s3": { "type": "slide", "settings": { "fallback_image": "hero-slideshow-3" } }
+      },
+      "block_order": ["s1", "s2", "s3"]
+    },
+    "moments": {
+      "type": "ks-moments-shop-the-look",
+      "blocks": {
+        "mo1": { "type": "moment", "settings": { "col_span": 7, "fallback_image": "hero-slideshow-1", "badge": "Wellness", "title": "Find Your Flow", "body": "Customize the level of bubbles from mild to wild.", "hotspot_image": "hotspot-sage-green", "hotspot_position": "top-1/3 left-1/3" } },
+        "mo2": { "type": "moment", "settings": { "col_span": 5, "fallback_image": "hero-hiker-sunrise", "badge": "Family", "title": "Refreshing Sidelines", "body": "Share the crisp taste of fresh bubbles with those who matter most.", "hotspot_image": "hotspot-arctic-white", "hotspot_position": "top-1/2 right-1/4" } },
+        "mo3": { "type": "moment", "settings": { "col_span": 5, "fallback_image": "beach-arctic-white", "badge": "Adventure", "title": "Peak Hydration", "body": "Seamless, lightweight design fits in your bag and seals tight.", "hotspot_image": "hotspot-charcoal-black", "hotspot_position": "top-1/2 left-1/2" } },
+        "mo4": { "type": "moment", "settings": { "col_span": 7, "fallback_image": "flavor-packs-lifestyle", "badge": "Relaxation", "title": "Pristine Bubbles", "body": "Sip crisp bubbles, every time.", "hotspot_image": "hotspot-arctic-white", "hotspot_position": "top-1/3 right-1/3" } }
+      },
+      "block_order": ["mo1", "mo2", "mo3", "mo4"]
+    },
+    "window": {
+      "type": "ks-kinetic-spark-window",
+      "settings": {}
+    }
+  },
+  "order": ["slideshow", "moments", "window"]
+}

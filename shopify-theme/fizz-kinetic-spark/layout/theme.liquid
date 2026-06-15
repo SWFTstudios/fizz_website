@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}" class="{% if template.name == 'index' %}fizz-home-html{% else %}dark{% endif %}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% render 'meta-tags' %}
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+
+    {{ 'kinetic-spark.css' | asset_url | stylesheet_tag }}
+    {% if template.name == 'index' %}
+      {{ 'fizz-home.css' | asset_url | stylesheet_tag }}
+    {% endif %}
+    {{ content_for_header }}
+  </head>
+
+  <body class="{% if template.name == 'index' %}fizz-home overflow-x-hidden{% else %}ks-theme overflow-x-hidden{% endif %}">
+    {% sections 'header-group' %}
+    <main id="main-content" class="{% unless template.name == 'index' %}pt-20{% endunless %}">
+      {{ content_for_layout }}
+    </main>
+    {% sections 'footer-group' %}
+
+    {% if template.name == 'index' %}
+      <script src="{{ 'gsap.min.js' | asset_url }}" defer></script>
+      <script src="{{ 'ScrollTrigger.min.js' | asset_url }}" defer></script>
+      <script src="{{ 'fizz-home.js' | asset_url }}" defer></script>
+    {% else %}
+      <script src="{{ 'kinetic-spark.js' | asset_url }}" defer></script>
+    {% endif %}
+  </body>
+</html>
