@@ -1,0 +1,157 @@
+<section class="fizz-flavors-collection" aria-label="{{ section.settings.heading | escape }}">
+  <div class="fizz-flavors-collection__hero">
+    {% if section.settings.eyebrow != blank %}
+      <p class="fizz-flavors-collection__eyebrow">{{ section.settings.eyebrow }}</p>
+    {% endif %}
+    <h1>{{ section.settings.heading }}</h1>
+    {% if section.settings.subheading != blank %}
+      <p class="fizz-flavors-collection__lead">{{ section.settings.subheading }}</p>
+    {% endif %}
+  </div>
+
+  <div class="fizz-flavors-collection__grid">
+    {% assign flavor_collection = collections[section.settings.collection] %}
+    {% if flavor_collection and flavor_collection.products_count > 0 %}
+      {% for product in flavor_collection.products limit: section.settings.product_limit %}
+        {% liquid
+          assign pack_slug = product.metafields.custom.pack_slug
+          if pack_slug == blank
+            assign pack_slug = product.handle
+          endif
+        %}
+        <article class="fizz-flavor-card">
+          <div class="fizz-flavor-card__media">
+            {% if product.featured_image %}
+              {{ product.featured_image | image_url: width: 900 | image_tag: class: 'fizz-flavor-pack-img', loading: 'lazy', alt: product.title }}
+            {% else %}
+              {% render 'fizz-flavor-pack-img', slug: pack_slug, alt: product.title, class: 'fizz-flavor-pack-img' %}
+            {% endif %}
+          </div>
+          <div class="fizz-flavor-card__body">
+            <span class="fizz-flavor-card__badge">Natural</span>
+            <h2>{{ product.title }}</h2>
+            <p>{{ product.description | strip_html | truncate: 180 }}</p>
+            <div class="fizz-flavor-card__meta">
+              <span>{{ product.price | money }} / sachet</span>
+              <span>Box of 10</span>
+            </div>
+            <form method="post" action="{{ routes.cart_add_url }}">
+              <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+              <button type="submit" class="fizz-flavor-card__cta">Add to cart</button>
+            </form>
+          </div>
+        </article>
+      {% endfor %}
+    {% else %}
+      {% for block in section.blocks %}
+        <article class="fizz-flavor-card" {{ block.shopify_attributes }}>
+          <div class="fizz-flavor-card__media">
+            {% if block.settings.image != blank %}
+              {{ block.settings.image | image_url: width: 900 | image_tag: class: 'fizz-flavor-pack-img', loading: 'lazy', alt: block.settings.title }}
+            {% else %}
+              {% render 'fizz-flavor-pack-img', slug: block.settings.pack_slug, alt: block.settings.title, class: 'fizz-flavor-pack-img' %}
+            {% endif %}
+          </div>
+          <div class="fizz-flavor-card__body">
+            {% if block.settings.badge != blank %}
+              <span class="fizz-flavor-card__badge">{{ block.settings.badge }}</span>
+            {% endif %}
+            <h2>{{ block.settings.title }}</h2>
+            <p>{{ block.settings.body }}</p>
+            <div class="fizz-flavor-card__meta">
+              <span>{{ block.settings.price_label }}</span>
+              <span>{{ block.settings.pack_label }}</span>
+            </div>
+            {% if block.settings.product != blank %}
+              <form method="post" action="{{ routes.cart_add_url }}">
+                <input type="hidden" name="id" value="{{ block.settings.product.selected_or_first_available_variant.id }}">
+                <button type="submit" class="fizz-flavor-card__cta">Add to cart</button>
+              </form>
+            {% endif %}
+          </div>
+        </article>
+      {% endfor %}
+    {% endif %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Fizz flavors collection",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Fizz5" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Instant Flavors" },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "On-the-go sachets made with natural flavors. Pick your finish, fizz, and go."
+    },
+    { "type": "collection", "id": "collection", "label": "Flavors collection" },
+    { "type": "range", "id": "product_limit", "label": "Products to show", "min": 1, "max": 12, "step": 1, "default": 6 }
+  ],
+  "blocks": [
+    {
+      "type": "flavor",
+      "name": "Flavor",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Title", "default": "Orange Tangerine" },
+        {
+          "type": "select",
+          "id": "pack_slug",
+          "label": "Pack image",
+          "options": [
+            { "value": "orange-tangerine", "label": "Orange Tangerine" },
+            { "value": "zesty-lime", "label": "Zesty Lime" },
+            { "value": "mixed-berry", "label": "Mixed Berry" }
+          ],
+          "default": "orange-tangerine"
+        },
+        { "type": "image_picker", "id": "image", "label": "Custom pack image" },
+        { "type": "text", "id": "badge", "label": "Badge", "default": "Natural" },
+        { "type": "textarea", "id": "body", "label": "Description" },
+        { "type": "text", "id": "price_label", "label": "Price label", "default": "$1.50 / SACHET" },
+        { "type": "text", "id": "pack_label", "label": "Pack label", "default": "Box of 10" },
+        { "type": "product", "id": "product", "label": "Product" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Fizz flavors collection",
+      "blocks": [
+        {
+          "type": "flavor",
+          "settings": {
+            "title": "Orange Tangerine",
+            "pack_slug": "orange-tangerine",
+            "body": "A bright citrus burst crafted from real orange and tangerine extracts.",
+            "price_label": "$1.50 / SACHET",
+            "pack_label": "Box of 10"
+          }
+        },
+        {
+          "type": "flavor",
+          "settings": {
+            "title": "Zesty Lime",
+            "pack_slug": "zesty-lime",
+            "body": "Crisp, refreshing lime flavor with a clean sparkling finish.",
+            "price_label": "$1.50 / SACHET",
+            "pack_label": "Box of 10"
+          }
+        },
+        {
+          "type": "flavor",
+          "settings": {
+            "title": "Mixed Berry",
+            "pack_slug": "mixed-berry",
+            "body": "Blueberry and raspberry notes blended for a bold berry sparkle.",
+            "price_label": "$1.50 / SACHET",
+            "pack_label": "Box of 10"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

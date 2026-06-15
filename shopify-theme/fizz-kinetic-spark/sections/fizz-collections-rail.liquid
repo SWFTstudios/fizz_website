@@ -11,7 +11,8 @@
       <button type="button" data-fizz-rail-next aria-label="Scroll right">→</button>
     </div>
   </div>
-  <div class="fizz-collections-rail__track" data-fizz-rail-track>
+  <div class="fizz-collections-rail__viewport">
+    <div class="fizz-collections-rail__track" data-fizz-rail-track>
     {% if section.settings.collection != blank %}
       {% for product in section.settings.collection.products limit: section.settings.product_limit %}
         <a href="{{ product.url }}" class="fizz-product-card">
@@ -33,6 +34,7 @@
         </div>
       {% endfor %}
     {% endif %}
+    </div>
   </div>
 </section>
 

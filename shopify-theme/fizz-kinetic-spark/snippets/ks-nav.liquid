@@ -7,8 +7,24 @@
 %}
 <nav class="{{ nav_classes }}" aria-label="Main"{% if template.name == 'index' %} data-fizz-nav data-nav-theme="dark"{% endif %}>
   <div class="flex justify-between items-center px-margin-mobile md:px-margin-desktop h-20 max-w-max-width mx-auto">
-    <a href="{{ routes.root_url }}" class="fizz-nav-brand font-headline-lg text-headline-lg-mobile md:text-headline-lg tracking-tighter uppercase font-bold">
-      {{ shop.name | default: 'FIZZ' }}
+    <a href="{{ routes.root_url }}" class="fizz-nav-brand inline-flex items-center" aria-label="{{ shop.name | default: 'Fizz' }} home">
+      <img
+        src="{{ 'fizz-logo-white.png' | asset_url }}"
+        alt=""
+        class="fizz-nav-logo fizz-nav-logo--light"
+        width="120"
+        height="40"
+        loading="eager"
+      >
+      <img
+        src="{{ 'fizz-logo-black.avif' | asset_url }}"
+        alt=""
+        class="fizz-nav-logo fizz-nav-logo--dark"
+        width="120"
+        height="40"
+        loading="eager"
+      >
+      <span class="sr-only">{{ shop.name | default: 'Fizz' }}</span>
     </a>
 
     <div class="hidden md:flex gap-8 font-label-caps text-label-caps uppercase">

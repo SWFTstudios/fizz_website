@@ -1,19 +1,17 @@
 {
   "sections": {
-    "hero": {
-      "type": "ks-collection-hero",
-      "settings": {}
-    },
-    "products": {
-      "type": "ks-product-grid",
-      "settings": {}
-    },
-    "flavors": {
-      "type": "ks-flavor-collection-grid",
-      "settings": { "collection": "flavors" },
+    "main": {
+      "type": "fizz-flavors-collection",
+      "settings": {
+        "eyebrow": "Fizz5",
+        "heading": "Instant Flavors",
+        "subheading": "On-the-go sachets made with natural flavors. Pick your finish, fizz, and go.",
+        "collection": "flavors",
+        "product_limit": 6
+      },
       "blocks": {
-        "fc1": {
-          "type": "flavor_card",
+        "f1": {
+          "type": "flavor",
           "settings": {
             "title": "Orange Tangerine",
             "pack_slug": "orange-tangerine",
@@ -23,8 +21,8 @@
             "pack_label": "Box of 10"
           }
         },
-        "fc2": {
-          "type": "flavor_card",
+        "f2": {
+          "type": "flavor",
           "settings": {
             "title": "Zesty Lime",
             "pack_slug": "zesty-lime",
@@ -34,8 +32,8 @@
             "pack_label": "Box of 10"
           }
         },
-        "fc3": {
-          "type": "flavor_card",
+        "f3": {
+          "type": "flavor",
           "settings": {
             "title": "Mixed Berry",
             "pack_slug": "mixed-berry",
@@ -46,17 +44,8 @@
           }
         }
       },
-      "block_order": ["fc1", "fc2", "fc3"]
-    },
-    "science": {
-      "type": "ks-science-block",
-      "blocks": {
-        "sf1": { "type": "feature", "settings": { "icon": "water_drop", "label": "Micro-bubble technology" } },
-        "sf2": { "type": "feature", "settings": { "icon": "speed", "label": "Instant carbonation" } },
-        "sf3": { "type": "feature", "settings": { "icon": "recycling", "label": "Sustainable design" } }
-      },
-      "block_order": ["sf1", "sf2", "sf3"]
+      "block_order": ["f1", "f2", "f3"]
     }
   },
-  "order": ["hero", "products", "flavors", "science"]
+  "order": ["main"]
 }
