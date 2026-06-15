@@ -1,64 +1,151 @@
 {
   "sections": {
     "hero": {
-      "type": "ks-hero-sparkle",
+      "type": "fizz-hero-slider",
+      "blocks": {
+        "slide_1": {
+          "type": "slide",
+          "settings": {
+            "theme_preset": "slide-1",
+            "media_type": "video",
+            "video_url": "https://cdn.prod.website-files.com/69f88c02240c0cd6011f809d/69fb6ab828d94dcf19a4cf3a_sparkling-blue-bokeh-light-abstract-background-2025-12-17-06-46-25-utc_v1%20%281080p%29_mp4.mp4"
+          }
+        },
+        "slide_2": {
+          "type": "slide",
+          "settings": {
+            "theme_preset": "slide-2",
+            "media_type": "video",
+            "video_url": ""
+          }
+        },
+        "slide_3": {
+          "type": "slide",
+          "settings": {
+            "theme_preset": "slide-3",
+            "media_type": "image",
+            "bottle_slug": "coral-orange",
+            "image_alt": "Fizz Coral Orange bottle on a sunny terrace"
+          }
+        },
+        "slide_4": {
+          "type": "slide",
+          "settings": {
+            "theme_preset": "slide-4",
+            "media_type": "image",
+            "bottle_slug": "charcoal-black",
+            "image_alt": "Fizz Charcoal Black bottle at an evening gathering"
+          }
+        },
+        "slide_5": {
+          "type": "slide",
+          "settings": {
+            "theme_preset": "slide-5",
+            "media_type": "image",
+            "bottle_slug": "sage-green",
+            "image_alt": "Fizz Sage Green bottle in a calm kitchen"
+          }
+        },
+        "slide_6": {
+          "type": "slide",
+          "settings": {
+            "theme_preset": "slide-6",
+            "media_type": "image",
+            "bottle_slug": "steel-navy",
+            "image_alt": "Fizz Steel Navy bottle at a creative desk"
+          }
+        },
+        "slide_7": {
+          "type": "slide",
+          "settings": {
+            "theme_preset": "slide-7",
+            "media_type": "image",
+            "bottle_slug": "arctic-white",
+            "image_alt": "Fizz Arctic White bottle poolside"
+          }
+        },
+        "slide_8": {
+          "type": "slide",
+          "settings": {
+            "theme_preset": "slide-8",
+            "media_type": "image",
+            "bottle_slug": "electric-blue",
+            "image_alt": "Fizz Electric Blue bottle outdoors"
+          }
+        }
+      },
+      "block_order": ["slide_1", "slide_2", "slide_3", "slide_4", "slide_5", "slide_6", "slide_7", "slide_8"],
       "settings": {
-        "heading": "Elevate Every Drop.",
-        "subheading": "Engineered for high-performance living. Fizz delivers precision carbonation and essential minerals for your active journey.",
-        "primary_label": "SHOP THE COLLECTION",
-        "secondary_label": "OUR SCIENCE"
+        "heading_small": "Elevate Your",
+        "heading_large": "Hydration",
+        "subtext": "Enjoy healthy, hydrating flavor. Now with a sparkling twist.",
+        "cta_label": "Fizz Up Your Day",
+        "show_marquee": true,
+        "autoplay_seconds": 4,
+        "enable_scroll_animation": true,
+        "scroll_track_vh": 300,
+        "scroll_scale_end": 76
       }
     },
-    "bottles": {
-      "type": "ks-featured-bottles",
+    "intro": {
+      "type": "fizz-intro",
       "settings": {
-        "eyebrow": "The Lineup",
-        "heading": "BOLD BOTTLES",
-        "view_all_label": "VIEW ALL BOTTLES",
+        "heading": "Carbonation you can take anywhere",
+        "body": "Fizz is a portable carbonation bottle paired with our in-house flavor packs so you can liven up your water and your day in seconds. Just add some Fizz.",
+        "primary_label": "Shop",
+        "secondary_label": "Explore"
+      }
+    },
+    "promo": {
+      "type": "fizz-promo",
+      "settings": {
+        "text": "Free shipping on orders $50+"
+      }
+    },
+    "tiles": {
+      "type": "fizz-category-tiles",
+      "blocks": {
+        "t1": { "type": "tile", "settings": { "title": "Shop Bottles" } },
+        "t2": { "type": "tile", "settings": { "title": "Flavor Packs" } },
+        "t3": { "type": "tile", "settings": { "title": "CO₂ Refills" } }
+      },
+      "block_order": ["t1", "t2", "t3"]
+    },
+    "new_arrivals": {
+      "type": "fizz-collections-rail",
+      "settings": {
+        "heading": "New Arrivals",
+        "subheading": "Pick your finish.",
         "collection": "bottles",
-        "product_limit": 4
+        "product_limit": 8
       }
     },
-    "mission": {
-      "type": "ks-brand-mission",
-      "settings": {}
-    },
-    "flavor_cta": {
-      "type": "ks-flavor-cta",
-      "settings": {}
-    },
-    "flavors": {
-      "type": "ks-flavor-grid",
+    "usps": {
+      "type": "fizz-usp-grid",
       "blocks": {
-        "f1": { "type": "flavor", "settings": { "title": "Blood Orange", "price_label": "$1.50 / SACHET", "fallback_image": "flavor-blood-orange" } },
-        "f2": { "type": "flavor", "settings": { "title": "Zesty Lime", "price_label": "$1.50 / SACHET", "fallback_image": "flavor-zesty-lime" } },
-        "f3": { "type": "flavor", "settings": { "title": "Crisp Cucumber", "price_label": "$1.50 / SACHET", "fallback_image": "flavor-crisp-cucumber" } }
+        "u1": { "type": "usp", "settings": { "title": "12L per cartridge", "body": "One Fizz cartridge replaces a case of cans." } },
+        "u2": { "type": "usp", "settings": { "title": "Portable fizz", "body": "Carbonation you can take anywhere." } },
+        "u3": { "type": "usp", "settings": { "title": "Real flavor", "body": "In-house flavor packs in seconds." } }
       },
-      "block_order": ["f1", "f2", "f3"]
+      "block_order": ["u1", "u2", "u3"]
     },
-    "benefits": {
-      "type": "ks-benefits",
-      "blocks": {
-        "b1": { "type": "benefit", "settings": { "icon": "bubbles", "title": "Carbonation on the go", "body": "Our patented compression tech maintains perfect fizz levels for up to 12 hours after opening." } },
-        "b2": { "type": "benefit", "settings": { "icon": "eco", "title": "Eco-friendly canister", "body": "100% infinitely recyclable aluminum with a low-impact manufacturing process." } },
-        "b3": { "type": "benefit", "settings": { "icon": "precision_manufacturing", "title": "Premium craftsmanship", "body": "Every bottle is leak-tested and quality-assured for peak performance in extreme conditions." } }
-      },
-      "block_order": ["b1", "b2", "b3"]
-    },
-    "masonry": {
-      "type": "ks-lifestyle-masonry",
-      "blocks": {
-        "m1": { "type": "image", "settings": { "size": "large", "fallback_image": "hero-hiker-sunrise", "caption": "CITRUS GROVE / 08:45 AM" } },
-        "m2": { "type": "image", "settings": { "size": "wide", "fallback_image": "beach-arctic-white", "caption": "ARCTIC SHORE / 02:20 PM" } },
-        "m3": { "type": "image", "settings": { "fallback_image": "flavor-packs-lifestyle", "caption": "LIME SANCTUARY / 07:15 AM" } },
-        "m4": { "type": "social", "settings": { "caption": "TAG US @FIZZ_KINETIC" } }
-      },
-      "block_order": ["m1", "m2", "m3", "m4"]
+    "trending": {
+      "type": "fizz-collections-rail",
+      "settings": {
+        "heading": "Trending",
+        "subheading": "What everyone's fizzing.",
+        "collection": "bottles",
+        "product_limit": 6
+      }
     },
     "newsletter": {
-      "type": "ks-newsletter",
-      "settings": {}
+      "type": "fizz-newsletter",
+      "settings": {
+        "heading": "Stay in the know",
+        "body": "Enter your email to know when Fizz drops new flavors.",
+        "button_label": "Join waitlist"
+      }
     }
   },
-  "order": ["hero", "bottles", "mission", "flavor_cta", "flavors", "benefits", "masonry", "newsletter"]
+  "order": ["hero", "intro", "promo", "tiles", "new_arrivals", "usps", "trending", "newsletter"]
 }

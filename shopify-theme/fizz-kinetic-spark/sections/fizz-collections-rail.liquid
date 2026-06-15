@@ -1,0 +1,50 @@
+<section class="fizz-collections-rail" data-fizz-collections-rail aria-label="{{ section.settings.heading | escape }}">
+  <div class="fizz-collections-rail__header">
+    <div>
+      <h2>{{ section.settings.heading }}</h2>
+      {% if section.settings.subheading != blank %}
+        <p>{{ section.settings.subheading }}</p>
+      {% endif %}
+    </div>
+    <div>
+      <button type="button" data-fizz-rail-prev aria-label="Scroll left">←</button>
+      <button type="button" data-fizz-rail-next aria-label="Scroll right">→</button>
+    </div>
+  </div>
+  <div class="fizz-collections-rail__track" data-fizz-rail-track>
+    {% if section.settings.collection != blank %}
+      {% for product in section.settings.collection.products limit: section.settings.product_limit %}
+        <a href="{{ product.url }}" class="fizz-product-card">
+          <div class="fizz-product-card__media">
+            {% if product.featured_image %}
+              {{ product.featured_image | image_url: width: 600 | image_tag: loading: 'lazy', alt: product.title }}
+            {% endif %}
+          </div>
+          <p class="fizz-product-card__title">{{ product.title }}</p>
+          <p class="fizz-product-card__price">{{ product.price | money }}</p>
+        </a>
+      {% endfor %}
+    {% else %}
+      {% for i in (1..4) %}
+        <div class="fizz-product-card">
+          <div class="fizz-product-card__media"></div>
+          <p class="fizz-product-card__title">Product {{ i }}</p>
+          <p class="fizz-product-card__price">$34.00</p>
+        </div>
+      {% endfor %}
+    {% endif %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Fizz collections rail",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "New Arrivals" },
+    { "type": "text", "id": "subheading", "label": "Subheading", "default": "Pick your finish." },
+    { "type": "collection", "id": "collection", "label": "Collection" },
+    { "type": "range", "id": "product_limit", "label": "Products to show", "min": 2, "max": 12, "step": 1, "default": 8 }
+  ],
+  "presets": [{ "name": "Fizz collections rail" }]
+}
+{% endschema %}

@@ -6,11 +6,36 @@ Standalone Online Store 2.0 theme ported from Google Stitch (Kinetic Spark desig
 
 | Stitch screen | Theme template | Sections |
 |---------------|----------------|----------|
-| Color-Changing Sparkle Storefront | `templates/index.json` | `ks-hero-sparkle`, `ks-featured-bottles`, `ks-brand-mission`, `ks-flavor-cta`, `ks-flavor-grid`, `ks-benefits`, `ks-lifestyle-masonry`, `ks-newsletter` |
+| Color-Changing Sparkle Storefront | `templates/index.json` | **fizz5 homepage:** `fizz-hero-slider`, `fizz-intro`, `fizz-promo`, `fizz-category-tiles`, `fizz-collections-rail`, `fizz-usp-grid`, `fizz-newsletter` (no Lottie) |
 | Fizz Shop — Dark Lifestyle Collection | `templates/collection.json` | `ks-collection-hero`, `ks-product-grid`, `ks-flavor-collection-grid`, `ks-science-block` |
 | Aspirational Lifestyle + Shop the Look | `templates/page.lifestyle.json` | `ks-hero-slideshow`, `ks-moments-shop-the-look`, `ks-kinetic-spark-window` |
 
 Shared: `ks-header`, `ks-footer`, snippets `ks-nav`, `ks-product-card`, `ks-button`, `ks-stitch-img`.
+
+## Liquid & AI toolkit (Cursor)
+
+Two layers: **editor** support while you write Liquid, and **agent** support so Cursor validates theme code against Shopify schemas.
+
+### Editor (Liquid language server)
+
+1. Install the [Shopify Liquid](https://marketplace.visualstudio.com/items?itemName=Shopify.theme-check-vscode) extension when Cursor prompts (see `.vscode/extensions.json`), or run **Extensions: Install Extensions** and search `Shopify Liquid`.
+2. Reload Cursor. Open any file under `shopify-theme/fizz-kinetic-spark/` — you should get syntax highlighting, hover docs, completions, and Theme Check diagnostics.
+3. Format-on-save for `.liquid` is enabled in `.vscode/settings.json`.
+
+The extension uses Shopify CLI’s language server (`shopify theme language-server`). Requires Shopify CLI installed (you already have this for `shopify theme dev`).
+
+### Agent (Shopify AI Toolkit)
+
+For AI-assisted theme work, use one or both:
+
+| Method | Status in this repo |
+|--------|---------------------|
+| **Cursor plugin** | Run `/add-plugin shopify` in chat, or install from [Cursor Marketplace](https://cursor.com/marketplace/shopify) |
+| **Dev MCP** | `user-shopify-dev-mcp` — docs search, `validate_theme`, GraphQL validation |
+
+Liquid validation in MCP is automatic on the latest `@shopify/dev-mcp` ([changelog](https://shopify.dev/changelog/dev-mcp-now-supports-liquid)). When editing theme files, the agent should call `validate_theme` with `absoluteThemePath` pointing at `shopify-theme/fizz-kinetic-spark/`.
+
+Docs: [Shopify AI Toolkit](https://shopify.dev/docs/apps/build/ai-toolkit) · [Liquid language server](https://shopify.dev/docs/storefronts/themes/tools/cli/language-server)
 
 ## Development
 

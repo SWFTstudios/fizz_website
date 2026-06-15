@@ -1,0 +1,344 @@
+<section class="fizz-hero-section" id="hero--content" aria-label="Hero" data-fizz-hero data-autoplay-ms="{{ section.settings.autoplay_seconds | times: 1000 }}">
+  <div
+    class="fizz-hero-track"
+    data-fizz-hero-track
+    data-scroll-enabled="{{ section.settings.enable_scroll_animation }}"
+    data-scroll-scale-end="{{ section.settings.scroll_scale_end | times: 0.01 }}"
+    style="height: {{ section.settings.scroll_track_vh }}vh;"
+  >
+    {% if section.settings.show_marquee %}
+      <div class="fizz-carousel-wrapper" data-fizz-carousel aria-hidden="true">
+        <div class="fizz-text-wrapper">
+          <div class="fizz-carousel-div-wrapper fizz-carousel-row">
+            <div class="fizz-carousel-flex">
+              {% for i in (1..8) %}
+                <img
+                  src="{% if section.settings.logo_dark %}{{ section.settings.logo_dark | image_url: width: 1200 }}{% else %}{{ 'fizz-logo-black.avif' | asset_url }}{% endif %}"
+                  alt=""
+                  class="fizz-carousel-image"
+                  loading="lazy"
+                  width="800"
+                  height="200"
+                >
+                <img
+                  src="{% if section.settings.logo_light %}{{ section.settings.logo_light | image_url: width: 1200 }}{% else %}{{ 'fizz-logo-white.png' | asset_url }}{% endif %}"
+                  alt=""
+                  class="fizz-carousel-image"
+                  loading="lazy"
+                  width="800"
+                  height="200"
+                >
+              {% endfor %}
+            </div>
+          </div>
+          <div class="fizz-carousel-div-wrapper fizz-carousel-row is-reverse">
+            <div class="fizz-carousel-flex">
+              {% for i in (1..8) %}
+                <img
+                  src="{% if section.settings.logo_dark %}{{ section.settings.logo_dark | image_url: width: 1200 }}{% else %}{{ 'fizz-logo-black.avif' | asset_url }}{% endif %}"
+                  alt=""
+                  class="fizz-carousel-image"
+                  loading="lazy"
+                  width="800"
+                  height="200"
+                >
+                <img
+                  src="{% if section.settings.logo_light %}{{ section.settings.logo_light | image_url: width: 1200 }}{% else %}{{ 'fizz-logo-white.png' | asset_url }}{% endif %}"
+                  alt=""
+                  class="fizz-carousel-image"
+                  loading="lazy"
+                  width="800"
+                  height="200"
+                >
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+
+    <div class="fizz-video-bg" data-fizz-video-bg>
+      <div class="fizz-hero-content-wrap" data-fizz-hero-content>
+        <div class="fizz-hero-col-top">
+          <div class="fizz-hero-glass">
+            <p class="fizz-hero-heading-sm">{{ section.settings.heading_small }}</p>
+            <p class="fizz-hero-heading-lg">{{ section.settings.heading_large }}</p>
+          </div>
+        </div>
+        <div class="fizz-hero-col-bottom">
+          <div class="fizz-hero-glass">
+            <p class="fizz-hero-subtext">{{ section.settings.subtext }}</p>
+            {% if section.settings.cta_label != blank %}
+              <a href="{{ section.settings.cta_url | default: '#intro' }}" class="fizz-hero-cta">
+                {{ section.settings.cta_label }} ↓
+              </a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <div class="fizz-hero-slider" data-fizz-hero-slider>
+        <div class="fizz-hero-mask">
+          {% for block in section.blocks %}
+            {% liquid
+              assign preset = block.settings.theme_preset | default: 'slide-1'
+              assign media_type = block.settings.media_type
+              if media_type == blank
+                if block.settings.bottle_slug != blank
+                  assign media_type = 'image'
+                else
+                  assign media_type = 'video'
+                endif
+              endif
+            %}
+            <div
+              class="fizz-hero-slide{% if forloop.first %} is-active{% endif %}"
+              data-fizz-hero-slide
+              data-theme-preset="{{ preset }}"
+              aria-hidden="{% if forloop.first %}false{% else %}true{% endif %}"
+              {{ block.shopify_attributes }}
+            >
+              <div class="fizz-hero-media">
+                {% if media_type == 'image' %}
+                  {% if block.settings.bottle_slug != blank %}
+                    <div class="fizz-hero-slide-bg fizz-hero-slide-bg--{{ block.settings.bottle_slug }}" aria-hidden="true"></div>
+                  {% endif %}
+                  {% liquid
+                    assign desktop_src = block.settings.image | image_url: width: 2400
+                    assign mobile_src = block.settings.image_mobile | image_url: width: 1200
+                    if block.settings.image == blank and block.settings.bottle_slug != blank
+                      assign desktop_src = 'hero-lifestyle-' | append: block.settings.bottle_slug | append: '.png' | asset_url
+                      assign mobile_src = 'hero-lifestyle-' | append: block.settings.bottle_slug | append: '-mobile.png' | asset_url
+                    endif
+                  %}
+                  <img
+                    class="fizz-hero-lifestyle"
+                    src="{{ desktop_src }}"
+                    data-desktop-src="{{ desktop_src }}"
+                    {% if mobile_src != blank %}
+                      data-mobile-src="{{ mobile_src }}"
+                    {% endif %}
+                    alt="{{ block.settings.image_alt | escape }}"
+                    loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+                    width="1920"
+                    height="1080"
+                  >
+                {% else %}
+                  {% if block.settings.video != blank %}
+                    {{ block.settings.video | video_tag: autoplay: true, loop: true, muted: true, playsinline: true, class: 'fizz-hero-video' }}
+                  {% elsif block.settings.video_url != blank %}
+                    <video autoplay loop muted playsinline class="fizz-hero-video"{% if block.settings.video_poster != blank %} poster="{{ block.settings.video_poster | image_url: width: 1920 }}"{% endif %}>
+                      <source src="{{ block.settings.video_url }}" type="video/mp4">
+                    </video>
+                  {% elsif preset == 'slide-2' %}
+                    <video autoplay loop muted playsinline class="fizz-hero-video">
+                      <source src="{{ 'fizz-hero-bubbles.mp4' | asset_url }}" type="video/mp4">
+                    </video>
+                  {% endif %}
+                {% endif %}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+        <div class="fizz-hero-dots" data-fizz-hero-dots role="tablist" aria-label="Hero slides"></div>
+      </div>
+
+      <button type="button" class="fizz-slide-arrow fizz-slide-arrow--left" data-fizz-prev aria-label="Previous slide">
+        <img src="{{ 'fizz-arrow-left.svg' | asset_url }}" alt="" width="24" height="24">
+      </button>
+      <button type="button" class="fizz-slide-arrow fizz-slide-arrow--right" data-fizz-next aria-label="Next slide">
+        <img src="{{ 'fizz-arrow-right.svg' | asset_url }}" alt="" width="24" height="24">
+      </button>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Fizz hero slider",
+  "max_blocks": 12,
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading_small",
+      "label": "Heading line 1",
+      "default": "Elevate Your"
+    },
+    {
+      "type": "text",
+      "id": "heading_large",
+      "label": "Heading line 2",
+      "default": "Hydration"
+    },
+    {
+      "type": "textarea",
+      "id": "subtext",
+      "label": "Subtext",
+      "default": "Enjoy healthy, hydrating flavor. Now with a sparkling twist."
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "CTA label",
+      "default": "Fizz Up Your Day"
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "CTA link"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_marquee",
+      "label": "Show logo marquee",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "logo_dark",
+      "label": "Marquee logo (dark)"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo_light",
+      "label": "Marquee logo (light)"
+    },
+    {
+      "type": "range",
+      "id": "autoplay_seconds",
+      "label": "Autoplay interval (seconds)",
+      "min": 0,
+      "max": 12,
+      "step": 1,
+      "default": 4,
+      "info": "Set to 0 to disable autoplay"
+    },
+    {
+      "type": "header",
+      "content": "Scroll animation"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_scroll_animation",
+      "label": "Enable hero scroll scale (Webflow-style)",
+      "default": true,
+      "info": "Sticky hero frame scales down as you scroll through the track"
+    },
+    {
+      "type": "range",
+      "id": "scroll_track_vh",
+      "label": "Scroll track height (vh)",
+      "min": 200,
+      "max": 400,
+      "step": 10,
+      "default": 300,
+      "info": "Webflow uses 300vh — more height = longer scale animation"
+    },
+    {
+      "type": "range",
+      "id": "scroll_scale_end",
+      "label": "Scale at end of scroll (%)",
+      "min": 50,
+      "max": 100,
+      "step": 1,
+      "default": 76,
+      "info": "Webflow scrubs the sticky frame from 100% down to this size"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Slide",
+      "settings": [
+        {
+          "type": "select",
+          "id": "theme_preset",
+          "label": "Color theme",
+          "options": [
+            { "value": "slide-1", "label": "Blue bokeh (light)" },
+            { "value": "slide-2", "label": "Black bubbles (dark)" },
+            { "value": "slide-3", "label": "Coral orange" },
+            { "value": "slide-4", "label": "Charcoal black" },
+            { "value": "slide-5", "label": "Sage green" },
+            { "value": "slide-6", "label": "Steel navy" },
+            { "value": "slide-7", "label": "Arctic white" },
+            { "value": "slide-8", "label": "Electric blue" }
+          ],
+          "default": "slide-1"
+        },
+        {
+          "type": "select",
+          "id": "media_type",
+          "label": "Media type",
+          "options": [
+            { "value": "video", "label": "Video" },
+            { "value": "image", "label": "Lifestyle image" }
+          ],
+          "default": "video"
+        },
+        {
+          "type": "video",
+          "id": "video",
+          "label": "Video upload"
+        },
+        {
+          "type": "text",
+          "id": "video_url",
+          "label": "Video URL (MP4)",
+          "info": "Used when no video is uploaded"
+        },
+        {
+          "type": "image_picker",
+          "id": "video_poster",
+          "label": "Video poster"
+        },
+        {
+          "type": "select",
+          "id": "bottle_slug",
+          "label": "Lifestyle bottle (fallback asset)",
+          "options": [
+            { "value": "", "label": "None" },
+            { "value": "coral-orange", "label": "Coral orange" },
+            { "value": "charcoal-black", "label": "Charcoal black" },
+            { "value": "sage-green", "label": "Sage green" },
+            { "value": "steel-navy", "label": "Steel navy" },
+            { "value": "arctic-white", "label": "Arctic white" },
+            { "value": "electric-blue", "label": "Electric blue" }
+          ],
+          "default": ""
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Lifestyle image (desktop)"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_mobile",
+          "label": "Lifestyle image (mobile)"
+        },
+        {
+          "type": "text",
+          "id": "image_alt",
+          "label": "Image alt text"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Fizz hero slider",
+      "blocks": [
+        { "type": "slide", "settings": { "theme_preset": "slide-1", "media_type": "video", "video_url": "https://cdn.prod.website-files.com/69f88c02240c0cd6011f809d/69fb6ab828d94dcf19a4cf3a_sparkling-blue-bokeh-light-abstract-background-2025-12-17-06-46-25-utc_v1%20%281080p%29_mp4.mp4" } },
+        { "type": "slide", "settings": { "theme_preset": "slide-2", "media_type": "video", "video_url": "https://cdn.prod.website-files.com/69f88c02240c0cd6011f809d/69fb6ab828d94dcf19a4cf3a_sparkling-blue-bokeh-light-abstract-background-2025-12-17-06-46-25-utc_v1%20%281080p%29_mp4.mp4" } },
+        { "type": "slide", "settings": { "theme_preset": "slide-3", "media_type": "image", "bottle_slug": "coral-orange", "image_alt": "Fizz Coral Orange bottle" } },
+        { "type": "slide", "settings": { "theme_preset": "slide-4", "media_type": "image", "bottle_slug": "charcoal-black", "image_alt": "Fizz Charcoal Black bottle" } },
+        { "type": "slide", "settings": { "theme_preset": "slide-5", "media_type": "image", "bottle_slug": "sage-green", "image_alt": "Fizz Sage Green bottle" } },
+        { "type": "slide", "settings": { "theme_preset": "slide-6", "media_type": "image", "bottle_slug": "steel-navy", "image_alt": "Fizz Steel Navy bottle" } },
+        { "type": "slide", "settings": { "theme_preset": "slide-7", "media_type": "image", "bottle_slug": "arctic-white", "image_alt": "Fizz Arctic White bottle" } },
+        { "type": "slide", "settings": { "theme_preset": "slide-8", "media_type": "image", "bottle_slug": "electric-blue", "image_alt": "Fizz Electric Blue bottle" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
