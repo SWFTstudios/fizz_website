@@ -12,13 +12,15 @@
         </a>
       {% endif %}
     </div>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
       {% if flavor_collection and flavor_collection.products_count > 0 %}
         {% for product in flavor_collection.products limit: 4 %}
           <div class="glass-card--shop rounded-xl overflow-hidden flex flex-col md:flex-row bg-gradient-to-br from-surface-container to-surface-container-highest">
-            <div class="w-full md:w-1/2 p-8 flex items-center justify-center">
+            <div class="w-full md:w-1/2 p-8 flex items-center justify-center bg-black">
               {% if product.featured_image %}
-                {{ product.featured_image | image_url: width: 400 | image_tag: class: 'max-h-[300px] object-contain drop-shadow-2xl' }}
+                {{ product.featured_image | image_url: width: 500 | image_tag: class: 'max-h-[360px] w-auto object-contain', alt: product.title }}
+              {% else %}
+                {% render 'fizz-flavor-pack-img', slug: product.handle, alt: product.title, class: 'max-h-[360px] w-auto object-contain' %}
               {% endif %}
             </div>
             <div class="w-full md:w-1/2 p-8 flex flex-col justify-center">
@@ -34,8 +36,14 @@
       {% else %}
         {% for block in section.blocks %}
           <div class="glass-card--shop rounded-xl overflow-hidden flex flex-col md:flex-row bg-gradient-to-br from-surface-container to-surface-container-highest" {{ block.shopify_attributes }}>
-            <div class="w-full md:w-1/2 p-8 flex items-center justify-center">
-              {% render 'ks-stitch-img', name: block.settings.fallback_image, alt: block.settings.title, class: 'max-h-[300px] object-contain drop-shadow-2xl' %}
+            <div class="w-full md:w-1/2 p-8 flex items-center justify-center bg-black">
+              {% if block.settings.image != blank %}
+                {{ block.settings.image | image_url: width: 500 | image_tag: class: 'max-h-[360px] w-auto object-contain', alt: block.settings.title }}
+              {% elsif block.settings.pack_slug != blank %}
+                {% render 'fizz-flavor-pack-img', slug: block.settings.pack_slug, alt: block.settings.title, class: 'max-h-[360px] w-auto object-contain' %}
+              {% else %}
+                {% render 'ks-stitch-img', name: block.settings.fallback_image, alt: block.settings.title, class: 'max-h-[300px] object-contain drop-shadow-2xl' %}
+              {% endif %}
             </div>
             <div class="w-full md:w-1/2 p-8 flex flex-col justify-center">
               {% if block.settings.badge != blank %}
@@ -76,7 +84,20 @@
         { "type": "textarea", "id": "body", "label": "Body" },
         { "type": "text", "id": "price_label", "label": "Price", "default": "$1.50 / SACHET" },
         { "type": "text", "id": "pack_label", "label": "Pack label", "default": "Box of 10" },
-        { "type": "text", "id": "fallback_image", "label": "Fallback image", "default": "flavor-orange-tangerine" },
+        {
+          "type": "select",
+          "id": "pack_slug",
+          "label": "Pack image",
+          "options": [
+            { "value": "", "label": "Use fallback image" },
+            { "value": "orange-tangerine", "label": "Orange Tangerine" },
+            { "value": "zesty-lime", "label": "Zesty Lime" },
+            { "value": "mixed-berry", "label": "Mixed Berry" }
+          ],
+          "default": "orange-tangerine"
+        },
+        { "type": "image_picker", "id": "image", "label": "Custom pack image" },
+        { "type": "text", "id": "fallback_image", "label": "Fallback stitch image", "default": "flavor-orange-tangerine" },
         { "type": "product", "id": "product", "label": "Product" }
       ]
     }
@@ -85,8 +106,9 @@
     {
       "name": "KS Flavor Collection Grid",
       "blocks": [
-        { "type": "flavor_card", "settings": { "title": "Orange Tangerine", "fallback_image": "flavor-orange-tangerine", "body": "A bright, citrus burst crafted from real fruit extracts." } },
-        { "type": "flavor_card", "settings": { "title": "Citrus Collection Box", "badge": "Multipack", "price_label": "$15.00", "fallback_image": "flavor-orange-tangerine", "body": "Stock up on your favorite citrus notes." } }
+        { "type": "flavor_card", "settings": { "title": "Orange Tangerine", "pack_slug": "orange-tangerine", "badge": "Natural", "body": "A bright citrus burst crafted from real orange and tangerine extracts.", "price_label": "$1.50 / SACHET", "pack_label": "Box of 10" } },
+        { "type": "flavor_card", "settings": { "title": "Zesty Lime", "pack_slug": "zesty-lime", "badge": "Natural", "body": "Crisp, refreshing lime flavor with a clean sparkling finish.", "price_label": "$1.50 / SACHET", "pack_label": "Box of 10" } },
+        { "type": "flavor_card", "settings": { "title": "Mixed Berry", "pack_slug": "mixed-berry", "badge": "Natural", "body": "Blueberry and raspberry notes blended for a bold berry sparkle.", "price_label": "$1.50 / SACHET", "pack_label": "Box of 10" } }
       ]
     }
   ]

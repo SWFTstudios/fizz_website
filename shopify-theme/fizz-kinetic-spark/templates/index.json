@@ -10,7 +10,23 @@
             "heading_large": "Hydration",
             "subtext": "Enjoy healthy, hydrating flavor. Now with a sparkling twist.",
             "cta_label": "Fizz Up Your Day",
-            "cta_url": ""
+            "cta_url": "",
+            "top_glass_corner_radius": 2,
+            "top_glass_padding_y": 20,
+            "top_glass_padding_x": 24,
+            "top_glass_shadow_enabled": true,
+            "top_glass_shadow_y": 8,
+            "top_glass_shadow_blur": 32,
+            "top_glass_shadow_spread": -8,
+            "top_glass_shadow_opacity": 15,
+            "bottom_glass_corner_radius": 2,
+            "bottom_glass_padding_y": 20,
+            "bottom_glass_padding_x": 24,
+            "bottom_glass_shadow_enabled": true,
+            "bottom_glass_shadow_y": 8,
+            "bottom_glass_shadow_blur": 32,
+            "bottom_glass_shadow_spread": -8,
+            "bottom_glass_shadow_opacity": 15
           }
         },
         "slide_1": {

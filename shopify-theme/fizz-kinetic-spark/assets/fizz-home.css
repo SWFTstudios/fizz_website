@@ -24,6 +24,22 @@
   border-color: var(--fizz-nav-fg, #fff);
 }
 
+.fizz-nav-overlay .fizz-nav-logo--light {
+  display: block;
+}
+
+.fizz-nav-overlay .fizz-nav-logo--dark {
+  display: none;
+}
+
+.fizz-nav-overlay[data-nav-theme="light"] .fizz-nav-logo--light {
+  display: none;
+}
+
+.fizz-nav-overlay[data-nav-theme="light"] .fizz-nav-logo--dark {
+  display: block;
+}
+
 .fizz-nav-overlay[data-nav-theme="light"] .fizz-nav-brand,
 .fizz-nav-overlay[data-nav-theme="light"] .fizz-nav-link,
 .fizz-nav-overlay[data-nav-theme="light"] .material-symbols-outlined {
@@ -52,6 +68,34 @@
   width: 100%;
 }
 
+/* Sticky stack: logo field + video frame share one viewport while track scrolls (no fixed bleed). */
+.fizz-hero-track .fizz-carousel-wrapper {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  margin: 0 auto -100dvh;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.fizz-hero-track .fizz-carousel-wrapper.is-hidden {
+  visibility: hidden;
+  opacity: 0;
+}
+
+.fizz-hero-track .fizz-text-wrapper {
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
 .fizz-hero-track .fizz-video-bg {
   position: sticky;
   top: 0;
@@ -70,29 +114,6 @@
   transform-origin: center center;
   transform-style: preserve-3d;
   will-change: transform;
-}
-
-/* Fixed logo field — stays in viewport while hero-track scrolls (Webflow .carousel-wrapper) */
-.fizz-hero-track .fizz-carousel-wrapper {
-  position: fixed;
-  inset: 0;
-  z-index: 1;
-  width: 100%;
-  height: 100vh;
-  height: 100dvh;
-  margin: 0 auto;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.fizz-hero-track .fizz-text-wrapper {
-  display: flex;
-  flex-flow: column;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
 }
 
 .fizz-hero-track .fizz-carousel-div-wrapper {
@@ -166,12 +187,11 @@
 
 .fizz-hero-glass {
   display: inline-block;
-  padding: 1.25rem 1.5rem;
-  border-radius: 0.125rem;
   border: 1px solid rgba(255, 255, 255, 0.22);
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(12px) saturate(150%);
   -webkit-backdrop-filter: blur(12px) saturate(150%);
+  transition: border-radius 300ms ease, box-shadow 300ms ease, padding 300ms ease;
 }
 
 .fizz-hero-track[data-slide-theme="slide-7"] .fizz-hero-glass,
@@ -362,7 +382,7 @@
 
 .fizz-intro {
   position: relative;
-  z-index: 2;
+  z-index: 3;
   min-height: 100vh;
   background: #030303;
   color: #fff;
@@ -426,6 +446,8 @@
 }
 
 .fizz-promo {
+  position: relative;
+  z-index: 2;
   background: #184f66;
   color: #fff;
   text-align: center;
@@ -436,6 +458,8 @@
 }
 
 .fizz-tiles {
+  position: relative;
+  z-index: 2;
   padding: 4rem 2.5rem;
   background: #f4f1ec;
   color: #111;
@@ -480,6 +504,8 @@
 }
 
 .fizz-collections-rail {
+  position: relative;
+  z-index: 2;
   padding: 4rem 0 5rem;
   background: #fff;
   color: #111;
@@ -494,12 +520,31 @@
   margin: 0 auto;
 }
 
+.fizz-collections-rail__header h2 {
+  margin: 0 0 0.5rem;
+  font-size: clamp(2rem, 5vw, 3.25rem);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.fizz-collections-rail__header p {
+  margin: 0;
+  opacity: 0.75;
+}
+
+.fizz-collections-rail__viewport {
+  overflow: hidden;
+  padding: 0 0 0.5rem;
+}
+
 .fizz-collections-rail__track {
   display: flex;
   gap: 1rem;
+  align-items: flex-end;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   padding: 0 2.5rem 1rem;
+  min-height: min(60vh, 520px);
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
 }
@@ -507,14 +552,16 @@
 .fizz-collections-rail__track::-webkit-scrollbar { display: none; }
 
 .fizz-product-card {
-  flex: 0 0 280px;
+  flex: 0 0 auto;
+  width: calc(min(60vh, 520px) * 3 / 4);
   scroll-snap-align: start;
   text-decoration: none;
   color: inherit;
 }
 
 .fizz-product-card__media {
-  aspect-ratio: 3/4;
+  aspect-ratio: 3 / 4;
+  height: min(60vh, 520px);
   background: #f4f1ec;
   overflow: hidden;
   margin-bottom: 0.75rem;
@@ -538,6 +585,8 @@
 }
 
 .fizz-usp-grid {
+  position: relative;
+  z-index: 2;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 2rem;
@@ -563,6 +612,8 @@
 }
 
 .fizz-newsletter {
+  position: relative;
+  z-index: 2;
   padding: 5rem 2.5rem;
   background: #184f66;
   color: #fff;
@@ -632,5 +683,149 @@
   .fizz-hero-track .fizz-video-bg {
     transform: none !important;
     will-change: auto;
+  }
+}
+
+/* Flavors collection */
+.fizz-flavors-collection {
+  position: relative;
+  z-index: 2;
+  padding: 6rem 2.5rem 5rem;
+  background: #030303;
+  color: #fff;
+}
+
+.fizz-flavors-collection__hero {
+  max-width: 720px;
+  margin: 0 auto 4rem;
+  text-align: center;
+}
+
+.fizz-flavors-collection__eyebrow {
+  margin: 0 0 1rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.65;
+}
+
+.fizz-flavors-collection h1 {
+  margin: 0 0 1rem;
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  text-transform: uppercase;
+  letter-spacing: -0.03em;
+}
+
+.fizz-flavors-collection__lead {
+  margin: 0;
+  font-size: 1.125rem;
+  line-height: 1.5;
+  opacity: 0.8;
+}
+
+.fizz-flavors-collection__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.fizz-flavor-card {
+  display: flex;
+  flex-direction: column;
+  background: #111;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.fizz-flavor-card__media {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 380px;
+  padding: 2rem 1.5rem 1rem;
+  background: #000;
+}
+
+.fizz-flavor-pack-img {
+  width: auto;
+  max-width: 100%;
+  max-height: 340px;
+  object-fit: contain;
+}
+
+.fizz-flavor-card__body {
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.fizz-flavor-card__badge {
+  display: inline-block;
+  width: fit-content;
+  margin-bottom: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid rgba(255, 127, 80, 0.35);
+  border-radius: 4px;
+  color: #ff7f50;
+  font-size: 0.625rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.fizz-flavor-card h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.fizz-flavor-card p {
+  margin: 0 0 1.25rem;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  opacity: 0.75;
+  flex: 1;
+}
+
+.fizz-flavor-card__meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.fizz-flavor-card__meta span:first-child {
+  color: #7eb8d4;
+}
+
+.fizz-flavor-card__cta {
+  width: 100%;
+  padding: 0.875rem 1.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 100px;
+  background: transparent;
+  color: inherit;
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 200ms ease;
+}
+
+.fizz-flavor-card__cta:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+@media (max-width: 991px) {
+  .fizz-flavors-collection__grid {
+    grid-template-columns: 1fr;
+    max-width: 420px;
   }
 }

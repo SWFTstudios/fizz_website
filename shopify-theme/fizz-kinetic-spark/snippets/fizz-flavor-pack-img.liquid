@@ -1,0 +1,12 @@
+{% comment %}
+  Renders a FIZZ flavor sachet pack from assets/flavor-pack-{slug}.png
+  Usage: {% render 'fizz-flavor-pack-img', slug: 'orange-tangerine', alt: 'Orange Tangerine', class: 'fizz-flavor-pack-img' %}
+{% endcomment %}
+<img
+  src="{{ 'flavor-pack-' | append: slug | append: '.png' | asset_url }}"
+  alt="{{ alt | default: '' | escape }}"
+  class="{{ class }}"
+  loading="lazy"
+  width="800"
+  height="1000"
+>

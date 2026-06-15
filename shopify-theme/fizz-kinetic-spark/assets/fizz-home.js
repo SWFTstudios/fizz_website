@@ -106,15 +106,19 @@
     );
 
     if (carousel) {
+      function setCarouselVisible(visible) {
+        carousel.classList.toggle("is-hidden", !visible);
+      }
+
       ScrollTrigger.create({
         trigger: track,
         start: "top top",
         end: "bottom top",
         onLeave: function () {
-          carousel.style.visibility = "hidden";
+          setCarouselVisible(false);
         },
         onEnterBack: function () {
-          carousel.style.visibility = "visible";
+          setCarouselVisible(true);
         },
       });
     }

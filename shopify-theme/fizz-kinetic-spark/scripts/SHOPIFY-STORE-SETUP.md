@@ -17,12 +17,26 @@ Create six products with these **handles** (must match for collection automation
 
 Copy descriptions from [`src/lib/shopData.ts`](../../../src/lib/shopData.ts). Upload bottle images from [`public/images/bottles/`](../../../public/images/bottles/) or use Stitch assets (`assets/stitch-*.jpg`).
 
+## 1b. Flavor products
+
+Create three flavor sachet products with these **handles** (must match pack image slugs):
+
+| Handle | Title | Suggested price | Pack image asset |
+|--------|-------|-----------------|------------------|
+| `orange-tangerine` | Orange Tangerine | $1.50 | `flavor-pack-orange-tangerine.png` |
+| `zesty-lime` | Zesty Lime | $1.50 | `flavor-pack-zesty-lime.png` |
+| `mixed-berry` | Mixed Berry | $1.50 | `flavor-pack-mixed-berry.png` |
+
+Upload each product’s featured image from `assets/flavor-pack-*.png` in the theme (or use theme fallback blocks until products exist).
+
 ## 2. Collections
 
 | Handle | Title | Rule |
 |--------|-------|------|
 | `bottles` | Bold Bottles | Manual or automated — include all six bottle products |
-| `flavors` | Instant Flavors | Flavor sachets / multipacks (create as needed) |
+| `flavors` | Instant Flavors | Include all three flavor sachet products |
+
+**Flavors collection template:** In Admin → Collections → Instant Flavors → Theme template, choose **`flavors`** (`collection.flavors.json`) for the dedicated 3-pack grid page at `/collections/flavors`.
 
 Assign `templates/collection.json` sections by visiting any collection — the theme uses the default collection template.
 
