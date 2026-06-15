@@ -1,0 +1,21 @@
+{%- liquid
+  assign radius = radius | default: 2
+  assign pad_y = pad_y | default: 20
+  assign pad_x = pad_x | default: 24
+  assign shadow_y = shadow_y | default: 8
+  assign shadow_blur = shadow_blur | default: 32
+  assign shadow_spread = shadow_spread | default: -8
+  assign shadow_opacity = shadow_opacity | default: 15
+  assign use_shadow = true
+  if shadow_enabled == false
+    assign use_shadow = false
+  endif
+
+  assign style = 'border-radius:' | append: radius | append: 'px;padding:' | append: pad_y | append: 'px ' | append: pad_x | append: 'px;'
+  if use_shadow
+    assign shadow_alpha = shadow_opacity | times: 0.01
+    assign style = style | append: 'box-shadow:0 ' | append: shadow_y | append: 'px ' | append: shadow_blur | append: 'px ' | append: shadow_spread | append: 'px rgba(0,0,0,' | append: shadow_alpha | append: ');'
+  else
+    assign style = style | append: 'box-shadow:none;'
+  endif
+-%}{{- style -}}

@@ -59,20 +59,110 @@
 
     {% liquid
       assign hero_copy = section.blocks | where: 'type', 'hero_text' | first
+      assign legacy_radius = 2
+      assign legacy_shadow_y = 8
+      assign legacy_shadow_blur = 32
+      assign legacy_shadow_spread = -8
+      assign legacy_shadow_opacity = 15
+      assign legacy_shadow_enabled = true
+
       if hero_copy
         assign heading_small = hero_copy.settings.heading_small
         assign heading_large = hero_copy.settings.heading_large
         assign subtext = hero_copy.settings.subtext
         assign cta_label = hero_copy.settings.cta_label
         assign cta_url = hero_copy.settings.cta_url
+        assign legacy_radius = hero_copy.settings.glass_corner_radius | default: 2
+        assign legacy_shadow_y = hero_copy.settings.glass_shadow_y | default: 8
+        assign legacy_shadow_blur = hero_copy.settings.glass_shadow_blur | default: 32
+        assign legacy_shadow_spread = hero_copy.settings.glass_shadow_spread | default: -8
+        assign legacy_shadow_opacity = hero_copy.settings.glass_shadow_opacity | default: 15
+        if hero_copy.settings.glass_shadow_enabled == true
+          assign legacy_shadow_enabled = true
+        elsif hero_copy.settings.glass_shadow_enabled == false
+          assign legacy_shadow_enabled = false
+        else
+          assign legacy_shadow_enabled = true
+        endif
+
+        assign top_radius = hero_copy.settings.top_glass_corner_radius | default: legacy_radius
+        assign top_pad_y = hero_copy.settings.top_glass_padding_y | default: 20
+        assign top_pad_x = hero_copy.settings.top_glass_padding_x | default: 24
+        assign top_shadow_y = hero_copy.settings.top_glass_shadow_y | default: legacy_shadow_y
+        assign top_shadow_blur = hero_copy.settings.top_glass_shadow_blur | default: legacy_shadow_blur
+        assign top_shadow_spread = hero_copy.settings.top_glass_shadow_spread | default: legacy_shadow_spread
+        assign top_shadow_opacity = hero_copy.settings.top_glass_shadow_opacity | default: legacy_shadow_opacity
+        if hero_copy.settings.top_glass_shadow_enabled == true
+          assign top_shadow_enabled = true
+        elsif hero_copy.settings.top_glass_shadow_enabled == false
+          assign top_shadow_enabled = false
+        else
+          assign top_shadow_enabled = legacy_shadow_enabled
+        endif
+
+        assign bottom_radius = hero_copy.settings.bottom_glass_corner_radius | default: legacy_radius
+        assign bottom_pad_y = hero_copy.settings.bottom_glass_padding_y | default: 20
+        assign bottom_pad_x = hero_copy.settings.bottom_glass_padding_x | default: 24
+        assign bottom_shadow_y = hero_copy.settings.bottom_glass_shadow_y | default: legacy_shadow_y
+        assign bottom_shadow_blur = hero_copy.settings.bottom_glass_shadow_blur | default: legacy_shadow_blur
+        assign bottom_shadow_spread = hero_copy.settings.bottom_glass_shadow_spread | default: legacy_shadow_spread
+        assign bottom_shadow_opacity = hero_copy.settings.bottom_glass_shadow_opacity | default: legacy_shadow_opacity
+        if hero_copy.settings.bottom_glass_shadow_enabled == true
+          assign bottom_shadow_enabled = true
+        elsif hero_copy.settings.bottom_glass_shadow_enabled == false
+          assign bottom_shadow_enabled = false
+        else
+          assign bottom_shadow_enabled = legacy_shadow_enabled
+        endif
       else
         assign heading_small = section.settings.heading_small
         assign heading_large = section.settings.heading_large
         assign subtext = section.settings.subtext
         assign cta_label = section.settings.cta_label
         assign cta_url = section.settings.cta_url
+        assign top_radius = legacy_radius
+        assign top_pad_y = 20
+        assign top_pad_x = 24
+        assign top_shadow_enabled = legacy_shadow_enabled
+        assign top_shadow_y = legacy_shadow_y
+        assign top_shadow_blur = legacy_shadow_blur
+        assign top_shadow_spread = legacy_shadow_spread
+        assign top_shadow_opacity = legacy_shadow_opacity
+        assign bottom_radius = legacy_radius
+        assign bottom_pad_y = 20
+        assign bottom_pad_x = 24
+        assign bottom_shadow_enabled = legacy_shadow_enabled
+        assign bottom_shadow_y = legacy_shadow_y
+        assign bottom_shadow_blur = legacy_shadow_blur
+        assign bottom_shadow_spread = legacy_shadow_spread
+        assign bottom_shadow_opacity = legacy_shadow_opacity
       endif
     %}
+
+    {% capture top_glass_style %}
+      {% render 'fizz-hero-glass-style',
+        radius: top_radius,
+        pad_y: top_pad_y,
+        pad_x: top_pad_x,
+        shadow_enabled: top_shadow_enabled,
+        shadow_y: top_shadow_y,
+        shadow_blur: top_shadow_blur,
+        shadow_spread: top_shadow_spread,
+        shadow_opacity: top_shadow_opacity
+      %}
+    {% endcapture %}
+    {% capture bottom_glass_style %}
+      {% render 'fizz-hero-glass-style',
+        radius: bottom_radius,
+        pad_y: bottom_pad_y,
+        pad_x: bottom_pad_x,
+        shadow_enabled: bottom_shadow_enabled,
+        shadow_y: bottom_shadow_y,
+        shadow_blur: bottom_shadow_blur,
+        shadow_spread: bottom_shadow_spread,
+        shadow_opacity: bottom_shadow_opacity
+      %}
+    {% endcapture %}
 
     <div class="fizz-video-bg" data-fizz-video-bg>
       <div
@@ -81,7 +171,7 @@
         {% if hero_copy %}{{ hero_copy.shopify_attributes }}{% endif %}
       >
         <div class="fizz-hero-col-top">
-          <div class="fizz-hero-glass">
+          <div class="fizz-hero-glass" style="{{ top_glass_style | strip }}">
             {% if heading_small != blank %}
               <p class="fizz-hero-heading-sm">{{ heading_small }}</p>
             {% endif %}
@@ -91,7 +181,7 @@
           </div>
         </div>
         <div class="fizz-hero-col-bottom">
-          <div class="fizz-hero-glass">
+          <div class="fizz-hero-glass" style="{{ bottom_glass_style | strip }}">
             {% if subtext != blank %}
               <p class="fizz-hero-subtext">{{ subtext }}</p>
             {% endif %}
@@ -291,6 +381,166 @@
           "id": "cta_url",
           "label": "CTA link",
           "info": "Defaults to the intro section (#intro) when empty"
+        },
+        {
+          "type": "header",
+          "content": "Top card (headline)"
+        },
+        {
+          "type": "range",
+          "id": "top_glass_corner_radius",
+          "label": "Corner radius",
+          "min": 0,
+          "max": 48,
+          "step": 1,
+          "unit": "px",
+          "default": 2
+        },
+        {
+          "type": "range",
+          "id": "top_glass_padding_y",
+          "label": "Padding vertical",
+          "min": 0,
+          "max": 64,
+          "step": 1,
+          "unit": "px",
+          "default": 20
+        },
+        {
+          "type": "range",
+          "id": "top_glass_padding_x",
+          "label": "Padding horizontal",
+          "min": 0,
+          "max": 64,
+          "step": 1,
+          "unit": "px",
+          "default": 24
+        },
+        {
+          "type": "checkbox",
+          "id": "top_glass_shadow_enabled",
+          "label": "Show drop shadow",
+          "default": true
+        },
+        {
+          "type": "range",
+          "id": "top_glass_shadow_y",
+          "label": "Shadow offset Y",
+          "min": 0,
+          "max": 40,
+          "step": 1,
+          "unit": "px",
+          "default": 8
+        },
+        {
+          "type": "range",
+          "id": "top_glass_shadow_blur",
+          "label": "Shadow blur",
+          "min": 0,
+          "max": 80,
+          "step": 1,
+          "unit": "px",
+          "default": 32
+        },
+        {
+          "type": "range",
+          "id": "top_glass_shadow_spread",
+          "label": "Shadow spread",
+          "min": -40,
+          "max": 20,
+          "step": 1,
+          "unit": "px",
+          "default": -8
+        },
+        {
+          "type": "range",
+          "id": "top_glass_shadow_opacity",
+          "label": "Shadow opacity",
+          "min": 0,
+          "max": 100,
+          "step": 5,
+          "unit": "%",
+          "default": 15
+        },
+        {
+          "type": "header",
+          "content": "Bottom card (subtext & CTA)"
+        },
+        {
+          "type": "range",
+          "id": "bottom_glass_corner_radius",
+          "label": "Corner radius",
+          "min": 0,
+          "max": 48,
+          "step": 1,
+          "unit": "px",
+          "default": 2
+        },
+        {
+          "type": "range",
+          "id": "bottom_glass_padding_y",
+          "label": "Padding vertical",
+          "min": 0,
+          "max": 64,
+          "step": 1,
+          "unit": "px",
+          "default": 20
+        },
+        {
+          "type": "range",
+          "id": "bottom_glass_padding_x",
+          "label": "Padding horizontal",
+          "min": 0,
+          "max": 64,
+          "step": 1,
+          "unit": "px",
+          "default": 24
+        },
+        {
+          "type": "checkbox",
+          "id": "bottom_glass_shadow_enabled",
+          "label": "Show drop shadow",
+          "default": true
+        },
+        {
+          "type": "range",
+          "id": "bottom_glass_shadow_y",
+          "label": "Shadow offset Y",
+          "min": 0,
+          "max": 40,
+          "step": 1,
+          "unit": "px",
+          "default": 8
+        },
+        {
+          "type": "range",
+          "id": "bottom_glass_shadow_blur",
+          "label": "Shadow blur",
+          "min": 0,
+          "max": 80,
+          "step": 1,
+          "unit": "px",
+          "default": 32
+        },
+        {
+          "type": "range",
+          "id": "bottom_glass_shadow_spread",
+          "label": "Shadow spread",
+          "min": -40,
+          "max": 20,
+          "step": 1,
+          "unit": "px",
+          "default": -8
+        },
+        {
+          "type": "range",
+          "id": "bottom_glass_shadow_opacity",
+          "label": "Shadow opacity",
+          "min": 0,
+          "max": 100,
+          "step": 5,
+          "unit": "%",
+          "default": 15
         }
       ]
     },
@@ -383,7 +633,23 @@
             "heading_small": "Elevate Your",
             "heading_large": "Hydration",
             "subtext": "Enjoy healthy, hydrating flavor. Now with a sparkling twist.",
-            "cta_label": "Fizz Up Your Day"
+            "cta_label": "Fizz Up Your Day",
+            "top_glass_corner_radius": 2,
+            "top_glass_padding_y": 20,
+            "top_glass_padding_x": 24,
+            "top_glass_shadow_enabled": true,
+            "top_glass_shadow_y": 8,
+            "top_glass_shadow_blur": 32,
+            "top_glass_shadow_spread": -8,
+            "top_glass_shadow_opacity": 15,
+            "bottom_glass_corner_radius": 2,
+            "bottom_glass_padding_y": 20,
+            "bottom_glass_padding_x": 24,
+            "bottom_glass_shadow_enabled": true,
+            "bottom_glass_shadow_y": 8,
+            "bottom_glass_shadow_blur": 32,
+            "bottom_glass_shadow_spread": -8,
+            "bottom_glass_shadow_opacity": 15
           }
         },
         { "type": "slide", "settings": { "theme_preset": "slide-1", "media_type": "video", "video_url": "https://cdn.prod.website-files.com/69f88c02240c0cd6011f809d/69fb6ab828d94dcf19a4cf3a_sparkling-blue-bokeh-light-abstract-background-2025-12-17-06-46-25-utc_v1%20%281080p%29_mp4.mp4" } },

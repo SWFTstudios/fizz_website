@@ -166,12 +166,11 @@
 
 .fizz-hero-glass {
   display: inline-block;
-  padding: 1.25rem 1.5rem;
-  border-radius: 0.125rem;
   border: 1px solid rgba(255, 255, 255, 0.22);
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(12px) saturate(150%);
   -webkit-backdrop-filter: blur(12px) saturate(150%);
+  transition: border-radius 300ms ease, box-shadow 300ms ease, padding 300ms ease;
 }
 
 .fizz-hero-track[data-slide-theme="slide-7"] .fizz-hero-glass,
