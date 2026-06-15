@@ -57,20 +57,47 @@
       </div>
     {% endif %}
 
+    {% liquid
+      assign hero_copy = section.blocks | where: 'type', 'hero_text' | first
+      if hero_copy
+        assign heading_small = hero_copy.settings.heading_small
+        assign heading_large = hero_copy.settings.heading_large
+        assign subtext = hero_copy.settings.subtext
+        assign cta_label = hero_copy.settings.cta_label
+        assign cta_url = hero_copy.settings.cta_url
+      else
+        assign heading_small = section.settings.heading_small
+        assign heading_large = section.settings.heading_large
+        assign subtext = section.settings.subtext
+        assign cta_label = section.settings.cta_label
+        assign cta_url = section.settings.cta_url
+      endif
+    %}
+
     <div class="fizz-video-bg" data-fizz-video-bg>
-      <div class="fizz-hero-content-wrap" data-fizz-hero-content>
+      <div
+        class="fizz-hero-content-wrap"
+        data-fizz-hero-content
+        {% if hero_copy %}{{ hero_copy.shopify_attributes }}{% endif %}
+      >
         <div class="fizz-hero-col-top">
           <div class="fizz-hero-glass">
-            <p class="fizz-hero-heading-sm">{{ section.settings.heading_small }}</p>
-            <p class="fizz-hero-heading-lg">{{ section.settings.heading_large }}</p>
+            {% if heading_small != blank %}
+              <p class="fizz-hero-heading-sm">{{ heading_small }}</p>
+            {% endif %}
+            {% if heading_large != blank %}
+              <p class="fizz-hero-heading-lg">{{ heading_large }}</p>
+            {% endif %}
           </div>
         </div>
         <div class="fizz-hero-col-bottom">
           <div class="fizz-hero-glass">
-            <p class="fizz-hero-subtext">{{ section.settings.subtext }}</p>
-            {% if section.settings.cta_label != blank %}
-              <a href="{{ section.settings.cta_url | default: '#intro' }}" class="fizz-hero-cta">
-                {{ section.settings.cta_label }} ↓
+            {% if subtext != blank %}
+              <p class="fizz-hero-subtext">{{ subtext }}</p>
+            {% endif %}
+            {% if cta_label != blank %}
+              <a href="{{ cta_url | default: '#intro' }}" class="fizz-hero-cta">
+                {{ cta_label }} ↓
               </a>
             {% endif %}
           </div>
@@ -159,33 +186,8 @@
   "max_blocks": 12,
   "settings": [
     {
-      "type": "text",
-      "id": "heading_small",
-      "label": "Heading line 1",
-      "default": "Elevate Your"
-    },
-    {
-      "type": "text",
-      "id": "heading_large",
-      "label": "Heading line 2",
-      "default": "Hydration"
-    },
-    {
-      "type": "textarea",
-      "id": "subtext",
-      "label": "Subtext",
-      "default": "Enjoy healthy, hydrating flavor. Now with a sparkling twist."
-    },
-    {
-      "type": "text",
-      "id": "cta_label",
-      "label": "CTA label",
-      "default": "Fizz Up Your Day"
-    },
-    {
-      "type": "url",
-      "id": "cta_url",
-      "label": "CTA link"
+      "type": "paragraph",
+      "content": "Edit the hero headline, subtext, and CTA in the **Hero text** block below (or click the text overlay in the preview)."
     },
     {
       "type": "checkbox",
@@ -246,6 +248,52 @@
     }
   ],
   "blocks": [
+    {
+      "type": "hero_text",
+      "name": "Hero text",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "header",
+          "content": "Headline"
+        },
+        {
+          "type": "text",
+          "id": "heading_small",
+          "label": "Heading line 1",
+          "default": "Elevate Your"
+        },
+        {
+          "type": "text",
+          "id": "heading_large",
+          "label": "Heading line 2",
+          "default": "Hydration"
+        },
+        {
+          "type": "header",
+          "content": "Subtext & CTA"
+        },
+        {
+          "type": "textarea",
+          "id": "subtext",
+          "label": "Subtext",
+          "default": "Enjoy healthy, hydrating flavor. Now with a sparkling twist."
+        },
+        {
+          "type": "text",
+          "id": "cta_label",
+          "label": "CTA label",
+          "default": "Fizz Up Your Day",
+          "info": "Leave blank to hide the button"
+        },
+        {
+          "type": "url",
+          "id": "cta_url",
+          "label": "CTA link",
+          "info": "Defaults to the intro section (#intro) when empty"
+        }
+      ]
+    },
     {
       "type": "slide",
       "name": "Slide",
@@ -329,6 +377,15 @@
     {
       "name": "Fizz hero slider",
       "blocks": [
+        {
+          "type": "hero_text",
+          "settings": {
+            "heading_small": "Elevate Your",
+            "heading_large": "Hydration",
+            "subtext": "Enjoy healthy, hydrating flavor. Now with a sparkling twist.",
+            "cta_label": "Fizz Up Your Day"
+          }
+        },
         { "type": "slide", "settings": { "theme_preset": "slide-1", "media_type": "video", "video_url": "https://cdn.prod.website-files.com/69f88c02240c0cd6011f809d/69fb6ab828d94dcf19a4cf3a_sparkling-blue-bokeh-light-abstract-background-2025-12-17-06-46-25-utc_v1%20%281080p%29_mp4.mp4" } },
         { "type": "slide", "settings": { "theme_preset": "slide-2", "media_type": "video", "video_url": "https://cdn.prod.website-files.com/69f88c02240c0cd6011f809d/69fb6ab828d94dcf19a4cf3a_sparkling-blue-bokeh-light-abstract-background-2025-12-17-06-46-25-utc_v1%20%281080p%29_mp4.mp4" } },
         { "type": "slide", "settings": { "theme_preset": "slide-3", "media_type": "image", "bottle_slug": "coral-orange", "image_alt": "Fizz Coral Orange bottle" } },
