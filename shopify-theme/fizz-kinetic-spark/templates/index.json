@@ -10,7 +10,7 @@
             "heading_large": "Hydration",
             "subtext": "Enjoy healthy, hydrating flavor. Now with a sparkling twist.",
             "cta_label": "Fizz Up Your Day",
-            "cta_url": "",
+            "cta_url": "#lifestyle-mosaic",
             "top_glass_corner_radius": 2,
             "top_glass_padding_y": 20,
             "top_glass_padding_x": 24,
@@ -109,6 +109,114 @@
         "scroll_scale_end": 76
       }
     },
+    "lifestyle_mosaic": {
+      "type": "fizz-lifestyle-mosaic",
+      "settings": {
+        "eyebrow": "Shop by finish",
+        "heading": "Moments of Sparkle",
+        "subheading": "Make sparkling water anywhere. Pick the finish that fits your ritual.",
+        "card_cta_label": "Shop this finish"
+      },
+      "blocks": {
+        "m1": {
+          "type": "lifestyle_card",
+          "settings": {
+            "color_slug": "coral-orange",
+            "col_span": 8,
+            "row_span": 1,
+            "col_start": "auto",
+            "badge": "Wellness",
+            "title": "Sunny Terrace",
+            "body": "Bright citrus energy for your morning ritual.",
+            "show_button": true,
+            "button_style": "link",
+            "link_mode": "bottle_variant",
+            "card_clickable": false
+          }
+        },
+        "m2": {
+          "type": "lifestyle_card",
+          "settings": {
+            "color_slug": "charcoal-black",
+            "col_span": 4,
+            "row_span": 2,
+            "col_start": "auto",
+            "badge": "Evening",
+            "title": "After Hours",
+            "body": "Sleek finish for dinner parties and nightcaps.",
+            "show_button": true,
+            "button_style": "link",
+            "link_mode": "bottle_variant",
+            "card_clickable": false
+          }
+        },
+        "m3": {
+          "type": "lifestyle_card",
+          "settings": {
+            "color_slug": "sage-green",
+            "col_span": 4,
+            "row_span": 1,
+            "col_start": "auto",
+            "badge": "Kitchen",
+            "title": "Calm Kitchen",
+            "body": "Soft, natural tones for everyday hydration.",
+            "show_button": true,
+            "button_style": "link",
+            "link_mode": "bottle_variant",
+            "card_clickable": false
+          }
+        },
+        "m4": {
+          "type": "lifestyle_card",
+          "settings": {
+            "color_slug": "steel-navy",
+            "col_span": 4,
+            "row_span": 1,
+            "col_start": "auto",
+            "badge": "Work",
+            "title": "Creative Desk",
+            "body": "Focused fizz between meetings and deep work.",
+            "show_button": true,
+            "button_style": "link",
+            "link_mode": "bottle_variant",
+            "card_clickable": false
+          }
+        },
+        "m5": {
+          "type": "lifestyle_card",
+          "settings": {
+            "color_slug": "arctic-white",
+            "col_span": 4,
+            "row_span": 1,
+            "col_start": "auto",
+            "badge": "Poolside",
+            "title": "Poolside",
+            "body": "Clean and crisp for sunny afternoons.",
+            "show_button": true,
+            "button_style": "link",
+            "link_mode": "bottle_variant",
+            "card_clickable": false
+          }
+        },
+        "m6": {
+          "type": "lifestyle_card",
+          "settings": {
+            "color_slug": "electric-blue",
+            "col_span": 8,
+            "row_span": 1,
+            "col_start": "auto",
+            "badge": "Adventure",
+            "title": "Outdoors",
+            "body": "Bold color for hikes, trails, and weekend escapes.",
+            "show_button": true,
+            "button_style": "link",
+            "link_mode": "bottle_variant",
+            "card_clickable": false
+          }
+        }
+      },
+      "block_order": ["m1", "m2", "m3", "m4", "m5", "m6"]
+    },
     "intro": {
       "type": "fizz-intro",
       "settings": {
@@ -127,9 +235,9 @@
     "tiles": {
       "type": "fizz-category-tiles",
       "blocks": {
-        "t1": { "type": "tile", "settings": { "title": "Shop Bottles" } },
-        "t2": { "type": "tile", "settings": { "title": "Flavor Packs" } },
-        "t3": { "type": "tile", "settings": { "title": "CO₂ Refills" } }
+        "t1": { "type": "tile", "settings": { "title": "Shop Bottles", "url": "/collections/bottles" } },
+        "t2": { "type": "tile", "settings": { "title": "Flavor Packs", "url": "/collections/flavor-packs" } },
+        "t3": { "type": "tile", "settings": { "title": "Fizz Charge", "url": "/collections/co2-canisters" } }
       },
       "block_order": ["t1", "t2", "t3"]
     },
@@ -169,5 +277,5 @@
       }
     }
   },
-  "order": ["hero", "intro", "promo", "tiles", "new_arrivals", "usps", "trending", "newsletter"]
+  "order": ["hero", "lifestyle_mosaic", "intro", "promo", "tiles", "new_arrivals", "usps", "trending", "newsletter"]
 }

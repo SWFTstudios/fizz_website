@@ -1,0 +1,13 @@
+{
+  "sections": {
+    "main": {
+      "type": "fizz-product-flavor-pack",
+      "settings": {
+        "eyebrow": "Flavor Pack",
+        "cta_label": "Add to cart",
+        "natural_copy": "Made with natural flavors — no high-fructose syrups."
+      }
+    }
+  },
+  "order": ["main"]
+}

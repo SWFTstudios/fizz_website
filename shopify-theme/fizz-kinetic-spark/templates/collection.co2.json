@@ -1,0 +1,39 @@
+{
+  "sections": {
+    "main": {
+      "type": "fizz-co2-collection",
+      "settings": {
+        "eyebrow": "Fizz5",
+        "heading": "Fizz Charge",
+        "subheading": "Refillable CO₂ canisters delivered on your schedule. One cartridge replaces a case of cans.",
+        "plan_label": "Delivery frequency",
+        "cta_label": "Subscribe & save"
+      },
+      "blocks": {
+        "b1": {
+          "type": "benefit",
+          "settings": {
+            "title": "12L per cartridge",
+            "body": "Each canister carbonates up to 12 liters of sparkling water."
+          }
+        },
+        "b2": {
+          "type": "benefit",
+          "settings": {
+            "title": "One case, replaced",
+            "body": "One Fizz cartridge replaces a case of cans — less waste, more fizz."
+          }
+        },
+        "b3": {
+          "type": "benefit",
+          "settings": {
+            "title": "Auto delivery",
+            "body": "Subscribe and never run dry. Swap in seconds when your bottle needs a boost."
+          }
+        }
+      },
+      "block_order": ["b1", "b2", "b3"]
+    }
+  },
+  "order": ["main"]
+}

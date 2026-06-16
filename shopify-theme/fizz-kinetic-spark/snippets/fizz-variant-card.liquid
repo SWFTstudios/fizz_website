@@ -1,0 +1,76 @@
+{% comment %}
+  Variant-level product card for consolidated parent products.
+  Usage: {% render 'fizz-variant-card', product: product, variant: variant, card_style: 'rail' %}
+  card_style: rail | flavor
+{% endcomment %}
+{% liquid
+  assign card_style = card_style | default: 'rail'
+  assign variant_title = variant.title
+  assign variant_url = product.url | append: '?variant=' | append: variant.id
+
+  assign pack_slug = variant.metafields.custom.pack_slug
+  if pack_slug == blank
+    assign flavor_key = variant_title | downcase
+    if flavor_key contains 'orange'
+      assign pack_slug = 'orange-tangerine'
+    elsif flavor_key contains 'lime'
+      assign pack_slug = 'zesty-lime'
+    elsif flavor_key contains 'berry'
+      assign pack_slug = 'mixed-berry'
+    endif
+  endif
+
+  assign color_slug = variant.metafields.custom.color_slug
+  if color_slug == blank
+    assign color_slug = variant_title | downcase | replace: ' ', '-'
+  endif
+%}
+
+{% if card_style == 'flavor' %}
+  <article class="fizz-flavor-card">
+    <div class="fizz-flavor-card__media">
+      {% if variant.image %}
+        {{ variant.image | image_url: width: 900 | image_tag: class: 'fizz-flavor-pack-img', loading: 'lazy', alt: variant_title }}
+      {% else %}
+        {% render 'fizz-flavor-pack-img', slug: pack_slug, alt: variant_title, class: 'fizz-flavor-pack-img' %}
+      {% endif %}
+    </div>
+    <div class="fizz-flavor-card__body">
+      <span class="fizz-flavor-card__badge">Natural</span>
+      <h2>{{ variant_title }}</h2>
+      {% if product.description != blank %}
+        <p>{{ product.description | strip_html | truncate: 180 }}</p>
+      {% endif %}
+      <div class="fizz-flavor-card__meta">
+        <span>{{ variant.price | money }} / sachet</span>
+        <span>Box of 10</span>
+      </div>
+      {% if variant.available %}
+        <form method="post" action="{{ routes.cart_add_url }}">
+          <input type="hidden" name="id" value="{{ variant.id }}">
+          <button type="submit" class="fizz-flavor-card__cta">Add to cart</button>
+        </form>
+      {% endif %}
+    </div>
+  </article>
+{% else %}
+  <a href="{{ variant_url }}" class="fizz-product-card">
+    <div class="fizz-product-card__media">
+      {% if variant.image %}
+        {{ variant.image | image_url: width: 600 | image_tag: loading: 'lazy', alt: variant_title }}
+      {% elsif product.featured_image %}
+        {{ product.featured_image | image_url: width: 600 | image_tag: loading: 'lazy', alt: variant_title }}
+      {% else %}
+        <img
+          src="{{ 'hero-lifestyle-' | append: color_slug | append: '.png' | asset_url }}"
+          alt="{{ variant_title | escape }}"
+          loading="lazy"
+          width="600"
+          height="800"
+        >
+      {% endif %}
+    </div>
+    <p class="fizz-product-card__title">{{ variant_title }}</p>
+    <p class="fizz-product-card__price">{{ variant.price | money }}</p>
+  </a>
+{% endif %}

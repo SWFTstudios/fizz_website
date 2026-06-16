@@ -10,9 +10,24 @@
   </div>
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
     {% if collection.products_count > 0 %}
-      {% for product in collection.products %}
-        {% render 'ks-product-card', product: product, style: 'full' %}
-      {% endfor %}
+      {% liquid
+        assign use_variants = false
+        if collection.products_count == 1
+          assign bottle_parent = collection.products.first
+          if bottle_parent.variants.size > 1
+            assign use_variants = true
+          endif
+        endif
+      %}
+      {% if use_variants %}
+        {% for variant in bottle_parent.variants %}
+          {% render 'ks-variant-card', product: bottle_parent, variant: variant, style: 'full' %}
+        {% endfor %}
+      {% else %}
+        {% for product in collection.products %}
+          {% render 'ks-product-card', product: product, style: 'full' %}
+        {% endfor %}
+      {% endif %}
     {% else %}
       {% assign bottle_images = 'bottle-arctic-white-pool,bottle-sage-green-kitchen,bottle-steel-navy-desk,bottle-coral-orange-pool,bottle-electric-blue-water,bottle-charcoal-black-dinner' | split: ',' %}
       {% assign bottle_names = 'Arctic White,Sage Green,Steel Navy,Coral Orange,Electric Blue,Charcoal Black' | split: ',' %}

@@ -1,0 +1,107 @@
+{% liquid
+  assign current_variant = product.selected_or_first_available_variant
+%}
+<section class="fizz-product-pdp fizz-product-pdp--co2" data-fizz-product-co2>
+  <div class="fizz-product-pdp__grid">
+    <div class="fizz-product-pdp__media">
+      {% if product.featured_image %}
+        {{ product.featured_image | image_url: width: 800 | image_tag: loading: 'eager', alt: product.title }}
+      {% else %}
+        <img
+          src="{{ 'fizz-co2-charge.png' | asset_url }}"
+          alt="{{ product.title | escape }}"
+          loading="eager"
+          width="800"
+          height="800"
+        >
+      {% endif %}
+    </div>
+
+    <div class="fizz-product-pdp__info">
+      <p class="fizz-product-pdp__eyebrow">{{ section.settings.eyebrow }}</p>
+      <h1>{{ product.title }}</h1>
+      <p class="fizz-product-pdp__price">{{ current_variant.price | money }}</p>
+      <div class="fizz-product-pdp__desc">{{ product.description }}</div>
+
+      {% form 'product', product, class: 'fizz-co2-collection__form' %}
+        <input type="hidden" name="id" value="{{ current_variant.id }}">
+
+        {% if product.selling_plan_groups.size > 0 %}
+          <fieldset class="fizz-co2-collection__plans">
+            <legend>{{ section.settings.plan_label }}</legend>
+            <label class="fizz-co2-plan">
+              <input type="radio" name="selling_plan" value="" checked>
+              <span>One-time purchase</span>
+              <span class="fizz-co2-plan__price">{{ current_variant.price | money }}</span>
+            </label>
+            {% for group in product.selling_plan_groups %}
+              {% for plan in group.selling_plans %}
+                <label class="fizz-co2-plan">
+                  <input type="radio" name="selling_plan" value="{{ plan.id }}">
+                  <span>{{ plan.name }}</span>
+                </label>
+              {% endfor %}
+            {% endfor %}
+          </fieldset>
+        {% endif %}
+
+        <button type="submit" class="fizz-product-pdp__cta">{{ section.settings.cta_label }}</button>
+      {% endform %}
+
+      {% if section.blocks.size > 0 %}
+        <div class="fizz-product-pdp__faq">
+          <h2>{{ section.settings.faq_heading }}</h2>
+          {% for block in section.blocks %}
+            <details {{ block.shopify_attributes }}>
+              <summary>{{ block.settings.question }}</summary>
+              <p>{{ block.settings.answer }}</p>
+            </details>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Fizz CO2 refill PDP",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Fizz Charge" },
+    { "type": "text", "id": "plan_label", "label": "Plan picker label", "default": "Delivery frequency" },
+    { "type": "text", "id": "cta_label", "label": "CTA label", "default": "Subscribe & save" },
+    { "type": "text", "id": "faq_heading", "label": "FAQ heading", "default": "Refill FAQ" }
+  ],
+  "blocks": [
+    {
+      "type": "faq",
+      "name": "FAQ item",
+      "settings": [
+        { "type": "text", "id": "question", "label": "Question", "default": "How long does a cartridge last?" },
+        { "type": "textarea", "id": "answer", "label": "Answer", "default": "Each cartridge carbonates up to 12 liters depending on your fizz level." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Fizz CO2 refill PDP",
+      "blocks": [
+        {
+          "type": "faq",
+          "settings": {
+            "question": "How long does a cartridge last?",
+            "answer": "Each cartridge carbonates up to 12 liters depending on your fizz level."
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "question": "Can I cancel my subscription?",
+            "answer": "Yes — manage or cancel anytime from your account."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

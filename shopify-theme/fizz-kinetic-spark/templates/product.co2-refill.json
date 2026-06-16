@@ -1,0 +1,31 @@
+{
+  "sections": {
+    "main": {
+      "type": "fizz-product-co2-refill",
+      "settings": {
+        "eyebrow": "Fizz Charge",
+        "plan_label": "Delivery frequency",
+        "cta_label": "Subscribe & save",
+        "faq_heading": "Refill FAQ"
+      },
+      "blocks": {
+        "f1": {
+          "type": "faq",
+          "settings": {
+            "question": "How long does a cartridge last?",
+            "answer": "Each cartridge carbonates up to 12 liters depending on your fizz level."
+          }
+        },
+        "f2": {
+          "type": "faq",
+          "settings": {
+            "question": "Can I cancel my subscription?",
+            "answer": "Yes — manage or cancel anytime from your account."
+          }
+        }
+      },
+      "block_order": ["f1", "f2"]
+    }
+  },
+  "order": ["main"]
+}

@@ -16,32 +16,35 @@
         {% liquid
           assign pack_slug = product.metafields.custom.pack_slug
           if pack_slug == blank
+            assign pack_slug = product.handle | remove: 'fizz-flavor-'
+          endif
+          if pack_slug == blank
             assign pack_slug = product.handle
           endif
         %}
-        <article class="fizz-flavor-card">
-          <div class="fizz-flavor-card__media">
-            {% if product.featured_image %}
-              {{ product.featured_image | image_url: width: 900 | image_tag: class: 'fizz-flavor-pack-img', loading: 'lazy', alt: product.title }}
-            {% else %}
-              {% render 'fizz-flavor-pack-img', slug: pack_slug, alt: product.title, class: 'fizz-flavor-pack-img' %}
-            {% endif %}
-          </div>
-          <div class="fizz-flavor-card__body">
-            <span class="fizz-flavor-card__badge">Natural</span>
-            <h2>{{ product.title }}</h2>
-            <p>{{ product.description | strip_html | truncate: 180 }}</p>
-            <div class="fizz-flavor-card__meta">
-              <span>{{ product.price | money }} / sachet</span>
-              <span>Box of 10</span>
+          <article class="fizz-flavor-card">
+            <div class="fizz-flavor-card__media">
+              {% if product.featured_image %}
+                {{ product.featured_image | image_url: width: 900 | image_tag: class: 'fizz-flavor-pack-img', loading: 'lazy', alt: product.title }}
+              {% else %}
+                {% render 'fizz-flavor-pack-img', slug: pack_slug, alt: product.title, class: 'fizz-flavor-pack-img' %}
+              {% endif %}
             </div>
-            <form method="post" action="{{ routes.cart_add_url }}">
-              <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
-              <button type="submit" class="fizz-flavor-card__cta">Add to cart</button>
-            </form>
-          </div>
-        </article>
-      {% endfor %}
+            <div class="fizz-flavor-card__body">
+              <span class="fizz-flavor-card__badge">Natural</span>
+              <h2>{{ product.title }}</h2>
+              <p>{{ product.description | strip_html | truncate: 180 }}</p>
+              <div class="fizz-flavor-card__meta">
+                <span>{{ product.price | money }} / sachet</span>
+                <span>Box of 10</span>
+              </div>
+              <form method="post" action="{{ routes.cart_add_url }}">
+                <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+                <button type="submit" class="fizz-flavor-card__cta">Add to cart</button>
+              </form>
+            </div>
+          </article>
+        {% endfor %}
     {% else %}
       {% for block in section.blocks %}
         <article class="fizz-flavor-card" {{ block.shopify_attributes }}>

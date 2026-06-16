@@ -1,0 +1,514 @@
+{% liquid
+  assign bottle_product = section.settings.bottle_product
+  if bottle_product == blank
+    assign bottle_product = all_products['fizz-bottle']
+  endif
+
+  assign row_unit = section.settings.row_unit_height | default: 220
+  assign grid_gap = section.settings.grid_gap | default: 16
+  assign mobile_layout = section.settings.mobile_layout | default: 'stack'
+%}
+
+<section
+  id="lifestyle-mosaic"
+  class="fizz-lifestyle-mosaic fizz-lifestyle-mosaic--mobile-{{ mobile_layout }}"
+  aria-label="{{ section.settings.heading | escape }}"
+>
+  <div class="fizz-lifestyle-mosaic__header">
+    {% if section.settings.eyebrow != blank %}
+      <p class="fizz-lifestyle-mosaic__eyebrow">{{ section.settings.eyebrow }}</p>
+    {% endif %}
+    <h2>{{ section.settings.heading }}</h2>
+    {% if section.settings.subheading != blank %}
+      <p class="fizz-lifestyle-mosaic__lead">{{ section.settings.subheading }}</p>
+    {% endif %}
+  </div>
+
+  <div
+    class="fizz-lifestyle-mosaic__grid"
+    style="--mosaic-row-unit: {{ row_unit }}px; --mosaic-grid-gap: {{ grid_gap }}px;"
+  >
+    {% for block in section.blocks %}
+      {% liquid
+        assign color_slug = block.settings.color_slug
+        assign card_variant = ''
+        assign bottle_url = ''
+
+        if bottle_product != blank
+          for variant in bottle_product.variants
+            assign vslug = variant.metafields.custom.color_slug
+            if vslug == blank
+              assign vslug = variant.title | downcase | replace: ' ', '-'
+            endif
+            if vslug == color_slug
+              assign card_variant = variant
+              break
+            endif
+          endfor
+          if card_variant
+            assign bottle_url = bottle_product.url | append: '?variant=' | append: card_variant.id
+          else
+            assign bottle_url = bottle_product.url
+          endif
+        endif
+
+        assign link_mode = block.settings.link_mode | default: 'bottle_variant'
+        assign card_url = ''
+
+        case link_mode
+          when 'bottle_variant'
+            assign card_url = bottle_url
+          when 'custom_url'
+            assign card_url = block.settings.custom_url
+          when 'none'
+            assign card_url = ''
+        endcase
+
+        assign col_span = block.settings.col_span | default: 4
+        assign row_span = block.settings.row_span | default: 1
+        assign legacy_size = block.settings.card_size
+
+        if legacy_size == 'wide'
+          assign col_span = 8
+        elsif legacy_size == 'tall'
+          assign row_span = 2
+        endif
+
+        assign col_start = block.settings.col_start | default: 'auto'
+        if col_start == blank
+          assign col_start = 'auto'
+        endif
+
+        assign min_height = block.settings.min_height | default: 280
+        assign mobile_col_span = block.settings.mobile_col_span | default: 1
+        assign mobile_min_height = block.settings.mobile_min_height | default: 320
+
+        assign image_fit = block.settings.image_fit | default: 'cover'
+        assign image_position = block.settings.image_position | default: 'center'
+
+        case image_position
+          when 'top'
+            assign object_position = 'center top'
+          when 'bottom'
+            assign object_position = 'center bottom'
+          when 'left'
+            assign object_position = 'left center'
+          when 'right'
+            assign object_position = 'right center'
+          else
+            assign object_position = 'center center'
+        endcase
+
+        assign desktop_src = block.settings.image | image_url: width: 1600
+        assign mobile_src = block.settings.image_mobile | image_url: width: 900
+        if block.settings.image == blank and color_slug != blank
+          assign desktop_src = 'hero-lifestyle-' | append: color_slug | append: '.png' | asset_url
+          assign mobile_src = 'hero-lifestyle-' | append: color_slug | append: '-mobile.png' | asset_url
+        endif
+
+        assign card_title = block.settings.title
+        if card_title == blank and card_variant
+          assign card_title = card_variant.title
+        endif
+
+        assign show_button = block.settings.show_button
+        assign button_label = block.settings.button_label
+        if button_label == blank
+          assign button_label = section.settings.card_cta_label
+        endif
+        assign button_style = block.settings.button_style | default: 'link'
+        assign card_clickable = block.settings.card_clickable
+
+        assign card_classes = 'fizz-mosaic-card fizz-mosaic-card--' | append: color_slug
+        if card_clickable and card_url != blank
+          assign card_classes = card_classes | append: ' fizz-mosaic-card--clickable'
+        endif
+
+        assign card_style = '--mosaic-col-span: ' | append: col_span | append: '; --mosaic-row-span: ' | append: row_span | append: '; --mosaic-min-height: ' | append: min_height | append: 'px; --mosaic-mobile-col-span: ' | append: mobile_col_span | append: '; --mosaic-mobile-min-height: ' | append: mobile_min_height | append: 'px; --mosaic-object-fit: ' | append: image_fit | append: '; --mosaic-object-position: ' | append: object_position | append: ';'
+
+        if col_start != 'auto'
+          assign card_style = card_style | append: ' --mosaic-col-start: ' | append: col_start | append: ';'
+        endif
+      %}
+
+      {% if card_clickable and card_url != blank %}
+        <a
+          href="{{ card_url }}"
+          class="{{ card_classes }}"
+          style="{{ card_style }}"
+          {{ block.shopify_attributes }}
+        >
+      {% else %}
+        <article
+          class="{{ card_classes }}"
+          style="{{ card_style }}"
+          {{ block.shopify_attributes }}
+        >
+      {% endif %}
+        <picture class="fizz-mosaic-card__media">
+          {% if mobile_src != blank %}
+            <source media="(max-width: 767px)" srcset="{{ mobile_src }}">
+          {% endif %}
+          <img
+            src="{{ desktop_src }}"
+            alt="{{ block.settings.image_alt | default: card_title | escape }}"
+            loading="lazy"
+            width="1200"
+            height="900"
+          >
+        </picture>
+        <div class="fizz-mosaic-card__overlay" aria-hidden="true"></div>
+        <div class="fizz-mosaic-card__body">
+          {% if block.settings.badge != blank %}
+            <span class="fizz-mosaic-card__badge">{{ block.settings.badge }}</span>
+          {% endif %}
+          {% if card_title != blank %}
+            <h3>{{ card_title }}</h3>
+          {% endif %}
+          {% if block.settings.body != blank %}
+            <p>{{ block.settings.body }}</p>
+          {% endif %}
+          {% if show_button and card_url != blank and card_clickable == false %}
+            <a href="{{ card_url }}" class="fizz-mosaic-card__btn fizz-mosaic-card__btn--{{ button_style }}">
+              {{ button_label }}
+            </a>
+          {% elsif show_button and card_clickable and card_url != blank %}
+            <span class="fizz-mosaic-card__btn fizz-mosaic-card__btn--{{ button_style }}">
+              {{ button_label }}
+            </span>
+          {% endif %}
+        </div>
+      {% if card_clickable and card_url != blank %}
+        </a>
+      {% else %}
+        </article>
+      {% endif %}
+    {% endfor %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Fizz lifestyle mosaic",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Shop by finish" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Moments of Sparkle" },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Make sparkling water anywhere. Pick the finish that fits your ritual."
+    },
+    { "type": "product", "id": "bottle_product", "label": "Bottle product", "info": "Defaults to fizz-bottle when empty" },
+    { "type": "text", "id": "card_cta_label", "label": "Default button label", "default": "Shop this finish", "info": "Used when a card has no custom button label" },
+    {
+      "type": "header",
+      "content": "Grid layout"
+    },
+    {
+      "type": "paragraph",
+      "content": "Desktop uses a 12-column grid. Each column span is roughly 8.33% of the row width."
+    },
+    {
+      "type": "range",
+      "id": "row_unit_height",
+      "min": 160,
+      "max": 400,
+      "step": 10,
+      "unit": "px",
+      "label": "Row unit height",
+      "default": 220,
+      "info": "Base height multiplied by each card's row span"
+    },
+    {
+      "type": "range",
+      "id": "grid_gap",
+      "min": 8,
+      "max": 32,
+      "step": 4,
+      "unit": "px",
+      "label": "Grid gap",
+      "default": 16
+    },
+    {
+      "type": "select",
+      "id": "mobile_layout",
+      "label": "Mobile layout",
+      "options": [
+        { "value": "stack", "label": "Single column stack" },
+        { "value": "two_col", "label": "Two column grid" }
+      ],
+      "default": "stack"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "lifestyle_card",
+      "name": "Lifestyle card",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Content"
+        },
+        {
+          "type": "select",
+          "id": "color_slug",
+          "label": "Bottle color",
+          "options": [
+            { "value": "coral-orange", "label": "Coral Orange" },
+            { "value": "charcoal-black", "label": "Charcoal Black" },
+            { "value": "sage-green", "label": "Sage Green" },
+            { "value": "steel-navy", "label": "Steel Navy" },
+            { "value": "arctic-white", "label": "Arctic White" },
+            { "value": "electric-blue", "label": "Electric Blue" }
+          ],
+          "default": "coral-orange"
+        },
+        { "type": "text", "id": "title", "label": "Title override" },
+        { "type": "text", "id": "badge", "label": "Badge", "default": "Bottle" },
+        { "type": "textarea", "id": "body", "label": "Description" },
+        { "type": "image_picker", "id": "image", "label": "Image (desktop)" },
+        { "type": "image_picker", "id": "image_mobile", "label": "Image (mobile)" },
+        { "type": "text", "id": "image_alt", "label": "Image alt text" },
+        {
+          "type": "header",
+          "content": "Desktop grid (12 columns)"
+        },
+        {
+          "type": "range",
+          "id": "col_span",
+          "min": 1,
+          "max": 12,
+          "step": 1,
+          "label": "Column span",
+          "default": 4,
+          "info": "How many columns wide (1 = 8%, 6 = 50%, 12 = full width)"
+        },
+        {
+          "type": "select",
+          "id": "col_start",
+          "label": "Column start",
+          "options": [
+            { "value": "auto", "label": "Auto (flow)" },
+            { "value": "1", "label": "Column 1" },
+            { "value": "2", "label": "Column 2" },
+            { "value": "3", "label": "Column 3" },
+            { "value": "4", "label": "Column 4" },
+            { "value": "5", "label": "Column 5" },
+            { "value": "6", "label": "Column 6" },
+            { "value": "7", "label": "Column 7" },
+            { "value": "8", "label": "Column 8" },
+            { "value": "9", "label": "Column 9" },
+            { "value": "10", "label": "Column 10" },
+            { "value": "11", "label": "Column 11" },
+            { "value": "12", "label": "Column 12" }
+          ],
+          "default": "auto"
+        },
+        {
+          "type": "range",
+          "id": "row_span",
+          "min": 1,
+          "max": 4,
+          "step": 1,
+          "label": "Row span",
+          "default": 1
+        },
+        {
+          "type": "range",
+          "id": "min_height",
+          "min": 200,
+          "max": 800,
+          "step": 20,
+          "unit": "px",
+          "label": "Minimum height",
+          "default": 280
+        },
+        {
+          "type": "header",
+          "content": "Mobile grid"
+        },
+        {
+          "type": "select",
+          "id": "mobile_col_span",
+          "label": "Mobile column span",
+          "options": [
+            { "value": "1", "label": "1 column" },
+            { "value": "2", "label": "2 columns (two-col layout only)" }
+          ],
+          "default": "1"
+        },
+        {
+          "type": "range",
+          "id": "mobile_min_height",
+          "min": 240,
+          "max": 600,
+          "step": 20,
+          "unit": "px",
+          "label": "Mobile minimum height",
+          "default": 320
+        },
+        {
+          "type": "header",
+          "content": "Image orientation"
+        },
+        {
+          "type": "select",
+          "id": "image_fit",
+          "label": "Image fit",
+          "options": [
+            { "value": "cover", "label": "Cover (fill card)" },
+            { "value": "contain", "label": "Contain (show full image)" }
+          ],
+          "default": "cover"
+        },
+        {
+          "type": "select",
+          "id": "image_position",
+          "label": "Image focal point",
+          "options": [
+            { "value": "center", "label": "Center" },
+            { "value": "top", "label": "Top" },
+            { "value": "bottom", "label": "Bottom" },
+            { "value": "left", "label": "Left" },
+            { "value": "right", "label": "Right" }
+          ],
+          "default": "center"
+        },
+        {
+          "type": "header",
+          "content": "Link and button"
+        },
+        {
+          "type": "select",
+          "id": "link_mode",
+          "label": "Link destination",
+          "options": [
+            { "value": "bottle_variant", "label": "Bottle product variant" },
+            { "value": "custom_url", "label": "Custom URL" },
+            { "value": "none", "label": "No link" }
+          ],
+          "default": "bottle_variant"
+        },
+        { "type": "url", "id": "custom_url", "label": "Custom URL" },
+        {
+          "type": "checkbox",
+          "id": "show_button",
+          "label": "Show button",
+          "default": true
+        },
+        { "type": "text", "id": "button_label", "label": "Button label" },
+        {
+          "type": "select",
+          "id": "button_style",
+          "label": "Button style",
+          "options": [
+            { "value": "solid", "label": "Solid (filled)" },
+            { "value": "outline", "label": "Outline" },
+            { "value": "link", "label": "Text link" }
+          ],
+          "default": "link"
+        },
+        {
+          "type": "checkbox",
+          "id": "card_clickable",
+          "label": "Make entire card clickable",
+          "default": false,
+          "info": "When off, only the button links. When on, the whole card is a link."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Fizz lifestyle mosaic",
+      "blocks": [
+        {
+          "type": "lifestyle_card",
+          "settings": {
+            "color_slug": "coral-orange",
+            "col_span": 8,
+            "row_span": 1,
+            "badge": "Wellness",
+            "title": "Sunny Terrace",
+            "body": "Bright citrus energy for your morning ritual.",
+            "show_button": true,
+            "button_style": "link",
+            "link_mode": "bottle_variant"
+          }
+        },
+        {
+          "type": "lifestyle_card",
+          "settings": {
+            "color_slug": "charcoal-black",
+            "col_span": 4,
+            "row_span": 2,
+            "badge": "Evening",
+            "title": "After Hours",
+            "body": "Sleek finish for dinner parties and nightcaps.",
+            "show_button": true,
+            "button_style": "link",
+            "link_mode": "bottle_variant"
+          }
+        },
+        {
+          "type": "lifestyle_card",
+          "settings": {
+            "color_slug": "sage-green",
+            "col_span": 4,
+            "row_span": 1,
+            "badge": "Kitchen",
+            "title": "Calm Kitchen",
+            "body": "Soft, natural tones for everyday hydration.",
+            "show_button": true,
+            "button_style": "link",
+            "link_mode": "bottle_variant"
+          }
+        },
+        {
+          "type": "lifestyle_card",
+          "settings": {
+            "color_slug": "steel-navy",
+            "col_span": 4,
+            "row_span": 1,
+            "badge": "Work",
+            "title": "Creative Desk",
+            "body": "Focused fizz between meetings and deep work.",
+            "show_button": true,
+            "button_style": "link",
+            "link_mode": "bottle_variant"
+          }
+        },
+        {
+          "type": "lifestyle_card",
+          "settings": {
+            "color_slug": "arctic-white",
+            "col_span": 4,
+            "row_span": 1,
+            "badge": "Poolside",
+            "title": "Poolside",
+            "body": "Clean and crisp for sunny afternoons.",
+            "show_button": true,
+            "button_style": "link",
+            "link_mode": "bottle_variant"
+          }
+        },
+        {
+          "type": "lifestyle_card",
+          "settings": {
+            "color_slug": "electric-blue",
+            "col_span": 8,
+            "row_span": 1,
+            "badge": "Adventure",
+            "title": "Outdoors",
+            "body": "Bold color for hikes, trails, and weekend escapes.",
+            "show_button": true,
+            "button_style": "link",
+            "link_mode": "bottle_variant"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

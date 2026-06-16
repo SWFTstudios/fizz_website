@@ -18,7 +18,8 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "format": "prettier --write .",
     "test:card-click": "node scripts/test-card-click.mjs",
-    "assets:bottles": "node scripts/import-bottle-renders.mjs"
+    "assets:bottles": "node scripts/import-bottle-renders.mjs",
+    "shopify:upload-images": "node scripts/upload-product-images.mjs"
   },
   "dependencies": {
     "@barba/core": "^2.10.3",

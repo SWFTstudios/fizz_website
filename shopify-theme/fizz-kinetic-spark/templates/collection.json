@@ -10,7 +10,7 @@
     },
     "flavors": {
       "type": "ks-flavor-collection-grid",
-      "settings": { "collection": "flavors" },
+      "settings": { "collection": "flavor-packs" },
       "blocks": {
         "fc1": {
           "type": "flavor_card",
