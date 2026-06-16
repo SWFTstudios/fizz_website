@@ -1,0 +1,74 @@
+{% liquid
+  assign current_variant = product.selected_or_first_available_variant
+%}
+<section class="fizz-product-pdp fizz-product-pdp--flavor" data-fizz-product-flavor>
+  <div class="fizz-product-pdp__grid">
+    <div class="fizz-product-pdp__media fizz-product-pdp__media--pack">
+      {% if current_variant.image %}
+        {{ current_variant.image | image_url: width: 900 | image_tag: id: 'fizz-flavor-image', loading: 'eager', alt: current_variant.title, class: 'fizz-flavor-pack-img' }}
+      {% else %}
+        {% liquid
+          assign pack_slug = current_variant.metafields.custom.pack_slug
+          if pack_slug == blank
+            assign flavor_key = current_variant.title | downcase
+            if flavor_key contains 'orange'
+              assign pack_slug = 'orange-tangerine'
+            elsif flavor_key contains 'lime'
+              assign pack_slug = 'zesty-lime'
+            elsif flavor_key contains 'berry'
+              assign pack_slug = 'mixed-berry'
+            endif
+          endif
+        %}
+        {% render 'fizz-flavor-pack-img', slug: pack_slug, alt: current_variant.title, class: 'fizz-flavor-pack-img' %}
+      {% endif %}
+    </div>
+
+    <div class="fizz-product-pdp__info">
+      <p class="fizz-product-pdp__eyebrow">{{ section.settings.eyebrow }}</p>
+      <h1>{{ current_variant.title }}</h1>
+      <p class="fizz-product-pdp__price">{{ current_variant.price | money }} <span>/ sachet</span></p>
+      <div class="fizz-product-pdp__desc">{{ product.description }}</div>
+
+      {% if product.variants.size > 1 %}
+        <div class="fizz-product-pdp__swatches fizz-product-pdp__swatches--flavor" role="group" aria-label="Flavor">
+          {% for variant in product.variants %}
+            <a
+              href="{{ product.url }}?variant={{ variant.id }}"
+              class="fizz-swatch fizz-swatch--flavor{% if variant.id == current_variant.id %} is-active{% endif %}"
+              title="{{ variant.title }}"
+            >
+              <span class="fizz-swatch__label">{{ variant.title }}</span>
+            </a>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      {% form 'product', product %}
+        <input type="hidden" name="id" value="{{ current_variant.id }}">
+        <button type="submit" class="fizz-product-pdp__cta">{{ section.settings.cta_label }}</button>
+      {% endform %}
+
+      {% if section.settings.natural_copy != blank %}
+        <p class="fizz-product-pdp__note">{{ section.settings.natural_copy }}</p>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Fizz flavor pack PDP",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Flavor Pack" },
+    { "type": "text", "id": "cta_label", "label": "CTA label", "default": "Add to cart" },
+    {
+      "type": "text",
+      "id": "natural_copy",
+      "label": "Natural flavors note",
+      "default": "Made with natural flavors — no high-fructose syrups."
+    }
+  ],
+  "presets": [{ "name": "Fizz flavor pack PDP" }]
+}
+{% endschema %}

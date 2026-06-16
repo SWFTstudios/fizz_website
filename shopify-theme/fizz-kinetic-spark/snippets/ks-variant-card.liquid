@@ -1,0 +1,72 @@
+{% comment %}
+  Kinetic Spark variant card for consolidated bottle product.
+  Usage: {% render 'ks-variant-card', product: product, variant: variant, style: 'full' %}
+{% endcomment %}
+{% liquid
+  assign card_style = style | default: 'full'
+  assign variant_title = variant.title
+  assign variant_url = product.url | append: '?variant=' | append: variant.id
+  assign featured = variant.image | default: product.featured_image
+
+  assign color_slug = variant.metafields.custom.color_slug
+  if color_slug == blank
+    assign color_slug = variant_title | downcase | replace: ' ', '-'
+  endif
+
+  assign stitch_fallback = 'bottle-coral-orange-studio'
+  case color_slug
+    when 'arctic-white'
+      assign stitch_fallback = 'bottle-arctic-white-pool'
+    when 'sage-green'
+      assign stitch_fallback = 'bottle-sage-green-kitchen'
+    when 'steel-navy'
+      assign stitch_fallback = 'bottle-steel-navy-desk'
+    when 'coral-orange'
+      assign stitch_fallback = 'bottle-coral-orange-pool'
+    when 'electric-blue'
+      assign stitch_fallback = 'bottle-electric-blue-water'
+    when 'charcoal-black'
+      assign stitch_fallback = 'bottle-charcoal-black-dinner'
+  endcase
+%}
+<div class="glass-card--shop kinetic-hover rounded-xl overflow-hidden group flex flex-col">
+  <a href="{{ variant_url }}" class="relative aspect-[4/5] bg-surface-container-highest overflow-hidden block">
+    {% if featured %}
+      {{
+        featured
+        | image_url: width: 800
+        | image_tag:
+          class: 'w-full h-full object-cover transition-all duration-500 group-hover:scale-105',
+          loading: 'lazy',
+          alt: variant_title
+      }}
+    {% else %}
+      {% render 'ks-stitch-img',
+        name: stitch_fallback,
+        alt: variant_title,
+        class: 'w-full h-full object-cover transition-all duration-500 group-hover:scale-105'
+      %}
+    {% endif %}
+    <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+  </a>
+  <div class="p-6 flex flex-col flex-grow">
+    <div class="flex justify-between items-start mb-4">
+      <h3 class="font-headline-lg-mobile tracking-tight">{{ variant_title }}</h3>
+      <span class="font-label-caps text-primary">{{ variant.price | money }}</span>
+    </div>
+    {% if product.description != blank %}
+      <p class="font-body-md text-on-surface-variant mb-6 line-clamp-2">{{ product.description | strip_html | truncate: 120 }}</p>
+    {% endif %}
+    {% if variant.available %}
+      <button
+        type="button"
+        class="bg-primary-container border border-outline-variant font-label-caps text-label-caps uppercase tracking-widest mt-auto w-full py-4 rounded-full hover:bg-primary hover:text-background transition-all"
+        data-ks-quick-add="{{ variant.id }}"
+      >
+        Quick Add
+      </button>
+    {% else %}
+      <a href="{{ variant_url }}" class="font-label-caps text-primary mt-auto">View product</a>
+    {% endif %}
+  </div>
+</div>

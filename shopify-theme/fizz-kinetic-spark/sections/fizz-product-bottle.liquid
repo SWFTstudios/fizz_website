@@ -1,0 +1,143 @@
+{% liquid
+  assign has_product = false
+  if product and product != empty
+    assign has_product = true
+  endif
+%}
+
+{% if has_product %}
+  {% liquid
+    assign current_variant = product.selected_or_first_available_variant
+    assign color_slug = current_variant.metafields.custom.color_slug
+    if color_slug == blank
+      assign color_slug = current_variant.title | downcase | replace: ' ', '-'
+    endif
+  %}
+  <section
+    class="fizz-product-pdp fizz-product-pdp--bottle fizz-product-pdp--{{ color_slug }}"
+    data-fizz-product-bottle
+    data-selected-color="{{ color_slug }}"
+  >
+    <div class="fizz-product-pdp__inner">
+      <div class="fizz-product-pdp__grid">
+        <div class="fizz-product-pdp__media-panel">
+          <div class="fizz-product-pdp__media">
+            {% if current_variant.image %}
+              {{ current_variant.image | image_url: width: 1200 | image_tag: id: 'fizz-bottle-image', loading: 'eager', alt: current_variant.title, class: 'fizz-product-pdp__img' }}
+            {% elsif product.featured_image %}
+              {{ product.featured_image | image_url: width: 1200 | image_tag: id: 'fizz-bottle-image', loading: 'eager', alt: product.title, class: 'fizz-product-pdp__img' }}
+            {% else %}
+              <img
+                class="fizz-product-pdp__img"
+                src="{{ 'hero-lifestyle-' | append: color_slug | append: '.png' | asset_url }}"
+                alt="{{ current_variant.title | escape }}"
+                width="800"
+                height="1000"
+                loading="eager"
+              >
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="fizz-product-pdp__info-panel">
+          <div class="fizz-product-pdp__info">
+            <p class="fizz-product-pdp__eyebrow">{{ section.settings.eyebrow }}</p>
+            <h1 id="fizz-bottle-title">{{ current_variant.title }}</h1>
+            <p class="fizz-product-pdp__price">{{ current_variant.price | money }}</p>
+            {% if product.description != blank %}
+              <div class="fizz-product-pdp__desc rte">{{ product.description }}</div>
+            {% endif %}
+
+            {% if product.variants.size > 1 %}
+              <div class="fizz-product-pdp__swatches-wrap">
+                <p class="fizz-product-pdp__swatches-label">Color</p>
+                <div class="fizz-product-pdp__swatches" role="group" aria-label="Color">
+                  {% for variant in product.variants %}
+                    {% liquid
+                      assign swatch_slug = variant.metafields.custom.color_slug
+                      if swatch_slug == blank
+                        assign swatch_slug = variant.title | downcase | replace: ' ', '-'
+                      endif
+                    %}
+                    <a
+                      href="{{ product.url }}?variant={{ variant.id }}"
+                      class="fizz-swatch fizz-swatch--color fizz-swatch--{{ swatch_slug }}{% if variant.id == current_variant.id %} is-active{% endif %}"
+                      data-color-slug="{{ swatch_slug }}"
+                      title="{{ variant.title }}"
+                      aria-current="{% if variant.id == current_variant.id %}true{% else %}false{% endif %}"
+                    >
+                      <span class="fizz-swatch__dot" aria-hidden="true"></span>
+                      <span class="fizz-swatch__label">{{ variant.title }}</span>
+                    </a>
+                  {% endfor %}
+                </div>
+              </div>
+            {% endif %}
+
+            {% form 'product', product, class: 'fizz-product-pdp__form' %}
+              <input type="hidden" name="id" value="{{ current_variant.id }}" id="fizz-bottle-variant-id">
+              <button type="submit" class="fizz-product-pdp__cta">{{ section.settings.cta_label }}</button>
+            {% endform %}
+
+            {% if section.settings.specs_heading != blank and section.blocks.size > 0 %}
+              <div class="fizz-product-pdp__specs-wrap">
+                <h2 class="fizz-product-pdp__specs-heading">{{ section.settings.specs_heading }}</h2>
+                <ul class="fizz-product-pdp__specs">
+                  {% for block in section.blocks %}
+                    {% if block.type == 'spec' %}
+                      <li {{ block.shopify_attributes }}>
+                        <span>{{ block.settings.label }}</span>
+                        <span>{{ block.settings.value }}</span>
+                      </li>
+                    {% endif %}
+                  {% endfor %}
+                </ul>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+{% else %}
+  <section class="fizz-product-pdp fizz-product-pdp--bottle fizz-product-pdp--placeholder" data-fizz-product-bottle>
+    <div class="fizz-product-pdp__inner">
+      <p class="fizz-product-pdp__placeholder-msg">
+        This section only works on a <strong>bottle</strong> product template. Assign <code>product.bottle</code> to <strong>fizz-bottle</strong> in Admin — do not add this section to the homepage.
+      </p>
+    </div>
+  </section>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Fizz bottle PDP",
+  "tag": "section",
+  "class": "fizz-bottle-pdp-section",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Fizz Bottle" },
+    { "type": "text", "id": "cta_label", "label": "CTA label", "default": "Add to cart" },
+    { "type": "text", "id": "specs_heading", "label": "Specs heading", "default": "Technical specs" }
+  ],
+  "blocks": [
+    {
+      "type": "spec",
+      "name": "Spec",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Label", "default": "Capacity" },
+        { "type": "text", "id": "value", "label": "Value", "default": "1 L (33.8 oz)" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Fizz bottle PDP",
+      "blocks": [
+        { "type": "spec", "settings": { "label": "Capacity", "value": "1 L (33.8 oz)" } },
+        { "type": "spec", "settings": { "label": "Material", "value": "BPA-free Tritan™ plastic" } },
+        { "type": "spec", "settings": { "label": "Dishwasher", "value": "Top rack safe" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,126 @@
+{% liquid
+  assign co2_product = collection.products.first
+  if co2_product == blank and section.settings.product != blank
+    assign co2_product = section.settings.product
+  endif
+  assign current_variant = co2_product.selected_or_first_available_variant
+%}
+<section class="fizz-co2-collection" data-fizz-co2-collection aria-label="{{ section.settings.heading | escape }}">
+  <div class="fizz-co2-collection__hero">
+    {% if section.settings.eyebrow != blank %}
+      <p class="fizz-co2-collection__eyebrow">{{ section.settings.eyebrow }}</p>
+    {% endif %}
+    <h1>{{ section.settings.heading }}</h1>
+    {% if section.settings.subheading != blank %}
+      <p class="fizz-co2-collection__lead">{{ section.settings.subheading }}</p>
+    {% endif %}
+  </div>
+
+  <div class="fizz-co2-collection__layout">
+    <div class="fizz-co2-collection__product">
+      {% if co2_product %}
+        <div class="fizz-co2-collection__media">
+          {% if co2_product.featured_image %}
+            {{ co2_product.featured_image | image_url: width: 800 | image_tag: loading: 'eager', alt: co2_product.title }}
+          {% else %}
+            <img
+              src="{{ 'fizz-co2-charge.png' | asset_url }}"
+              alt="{{ co2_product.title | escape }}"
+              class="fizz-co2-collection__img"
+              loading="eager"
+              width="800"
+              height="800"
+            >
+          {% endif %}
+        </div>
+        <div class="fizz-co2-collection__details">
+          <h2>{{ co2_product.title }}</h2>
+          {% if co2_product.description != blank %}
+            <div class="fizz-co2-collection__desc">{{ co2_product.description }}</div>
+          {% endif %}
+          <p class="fizz-co2-collection__price">{{ current_variant.price | money }}</p>
+
+          {% form 'product', co2_product, class: 'fizz-co2-collection__form' %}
+            <input type="hidden" name="id" value="{{ current_variant.id }}">
+
+            {% if co2_product.selling_plan_groups.size > 0 %}
+              <fieldset class="fizz-co2-collection__plans">
+                <legend>{{ section.settings.plan_label }}</legend>
+                <label class="fizz-co2-plan">
+                  <input type="radio" name="selling_plan" value="" checked>
+                  <span>One-time purchase</span>
+                  <span class="fizz-co2-plan__price">{{ current_variant.price | money }}</span>
+                </label>
+                {% for group in co2_product.selling_plan_groups %}
+                  {% for plan in group.selling_plans %}
+                    <label class="fizz-co2-plan">
+                      <input type="radio" name="selling_plan" value="{{ plan.id }}">
+                      <span>{{ plan.name }}</span>
+                      {% if plan.price_adjustments.size > 0 %}
+                        <span class="fizz-co2-plan__price">{{ plan.price_adjustments.first.value | money }}</span>
+                      {% endif %}
+                    </label>
+                  {% endfor %}
+                {% endfor %}
+              </fieldset>
+            {% endif %}
+
+            <button type="submit" class="fizz-co2-collection__cta">{{ section.settings.cta_label }}</button>
+          {% endform %}
+        </div>
+      {% else %}
+        <div class="fizz-co2-collection__placeholder">
+          <p>Import products and tag with <strong>CO2 Canisters</strong>, or add <strong>fizz-co2-refills</strong> to the smart collection.</p>
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="fizz-co2-collection__benefits">
+      {% for block in section.blocks %}
+        <article class="fizz-co2-benefit" {{ block.shopify_attributes }}>
+          <h3>{{ block.settings.title }}</h3>
+          <p>{{ block.settings.body }}</p>
+        </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Fizz CO2 collection",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Fizz5" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Fizz Charge" },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Refillable CO₂ canisters delivered on your schedule. One cartridge replaces a case of cans."
+    },
+    { "type": "product", "id": "product", "label": "CO₂ product (fallback)" },
+    { "type": "text", "id": "plan_label", "label": "Plan picker label", "default": "Delivery frequency" },
+    { "type": "text", "id": "cta_label", "label": "CTA label", "default": "Subscribe & save" }
+  ],
+  "blocks": [
+    {
+      "type": "benefit",
+      "name": "Benefit",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Title", "default": "12L per cartridge" },
+        { "type": "textarea", "id": "body", "label": "Body", "default": "Each canister carbonates up to 12 liters of sparkling water." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Fizz CO2 collection",
+      "blocks": [
+        { "type": "benefit", "settings": { "title": "12L per cartridge", "body": "Each canister carbonates up to 12 liters of sparkling water." } },
+        { "type": "benefit", "settings": { "title": "One case, replaced", "body": "One Fizz cartridge replaces a case of cans — less waste, more fizz." } },
+        { "type": "benefit", "settings": { "title": "Auto delivery", "body": "Subscribe and never run dry. Swap in seconds when your bottle needs a boost." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

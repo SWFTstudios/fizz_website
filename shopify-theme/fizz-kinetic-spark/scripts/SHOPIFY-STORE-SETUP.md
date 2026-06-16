@@ -1,83 +1,92 @@
 # Shopify store setup — fizz-9820
 
-Complete these steps in [Shopify Admin](https://admin.shopify.com/store/fizz-9820) so the Kinetic Spark theme renders with real catalog data.
+Complete these steps in [Shopify Admin](https://admin.shopify.com/store/fizz-9820) so the theme renders the Fizz catalog.
 
-## 1. Products (bottles)
+## Catalog overview
 
-Create six products with these **handles** (must match for collection automation):
+| Family | Shopify setup | Smart collection tag | Collection handle |
+|--------|---------------|----------------------|-------------------|
+| Fizz Bottle | `fizz-bottle` — 6 color **variants** | `Bottle` | `bottles` |
+| Flavor Packs | 3 **separate products** (see below) | `Flavor Packs` | `flavor-packs` |
+| Fizz Charge (CO₂) | `fizz-co2-refills` — 1 SKU + selling plans | `CO2 Canisters` | `co2-canisters` |
 
-| Handle | Title | Suggested price |
-|--------|-------|-----------------|
-| `coral-orange` | Fizz Origin — Coral Orange | $34.00 |
-| `charcoal-black` | Fizz Origin — Charcoal Black | $34.00 |
-| `sage-green` | Fizz Origin — Sage Green | $34.00 |
-| `steel-navy` | Fizz Origin — Steel Navy | $34.00 |
-| `arctic-white` | Fizz Origin — Arctic White | $34.00 |
-| `electric-blue` | Fizz Origin — Electric Blue | $34.00 |
+**Smart collections** auto-populate from product tags. Import [`products_import_catalog.csv`](./products_import_catalog.csv) — see [`PRODUCT-IMPORT.md`](./PRODUCT-IMPORT.md).
 
-Copy descriptions from [`src/lib/shopData.ts`](../../../src/lib/shopData.ts). Upload bottle images from [`public/images/bottles/`](../../../public/images/bottles/) or use Stitch assets (`assets/stitch-*.jpg`).
+Theme sections expand **bottle variants** into cards when the `bottles` collection has one parent product (`fizz-variant-card.liquid`). Flavor collections loop **products** (3 cards).
 
-## 1b. Flavor products
+---
 
-Create three flavor sachet products with these **handles** (must match pack image slugs):
+## 1. Products
 
-| Handle | Title | Suggested price | Pack image asset |
-|--------|-------|-----------------|------------------|
-| `orange-tangerine` | Orange Tangerine | $1.50 | `flavor-pack-orange-tangerine.png` |
-| `zesty-lime` | Zesty Lime | $1.50 | `flavor-pack-zesty-lime.png` |
-| `mixed-berry` | Mixed Berry | $1.50 | `flavor-pack-mixed-berry.png` |
+### Fizz Bottle (`fizz-bottle`)
 
-Upload each product’s featured image from `assets/flavor-pack-*.png` in the theme (or use theme fallback blocks until products exist).
+- **Tag:** `Bottle`
+- **Theme template:** `bottle`
+- **Option:** Color — Charcoal Black, Arctic White, Coral Orange, Sage Green, Electric Blue, Steel Navy
+- **Price:** $50.00 per variant (edit in CSV if needed)
 
-## 2. Collections
+### Flavor Packs (3 products)
 
-| Handle | Title | Rule |
-|--------|-------|------|
-| `bottles` | Bold Bottles | Manual or automated — include all six bottle products |
-| `flavors` | Instant Flavors | Include all three flavor sachet products |
+| Handle | Title | Tag |
+|--------|-------|-----|
+| `fizz-flavor-orange-tangerine` | Orange Tangerine | `Flavor Packs` |
+| `fizz-flavor-zesty-lime` | Zesty Lime | `Flavor Packs` |
+| `fizz-flavor-mixed-berry` | Mixed Berry | `Flavor Packs` |
 
-**Flavors collection template:** In Admin → Collections → Instant Flavors → Theme template, choose **`flavors`** (`collection.flavors.json`) for the dedicated 3-pack grid page at `/collections/flavors`.
+- **Theme template:** `flavor-pack` (each product)
+- **Price:** $1.50
+- Upload pack images from `assets/flavor-pack-*.png` after import
 
-Assign `templates/collection.json` sections by visiting any collection — the theme uses the default collection template.
+### Fizz Charge (`fizz-co2-refills`)
 
-## 3. Lifestyle page
+- **Tag:** `CO2 Canisters`
+- **Theme template:** `co2-refill`
+- **Selling plans:** Monthly / quarterly (Shopify Payments required)
 
-1. **Online Store → Pages → Add page**
-2. Title: `Lifestyle`
-3. Template: `page.lifestyle` (appears after theme is uploaded)
-4. Save
+---
 
-## 4. Navigation
+## 2. Smart collections (already created)
 
-**Online Store → Navigation → Main menu** (`main-menu`):
+| Title | Condition | Theme template |
+|-------|-----------|----------------|
+| Bottles | Product tag equals `Bottle` | default `collection.json` |
+| Flavor Packs | Product tag equals `Flavor Packs` | **`flavors`** |
+| CO2 Canisters | Product tag equals `CO2 Canisters` | **`co2`** |
 
-| Label | Link |
-|-------|------|
-| Shop All | `/collections/bottles` |
-| Flavors | `/collections/flavors` |
-| Science | `/pages/science` (optional page) |
-| Lifestyle | `/pages/lifestyle` |
+Assign templates: **Products → Collections → [collection] → Theme template**.
 
-Footer menus: configure in theme editor → Footer → Explore / Support link lists.
+---
 
-## 5. Theme editor
+## 3. Navigation & homepage
 
-1. **Online Store → Themes → Customize** (Kinetic Spark dev theme)
-2. Homepage → Featured Bottles → select **bottles** collection
-3. Collection template → Flavor grid → select **flavors** collection
-4. Lifestyle page → Moments section → assign hotspot products per tile
-5. Upload images for any Stitch assets that failed import (403 URLs)
+| Label | URL |
+|-------|-----|
+| Fizz Bottles | `/collections/bottles` |
+| Flavor Packs | `/collections/flavor-packs` |
+| Fizz Charge | `/collections/co2-canisters` |
 
-## 6. Publish
+Homepage category tiles use the same URLs (`index.json`).
 
-When satisfied:
+---
+
+## 4. Import workflow
+
+1. **Products → Import** → `products_import_catalog.csv` (overwrite matching handles)
+2. Confirm smart collection counts: Bottles **1**, Flavor Packs **3**, CO2 Canisters **1**
+3. Assign theme templates per product and collection
+4. Upload flavor pack images to products
+
+---
+
+## 5. Future: Bundles (not implemented)
+
+Starter kit: Bottle + Flavor box + CO₂ subscription. Implement via Shopify Bundles when variant/product IDs are stable.
+
+---
+
+## 6. Publish theme
 
 ```bash
-shopify theme push --unpublished --store fizz-9820.myshopify.com
-# Review preview URL, then:
-shopify theme publish --store fizz-9820.myshopify.com
+cd shopify-theme/fizz-kinetic-spark
+shopify theme push --store fizz-9820.myshopify.com --live --allow-live
 ```
-
-## Quick-add / cart
-
-Quick Add buttons use the [Cart AJAX API](https://shopify.dev/docs/api/ajax/reference/cart) (`/cart/add.js`). Products must be **active** with available inventory.
