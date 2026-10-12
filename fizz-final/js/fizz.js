@@ -49,6 +49,12 @@
     return /\/flavors(\.html)?\/?$/.test(pathname);
   }
 
+  /** "/flavors.html", "/flavors/" and "/flavors" are the same page (static export vs. clean-URL hosting). */
+  function samePath(a, b) {
+    var clean = function (p) { return p.replace(/(\/index)?\.html$/, '').replace(/\/+$/, '') || '/'; };
+    return clean(a) === clean(b);
+  }
+
   /* ------------------------------------------------------------------ *
    * 2. Bubble transition
    * ------------------------------------------------------------------ */
@@ -346,7 +352,7 @@
     var url;
     try { url = new URL(link.href); } catch (e) { return null; }
     if (url.origin !== location.origin) return null;
-    if (url.pathname === location.pathname && url.search === location.search) return null;
+    if (samePath(url.pathname, location.pathname) && url.search === location.search) return null;
     return url;
   }
 
