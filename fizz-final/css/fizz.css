@@ -2167,15 +2167,26 @@ html.fizz-motion .about-cans.is-filled .about-cans-grid li { opacity: 1; transfo
    → mid photos (4) → copy + hero photos (.grid-wrapper, 25) → front bubbles (26)
    ========================================================================== */
 
+/* The section rises over the end of the hero: its top is clear water that deepens, so the
+   bubble video and the hero card sink into it as you scroll. --dive is the overlap. */
 .about-section[data-fizz-seltzer] {
+  --dive: min(32svh, 300px);
   isolation: isolate;
   overflow-x: clip; /* photos can drift past the edges without a sideways scroll */
+  margin-top: calc(-1 * var(--dive));
+  padding-top: calc(70px + var(--dive));
+  background: linear-gradient(180deg,
+    rgba(12, 23, 29, 0) 0,
+    rgba(12, 23, 29, 0.55) calc(var(--dive) * 0.55),
+    var(--fizz-deep) calc(var(--dive) * 1.25));
+  pointer-events: none; /* the clear top must not block the hero underneath */
 }
 @media (min-width: 768px) {
-  /* Room above and below the copy for photos floating in the distance */
-  .about-section[data-fizz-seltzer] { min-height: max(118svh, 860px); }
+  /* Room for photos rising through the water around the copy */
+  .about-section[data-fizz-seltzer] { min-height: calc(max(112svh, 820px) + var(--dive)); }
 }
-/* Faint light from the surface above, depth pooling below */
+/* Light filtering down from the surface, depth pooling lower down. Both fade out before
+   the edges, so there is no seam with the sections around it. */
 .about-section[data-fizz-seltzer]::before {
   content: "";
   position: absolute;
@@ -2183,8 +2194,8 @@ html.fizz-motion .about-cans.is-filled .about-cans-grid li { opacity: 1; transfo
   z-index: 0;
   pointer-events: none;
   background:
-    radial-gradient(90% 55% at 50% -5%, rgba(95, 216, 255, 0.08), transparent 70%),
-    radial-gradient(70% 45% at 50% 105%, rgba(23, 96, 122, 0.28), transparent 75%);
+    radial-gradient(70% 38% at 50% 30%, rgba(95, 216, 255, 0.06), transparent 70%),
+    radial-gradient(60% 26% at 50% 76%, rgba(23, 96, 122, 0.22), transparent 72%);
 }
 .fizz-seltzer-layer {
   position: absolute;
@@ -2193,16 +2204,18 @@ html.fizz-motion .about-cans.is-filled .about-cans-grid li { opacity: 1; transfo
   height: 100%;
   pointer-events: none;
   /* Bubbles fade in from below and out toward the top, no hard edges between sections */
-  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 14%, #000 82%, transparent 100%);
-  mask-image: linear-gradient(180deg, transparent 0, #000 14%, #000 82%, transparent 100%);
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 22%, #000 82%, transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0, #000 22%, #000 82%, transparent 100%);
 }
 .fizz-seltzer-layer.is-deep { z-index: 1; }
 .fizz-seltzer-layer.is-mid { z-index: 3; }
 .fizz-seltzer-layer.is-front { z-index: 26; }
-/* The full-width grid would swallow taps meant for the photos floating behind it */
+/* Only the copy and the photos take taps (the full-width grid would swallow them) */
 .about-section[data-fizz-seltzer] .grid-wrapper { pointer-events: none; }
 .about-section[data-fizz-seltzer] .story-content,
-.about-section[data-fizz-seltzer] .story-image { pointer-events: auto; }
+.about-section[data-fizz-seltzer] .story-image,
+.about-section[data-fizz-seltzer] .fizz-floater { pointer-events: auto; }
+.about-section[data-fizz-seltzer] .story-content { will-change: opacity, transform; }
 
 /* Slideshows: photos cross-fade slowly */
 .about-section[data-fizz-seltzer] .fizz-slide {
@@ -2211,10 +2224,12 @@ html.fizz-motion .about-cans.is-filled .about-cans-grid li { opacity: 1; transfo
   width: 100%;
   height: 100%;
   object-fit: cover;
+  z-index: 0;
   opacity: 0;
   transition: opacity 1.8s ease;
 }
-.about-section[data-fizz-seltzer] .fizz-slide.is-active { opacity: 1; }
+.about-section[data-fizz-seltzer] .fizz-slide.is-prev { z-index: 1; opacity: 1; transition: none; }
+.about-section[data-fizz-seltzer] .fizz-slide.is-active { z-index: 2; opacity: 1; }
 
 /* Hero photos */
 .about-section[data-fizz-seltzer] .story-image {
@@ -2249,6 +2264,8 @@ html.fizz-motion .about-cans.is-filled .about-cans-grid li { opacity: 1; transfo
 /* Floating photos at depth */
 .fizz-floater {
   position: absolute;
+  top: 0;
+  left: 0;
   padding: 0;
   border: 0;
   border-radius: 0.6rem;
@@ -2273,7 +2290,7 @@ html.fizz-motion .about-cans.is-filled .about-cans-grid li { opacity: 1; transfo
   content: "";
   position: absolute;
   inset: 0;
-  z-index: 1;
+  z-index: 3;
   background:
     linear-gradient(125deg, rgba(255, 255, 255, 0.1), transparent 40%),
     rgba(12, 23, 29, var(--tint, 0.2));
@@ -2286,7 +2303,11 @@ html.fizz-motion .about-cans.is-filled .about-cans-grid li { opacity: 1; transfo
 /* Phones: the hero photos float as an overlapping, staggered pair under the copy,
    with room above and below for the photos in the distance */
 @media (max-width: 767px) {
-  .about-section[data-fizz-seltzer] { padding-top: 30vw; padding-bottom: 46vw; }
+  .about-section[data-fizz-seltzer] {
+    --dive: min(24svh, 200px);
+    padding-top: calc(22vw + var(--dive));
+    padding-bottom: 30vw;
+  }
   .about-section[data-fizz-seltzer] .story-wrapper { grid-row-gap: 40px; }
   .about-section[data-fizz-seltzer] .story-image {
     width: 47vw;
