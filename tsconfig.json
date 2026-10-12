@@ -15,6 +15,6 @@
     "forceConsistentCasingInFileNames": true
   },
   "include": ["src", "vite.config.ts", "wrangler.jsonc"],
-  "exclude": ["dist", "node_modules", "fizz5.webflow"]
+  "exclude": ["dist", "node_modules", "fizz5.webflow", "fizz-final"]
 }
 

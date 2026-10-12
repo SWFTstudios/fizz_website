@@ -7,6 +7,7 @@ export default [
       "dist/**",
       "node_modules/**",
       "fizz5.webflow/**",
+      "fizz-final/**",
       ".wrangler/**",
       "**/* 2.ts",
       "**/* 2.css",

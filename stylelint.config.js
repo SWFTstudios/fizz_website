@@ -1,7 +1,7 @@
 /** @type {import('stylelint').Config} */
 export default {
   extends: ["stylelint-config-standard"],
-  ignoreFiles: ["dist/**", "fizz5.webflow/**"],
+  ignoreFiles: ["dist/**", "fizz5.webflow/**", "fizz-final/**"],
   rules: {
     "selector-class-pattern": null,
     "custom-property-pattern": null,
