@@ -522,9 +522,25 @@
   }
 
   function setupReveals() {
+    if (!motion) return;
+
+    // Generic block reveals: anything marked [data-reveal] rises in when scrolled into view.
+    var blocks = document.querySelectorAll('[data-reveal]');
+    if (blocks.length) {
+      var blockIO = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          blockIO.unobserve(entry.target);
+          entry.target.classList.add('is-in');
+        });
+      }, { rootMargin: '0px 0px -10% 0px' });
+      Fizz.onReveal(function () {
+        blocks.forEach(function (el) { blockIO.observe(el); });
+      });
+    }
+
     var masks = document.querySelectorAll('.fizz-reveal-mask');
     if (!masks.length) return;
-    if (!motion) return;
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         if (!entry.isIntersecting) return;
