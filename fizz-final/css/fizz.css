@@ -2160,3 +2160,63 @@ html.fizz-motion .about-cans.is-filled .about-cans-grid li { opacity: 1; transfo
   .product-slide-card { height: 72svh; }
   .shop-card-media { aspect-ratio: 4 / 5; }
 }
+
+/* ==========================================================================
+   Homepage story: photos floating in seltzer (motion + bubbles: js/fizz-seltzer.js)
+   ========================================================================== */
+
+.about-section[data-fizz-seltzer] { isolation: isolate; }
+/* Faint light from the surface above, depth pooling below */
+.about-section[data-fizz-seltzer]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(90% 55% at 50% -5%, rgba(95, 216, 255, 0.08), transparent 70%),
+    radial-gradient(70% 45% at 50% 105%, rgba(23, 96, 122, 0.28), transparent 75%);
+}
+.fizz-seltzer-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  /* Bubbles fade in from below and out toward the top, no hard edges between sections */
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 14%, #000 82%, transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0, #000 14%, #000 82%, transparent 100%);
+}
+.fizz-seltzer-layer.is-back { z-index: 1; }
+.fizz-seltzer-layer.is-front { z-index: 26; } /* above .grid-wrapper (25), over the photos */
+.about-section[data-fizz-seltzer] .story-image {
+  transform-origin: 50% 60%;
+  will-change: transform, opacity;
+  box-shadow: 0 36px 70px -28px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(214, 238, 248, 0.06);
+}
+/* A glassy sheen, like a photo seen through the side of a glass */
+.about-section[data-fizz-seltzer] .story-image::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(125deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.03) 26%, transparent 45%, transparent 72%, rgba(95, 216, 255, 0.08) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), inset 0 0 0 1px rgba(214, 238, 248, 0.08);
+}
+.about-section[data-fizz-seltzer] .story-background-wrapper { will-change: transform; }
+
+/* Phones: the two photos float as an overlapping, staggered pair under the copy */
+@media (max-width: 767px) {
+  .about-section[data-fizz-seltzer] { padding-bottom: 88px; }
+  .about-section[data-fizz-seltzer] .story-wrapper { grid-row-gap: 40px; }
+  .about-section[data-fizz-seltzer] .story-image {
+    width: 47vw;
+    height: auto;
+    max-height: none;
+    aspect-ratio: 2 / 3;
+  }
+  .about-section[data-fizz-seltzer] .story-image:first-child { z-index: 2; margin: 16vw -5vw 0 0; }
+  .about-section[data-fizz-seltzer] .story-image:last-child { z-index: 1; margin: 0 0 16vw -5vw; }
+}
