@@ -77,6 +77,7 @@
     'cost { subtotalAmount { amount currencyCode } totalAmount { amount currencyCode } } ' +
     'lines(first: 50) { edges { node { id quantity ' +
     'cost { totalAmount { amount currencyCode } } ' +
+    'sellingPlanAllocation { sellingPlan { name } } ' +
     'merchandise { ... on ProductVariant { id title image { url altText } product { title handle } } } ' +
     '} } }';
 
@@ -124,7 +125,13 @@
     });
   }
 
+  /**
+   * addLines('gid://…', 2) or addLines([{ merchandiseId, quantity, sellingPlanId? }, …])
+   */
   function addLines(merchandiseId, quantity) {
+    var lines = Array.isArray(merchandiseId)
+      ? merchandiseId
+      : [{ merchandiseId: merchandiseId, quantity: quantity || 1 }];
     return ensureCart().then(function (cart) {
       return gql(
         'mutation CartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!) { cartLinesAdd(cartId: $cartId, lines: $lines) { cart { ' +
@@ -132,7 +139,7 @@
           ' } userErrors { field message } } }',
         {
           cartId: cart.id,
-          lines: [{ merchandiseId: merchandiseId, quantity: quantity || 1 }]
+          lines: lines
         }
       ).then(function (d) {
         var payload = d.cartLinesAdd;
@@ -209,6 +216,7 @@
         var img = (merch.image && merch.image.url) || '';
         var title = product.title || 'Item';
         var variant = merch.title && merch.title !== 'Default Title' ? merch.title : '';
+        var plan = node.sellingPlanAllocation && node.sellingPlanAllocation.sellingPlan;
         var lineTotal = node.cost && node.cost.totalAmount;
         return (
           '<li class="fizz-cart-item" data-line-id="' + node.id + '">' +
@@ -220,6 +228,7 @@
             '<div class="fizz-cart-item-info">' +
               '<span class="fizz-cart-item-title">' + title + '</span>' +
               (variant ? '<p class="fizz-cart-item-variant">' + variant + '</p>' : '') +
+              (plan ? '<p class="fizz-cart-item-variant fizz-cart-item-plan">Subscription · ' + plan.name + '</p>' : '') +
               '<p class="fizz-cart-item-price">' +
                 money(lineTotal && lineTotal.amount, lineTotal && lineTotal.currencyCode) +
               '</p>' +
@@ -596,6 +605,16 @@
       var id = VARIANT_BY_HANDLE[handleOrGid] || handleOrGid;
       openCart();
       return withBusy(addLines(id, qty || 1));
+    },
+    /** Adds lines without opening the drawer; rejects on error so callers can show it. */
+    addLines: function (lines) {
+      return addLines(lines).then(function (cart) {
+        renderCart(cart);
+        return cart;
+      });
+    },
+    get: function () {
+      return fetchCart(getCartId());
     }
   };
 })();
