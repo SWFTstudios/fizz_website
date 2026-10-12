@@ -6,8 +6,7 @@
  *   → the copy and the two hero photos → a few bubbles drifting across the front.
  * The floating photos rise through the water like the bubbles do: farther ones slower,
  * swaying as they go, fading out toward the surface and resurfacing from below in a new
- * spot. Every photo quietly cross-fades through a short slideshow, and tapping any of them
- * opens a lightbox gallery with a "Shop the bottle" call to action.
+ * spot. Tapping any photo opens a lightbox gallery with a "Shop the bottle" call to action.
  * The section overlaps the end of the hero with a clear-to-deep gradient, so the page sinks
  * into the water, and the copy surfaces as it scrolls in.
  *
@@ -76,39 +75,35 @@
     rooftop: photo('6a96f4eb4a1bebd117818394' + L + '60', 'Black, blue and white Fizz bottles on a rooftop bench')
   };
 
-  // The two hero photos already in the page (left, right) and the slides they cycle through.
-  var HERO_SLIDES = [['drink', 'courtside', 'field'], ['toss', 'blueClose', 'sandBlue']];
+  // The two hero photos already in the page (left, right).
+  var HERO = ['drink', 'toss'];
 
-  // Floating photos rise through the water like bubbles. depth: 0 = far back, 1 = against
-  // the glass. w: [desktop, phone] width as a fraction of the section; 0 = not on phones.
+  // Floating photos rise through the water like bubbles, one photo each. depth: 0 = far
+  // back, 1 = against the glass. w: [desktop, phone] width as a fraction of the section;
+  // 0 = not on phones.
   var FLOATERS = [
-    { depth: 0.6, slides: ['tennis', 'tennisSit'], w: [0.115, 0.27] },
-    { depth: 0.56, slides: ['cheers', 'sunset'], w: [0.105, 0.25] },
-    { depth: 0.5, slides: ['press', 'charge'], w: [0.105, 0] },
-    { depth: 0.62, slides: ['grass', 'walk'], w: [0.12, 0.24] },
-    { depth: 0.32, slides: ['car', 'carHand'], w: [0.08, 0.2] },
-    { depth: 0.22, slides: ['carry', 'fizzClose'], w: [0.07, 0.17] },
-    { depth: 0.16, slides: ['courtTop', 'bleachers'], w: [0.06, 0] },
-    { depth: 0.28, slides: ['volley', 'share'], w: [0.085, 0.18] },
-    { depth: 0.2, slides: ['chargeLife', 'rooftop'], w: [0.075, 0] }
+    { depth: 0.62, photo: 'grass', w: [0.12, 0.24] },
+    { depth: 0.6, photo: 'tennis', w: [0.115, 0.27] },
+    { depth: 0.58, photo: 'courtside', w: [0.11, 0] },
+    { depth: 0.56, photo: 'cheers', w: [0.105, 0.25] },
+    { depth: 0.54, photo: 'sunset', w: [0.105, 0] },
+    { depth: 0.52, photo: 'blueClose', w: [0.1, 0.22] },
+    { depth: 0.5, photo: 'press', w: [0.1, 0] },
+    { depth: 0.36, photo: 'rooftop', w: [0.09, 0.2] },
+    { depth: 0.32, photo: 'car', w: [0.08, 0.2] },
+    { depth: 0.3, photo: 'field', w: [0.08, 0] },
+    { depth: 0.28, photo: 'volley', w: [0.085, 0.18] },
+    { depth: 0.26, photo: 'sandBlue', w: [0.075, 0] },
+    { depth: 0.24, photo: 'walk', w: [0.07, 0.17] },
+    { depth: 0.22, photo: 'carry', w: [0.07, 0] },
+    { depth: 0.2, photo: 'chargeLife', w: [0.075, 0] },
+    { depth: 0.19, photo: 'charge', w: [0.065, 0.16] },
+    { depth: 0.18, photo: 'tennisSit', w: [0.065, 0] },
+    { depth: 0.16, photo: 'courtTop', w: [0.06, 0] }
   ];
 
   // Gallery order: hero photos first, then near to far.
-  var GALLERY = [];
-  function addToGallery(key) { if (GALLERY.indexOf(key) < 0) GALLERY.push(key); }
-  HERO_SLIDES.forEach(function (s) { s.forEach(addToGallery); });
-  FLOATERS.slice().sort(function (a, b) { return b.depth - a.depth; })
-    .forEach(function (f) { f.slides.forEach(addToGallery); });
-
-  function slideImg(key, size, active) {
-    var img = document.createElement('img');
-    img.className = 'fizz-slide' + (active ? ' is-active' : '');
-    img.src = PHOTOS[key][size];
-    img.alt = '';
-    img.loading = 'lazy';
-    img.decoding = 'async';
-    return img;
-  }
+  var GALLERY = HERO.concat(FLOATERS.map(function (f) { return f.photo; }));
 
   /* ---------- Cards: the two hero photos + the floaters ---------- */
 
@@ -119,27 +114,17 @@
 
   Array.prototype.forEach.call(section.querySelectorAll('.story-image'), function (el, i) {
     var inner = el.querySelector('.story-background-wrapper');
-    var keys = HERO_SLIDES[i] || [];
-    var first = el.querySelector('.story-background');
-    if (!inner || !first || !keys.length) return;
-    var slides = [first];
-    first.classList.add('fizz-slide', 'is-active');
-    keys.slice(1).forEach(function (k) {
-      var img = slideImg(k, 'medium', false);
-      inner.appendChild(img);
-      slides.push(img);
-    });
+    var key = HERO[i];
+    if (!inner || !key) return;
     el.setAttribute('role', 'button');
     el.setAttribute('tabindex', '0');
-    el.setAttribute('aria-label', 'Open photo gallery: ' + PHOTOS[keys[0]].alt);
+    el.setAttribute('aria-label', 'Open photo gallery: ' + PHOTOS[key].alt);
     cards.push({
       el: el,
       inner: inner,
       hero: true,
       depth: 1,
-      keys: keys,
-      slides: slides,
-      idx: 0,
+      photo: key,
       dir: i === 0 ? 1 : -1,         // opposite parallax, like the original interaction
       period: i === 0 ? 7.6 : 9.3,   // seconds per bob; different so they never sync
       phase: i === 0 ? 0 : 2.2,
@@ -155,17 +140,18 @@
     var el = document.createElement('button');
     el.type = 'button';
     el.className = 'fizz-floater ' + (f.depth < FAR ? 'is-far' : 'is-mid');
-    el.setAttribute('aria-label', 'Open photo gallery: ' + PHOTOS[f.slides[0]].alt);
+    el.setAttribute('aria-label', 'Open photo gallery: ' + PHOTOS[f.photo].alt);
     // Atmospheric depth: farther photos are softer and bluer (and smaller).
     el.style.setProperty('--blur', Math.max(0, (FAR + 0.05 - f.depth) * 4.5).toFixed(2) + 'px');
     el.style.setProperty('--tint', ((1 - f.depth) * 0.5).toFixed(2));
     var media = document.createElement('span');
     media.className = 'fizz-floater-media';
-    var slides = f.slides.map(function (k, j) {
-      var img = slideImg(k, 'small', j === 0);
-      media.appendChild(img);
-      return img;
-    });
+    var img = document.createElement('img');
+    img.src = PHOTOS[f.photo].small;
+    img.alt = '';
+    img.loading = 'lazy';
+    img.decoding = 'async';
+    media.appendChild(img);
     el.appendChild(media);
     section.appendChild(el);
     var card = {
@@ -173,9 +159,7 @@
       hero: false,
       depth: f.depth,
       cfg: f,
-      keys: f.slides,
-      slides: slides,
-      idx: 0,
+      photo: f.photo,
       x: 0,
       y: 0,
       w: 0,
@@ -217,8 +201,15 @@
     var best = W / 2;
     var bestGap = -1;
     for (var i = 0; i < 6; i++) {
-      var f = lanes ? (Math.random() < 0.5 ? rand(0.05, 0.3) : rand(0.7, 0.95)) : rand(0.06, 0.94);
-      var x = W * f;
+      var x;
+      if (lanes && textBox) {
+        // Lanes either side of the copy, wide enough that the whole photo clears it.
+        var leftMax = Math.max(c.w * 0.6, textBox.l - c.w * 0.45);
+        var rightMin = Math.min(W - c.w * 0.6, textBox.r + c.w * 0.45);
+        x = Math.random() < 0.5 ? rand(c.w * 0.4, leftMax) : rand(rightMin, W - c.w * 0.4);
+      } else {
+        x = W * rand(0.06, 0.94);
+      }
       var gap = Infinity;
       floaters.forEach(function (o) {
         if (o !== c && !o.el.hidden && o.y > H * 0.5) gap = Math.min(gap, Math.abs(o.x - x));
@@ -234,7 +225,7 @@
   function launch(c) {
     c.x = pickX(c);
     c.y = H + c.h * 0.6 + rand(0, H * 0.2);
-    c.v = (12 + c.depth * 34) * rand(0.85, 1.15); // nearer photos rise faster, like bigger bubbles
+    c.v = (22 + c.depth * 52) * rand(0.85, 1.15); // nearer photos rise faster, like bigger bubbles
     c.wa = 8 + c.depth * 16;                      // sway
     c.wf = rand(0.35, 0.6);
     c.tilt = rand(-5, 5);
@@ -296,18 +287,18 @@
 
   function fieldBubble(anywhere) {
     var z = Math.random();
-    var big = Math.random() < 0.06;
-    var r = big ? rand(2.4, 4.8) * (0.6 + 0.4 * z) : rand(0.5, 1.5) * (0.7 + 0.5 * z);
+    var big = Math.random() < 0.13;
+    var r = big ? rand(2.2, 5.2) * (0.6 + 0.4 * z) : rand(0.6, 1.9) * (0.7 + 0.5 * z);
     return {
       x: rand(0, W),
       y: anywhere ? rand(0, H) : H + rand(4, 40),
       r: r,
       z: z,
-      v: (10 + r * 9) * (0.5 + 0.5 * z), // bigger bubbles rise faster
+      v: (16 + r * 12) * (0.5 + 0.5 * z), // bigger bubbles rise faster
       wa: big ? rand(2, 5) : rand(0.3, 1.6),
       wf: rand(0.4, 1.2),
       ph: rand(0, TAU),
-      a: 0.1 + 0.4 * z,
+      a: 0.16 + 0.5 * z,
       dx: 0
     };
   }
@@ -319,16 +310,16 @@
     return {
       x: W * x,
       base: H * rand(0.72, 1.02),
-      every: rand(0.16, 0.32),
+      every: rand(0.09, 0.2),
       wait: 0,
-      v: rand(16, 26),
+      v: rand(22, 34),
       life: rand(7, 14),
       age: 0
     };
   }
 
   function fieldCount() {
-    return Math.min(MOBILE.matches ? 90 : 210, Math.round((W * H) / (MOBILE.matches ? 5500 : 6500)));
+    return Math.min(MOBILE.matches ? 200 : 460, Math.round((W * H) / (MOBILE.matches ? 2400 : 3000)));
   }
 
   function populate() {
@@ -337,7 +328,7 @@
     near = [];
     for (var i = 0, n = fieldCount(); i < n; i++) field.push(fieldBubble(true));
     sites = [];
-    for (var s = 0, m = MOBILE.matches ? 2 : 3; s < m; s++) {
+    for (var s = 0, m = MOBILE.matches ? 4 : 7; s < m; s++) {
       var st = site();
       st.age = rand(0, st.life * 0.6);
       sites.push(st);
@@ -499,33 +490,6 @@
     content.style.filter = e >= 1 ? '' : 'blur(' + ((1 - e) * 6).toFixed(2) + 'px)';
   }
 
-  /* ---------- Slideshows ---------- */
-
-  // The next slide fades in over the current one, which stays fully opaque underneath, so the
-  // photo never goes see-through mid-fade.
-  function showSlide(c, idx) {
-    c.slides.forEach(function (s) { s.classList.remove('is-prev'); });
-    c.slides[c.idx].classList.remove('is-active');
-    c.slides[c.idx].classList.add('is-prev');
-    c.idx = idx;
-    c.slides[c.idx].classList.add('is-active');
-  }
-
-  function stepSlides(t) {
-    if (!enterAt) return;
-    cards.forEach(function (c, i) {
-      if (c.slides.length < 2 || c.el.hidden) return;
-      if (!c.next) {
-        c.every = rand(5.5, 8.5);
-        c.next = enterAt + 3 + i * 0.9; // staggered so photos never change together
-        return;
-      }
-      if (t < c.next) return;
-      c.next = t + c.every;
-      showSlide(c, (c.idx + 1) % c.slides.length);
-    });
-  }
-
   /* ---------- Simulation ---------- */
 
   var energy = 0;
@@ -542,7 +506,7 @@
       if (s.wait > 0) return;
       s.wait = s.every * rand(0.8, 1.25);
       var strength = Math.min(1, s.age / 1.5, (s.life - s.age) / 1.5);
-      chain.push({ x: s.x, y: s.base, base: s.base, r0: rand(0.45, 0.7), r: 0.5, v: s.v * rand(0.9, 1.1), ph: rand(0, TAU), a: 0.22 * strength, fade: 0, dx: 0 });
+      chain.push({ x: s.x, y: s.base, base: s.base, r0: rand(0.55, 0.85), r: 0.6, v: s.v * rand(0.9, 1.1), ph: rand(0, TAU), a: 0.34 * strength, fade: 0, dx: 0 });
     });
 
     for (var i = chain.length - 1; i >= 0; i--) {
@@ -573,8 +537,7 @@
 
     stepChains(dt, t, ds, stir);
 
-    // The floating photos rise like the bubbles; at the surface they resurface below, elsewhere,
-    // showing their next photo.
+    // The floating photos rise like the bubbles; at the surface they resurface below, elsewhere.
     floaters.forEach(function (c) {
       if (c.el.hidden) return;
       c.speed += ((c.hover ? 0.08 : 1) - c.speed) * Math.min(1, dt * 4);
@@ -582,7 +545,6 @@
       c.y += ds * 0.3 * (1 - c.depth); // far photos lag behind the page
       if (c.y < -c.h * 0.8) {
         launch(c);
-        if (c.slides.length > 1) showSlide(c, (c.idx + 1) % c.slides.length);
       } else if (c.y > H + c.h + H * 0.3) {
         c.y = H + c.h + H * 0.3;
       }
@@ -593,7 +555,7 @@
       if (!enterAt) return;
       card.spawn -= dt * (1 + energy * 2.5);
       if (card.spawn > 0) return;
-      card.spawn = rand(0.55, 1.5);
+      card.spawn = rand(0.25, 0.7);
       var r = rects[k];
       var top = r.top - sr.top;
       var startY = r.bottom - sr.top - rand(0, r.height * 0.25);
@@ -651,7 +613,6 @@
 
     revealCopy(sr, vh);
     moveCards(t, p);
-    stepSlides(t);
     step(dt, t, ds, sr, rects);
     paint();
   }
@@ -825,9 +786,9 @@
     lb.classList.add('is-open');
     lb.setAttribute('aria-hidden', 'false');
     document.documentElement.classList.add('fizz-lb-open');
-    show(GALLERY.indexOf(card.keys[card.idx]), 0);
+    show(GALLERY.indexOf(card.photo), 0);
     lb.querySelector('.fizz-lb-close').focus();
-    track('gallery_open', { photo: card.keys[card.idx] });
+    track('gallery_open', { photo: card.photo });
   }
 
   function closeLightbox() {
@@ -860,7 +821,7 @@
     populate();
   });
 
-  // Reduced motion: a still glass of seltzer, photos stay put, slideshows don't advance.
+  // Reduced motion: a still glass of seltzer, photos stay put.
   if (REDUCED) return;
 
   cards.forEach(function (c) { c.el.style.opacity = '0'; });
