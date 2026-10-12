@@ -138,7 +138,60 @@
     update();
   }
 
+  /* Style guide: copy swatch values + replayable motion demos */
+  function styleGuide() {
+    var status = document.querySelector('[data-sg-copied]');
+    if (!status) return;
+    var hideTimer;
+    document.querySelectorAll('.sg-swatch[data-copy]').forEach(function (sw) {
+      sw.tabIndex = 0;
+      sw.setAttribute('role', 'button');
+      sw.setAttribute('aria-label', 'Copy ' + sw.querySelector('strong').textContent + ' ' + sw.getAttribute('data-copy'));
+      function copy() {
+        var value = sw.getAttribute('data-copy');
+        var show = function (ok) {
+          status.textContent = ok ? 'Copied ' + value : value + ' \u2014 press \u2318C / Ctrl+C to copy';
+          status.classList.add('is-on');
+          clearTimeout(hideTimer);
+          hideTimer = setTimeout(function () { status.classList.remove('is-on'); }, 1800);
+        };
+        var fallback = function () {
+          var field = document.createElement('textarea');
+          field.value = value;
+          field.setAttribute('readonly', '');
+          field.style.cssText = 'position:fixed;opacity:0;pointer-events:none;';
+          document.body.appendChild(field);
+          field.select();
+          var ok = false;
+          try { ok = document.execCommand('copy'); } catch (e) {}
+          field.remove();
+          show(ok);
+        };
+        if (navigator.clipboard && window.isSecureContext) {
+          navigator.clipboard.writeText(value).then(function () { show(true); }, fallback);
+        } else {
+          fallback();
+        }
+      }
+      sw.addEventListener('click', copy);
+      sw.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); copy(); } });
+    });
+    document.querySelectorAll('[data-demo]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var kind = btn.getAttribute('data-demo');
+        if (kind === 'burst' && window.Fizz && Fizz.burst) Fizz.burst(btn, 16);
+        if (kind === 'reveal') {
+          var target = document.querySelector('[data-demo-target="reveal"]');
+          target.classList.remove('is-playing');
+          void target.offsetWidth;
+          target.classList.add('is-playing');
+        }
+      });
+    });
+  }
+
   function boot() {
+    styleGuide();
     smoothAnchors();
     stepsRail();
     partsDiagram();
