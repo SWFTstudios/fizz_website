@@ -158,15 +158,21 @@
     var range = 1;
     var raf = 0;
 
+    // The shrink runs across the whole pinned stretch and finishes just as the next section
+    // starts to rise over the card, so there's no dead zone where the card sits still.
     function measure() {
-      top = hero.getBoundingClientRect().top + window.scrollY;
-      range = Math.max(1, (hero.offsetHeight - window.innerHeight) * 0.67);
+      var rect = hero.getBoundingClientRect();
+      var next = hero.nextElementSibling;
+      var overlap = next ? Math.max(0, rect.bottom - next.getBoundingClientRect().top) : 0;
+      top = rect.top + window.scrollY;
+      range = Math.max(1, hero.offsetHeight - window.innerHeight - overlap);
       MIN_SCALE = minScale();
     }
     function update() {
       raf = 0;
       var p = Math.min(1, Math.max(0, (window.scrollY - top) / range));
-      var eased = 1 - Math.pow(1 - p, 2);
+      // Mostly linear with a soft ease-out: it keeps moving right up to the hand-off.
+      var eased = 0.6 * p + 0.4 * (1 - Math.pow(1 - p, 2));
       var scale = 1 - (1 - MIN_SCALE) * eased;
       var radius = (28 * eased) / scale; // stays ~28px on screen as the card shrinks
       layers.forEach(function (el) {

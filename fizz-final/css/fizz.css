@@ -1146,26 +1146,17 @@ html.fizz-motion [data-reveal].is-in { opacity: 1; transform: none; }
   transition: transform 7s linear;
 }
 .fizz-more-slide.is-active img { transform: scale(1); }
+/* Arrows match the homepage carousels' (.dark-slide-arrow): see "Slideshow arrows" below */
 .fizz-more-arrow {
   position: absolute;
   top: 50%;
   z-index: 2;
   display: grid;
   place-items: center;
-  width: 48px;
-  height: 48px;
   padding: 0;
-  border: 0;
-  border-radius: 50%;
-  background: rgba(10, 26, 34, 0.6);
-  color: #fff;
   cursor: pointer;
   translate: 0 -50%;
-  transition: background-color 0.25s, color 0.25s, scale 0.2s;
 }
-.fizz-more-arrow:hover { background: var(--pdp-ice); color: var(--fizz-navy); }
-.fizz-more-arrow:active { scale: 0.92; }
-.fizz-more-arrow svg { width: 22px; height: 22px; }
 .fizz-more-arrow.is-prev { left: 16px; }
 .fizz-more-arrow.is-next { right: 16px; }
 .fizz-more-arrow.is-next svg { transform: scaleX(-1); }
@@ -1264,7 +1255,6 @@ html.fizz-motion [data-reveal].is-in { opacity: 1; transform: none; }
 @media (max-width: 767px) {
   .fizz-more-inner { grid-template-columns: minmax(0, 1fr); }
   .fizz-more-media { max-height: 72vh; border-radius: 20px; }
-  .fizz-more-arrow { width: 42px; height: 42px; }
   .fizz-more-arrow.is-prev { left: 10px; }
   .fizz-more-arrow.is-next { right: 10px; }
   .fizz-more-eyebrow { margin-bottom: 1rem; }
@@ -1930,7 +1920,11 @@ html.fizz-motion .about-cans.is-filled .about-cans-grid li { opacity: 1; transfo
 /* Slideshow progress + focus in Spark */
 .fizz-more-dot span::after { background: linear-gradient(90deg, var(--fizz-ice), var(--fizz-spark)); }
 
-/* Hero card (js/fizz-home.js): video + text layers scale together */
+/* Hero card (js/fizz-home.js): video + text layers scale together. The hero was 300vh, which
+   left a long stretch where the shrunken card sat pinned and still; now the shrink spans the
+   whole pinned stretch and hands off to the story section rising over it. */
+.fizz-hero { height: 230vh; }
+@media (max-width: 767px) { .fizz-hero { height: 200vh; } }
 .fizz-hero .hero-video_container,
 .fizz-hero .fizz-hero-content {
   overflow: hidden;
@@ -2418,4 +2412,35 @@ html.fizz-lb-open body { overflow: hidden; }
   .fizz-floater-media,
   .fizz-lb,
   .fizz-lb-img { transition: none; }
+}
+
+/* ==========================================================================
+   Slideshow arrows: every carousel uses the "Find Your Color" arrow — a navy circle with a
+   thin white arrow, a light ring on hover and a blue press. Webflow's interactions still fade
+   the homepage ones in and out, so only colours and the ring transition here.
+   ========================================================================== */
+
+.dark-slide-arrow,
+.fizz-more-arrow {
+  width: 48px;
+  height: 48px;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  background-color: var(--fizz-navy);
+  color: #fff;
+  transition: border-color 0.3s ease, background-color 0.3s ease, scale 0.2s ease;
+}
+.dark-slide-arrow:hover,
+.dark-slide-arrow.left:hover,
+.dark-slide-arrow.right:hover,
+.fizz-more-arrow:hover { border-color: #e4e9ec; border-style: solid; }
+.dark-slide-arrow:active,
+.dark-slide-arrow.left:active,
+.dark-slide-arrow.right:active,
+.fizz-more-arrow:active { background-color: var(--fizz-blue-1); }
+.fizz-more-arrow:active { scale: 0.94; }
+.fizz-more-arrow svg { width: 16px; height: 16px; }
+@media (max-width: 479px) {
+  .dark-slide-arrow,
+  .fizz-more-arrow { width: 40px; height: 40px; }
 }
