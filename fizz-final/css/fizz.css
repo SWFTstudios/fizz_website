@@ -1,0 +1,465 @@
+/* ==========================================================================
+   Fizz — site-wide custom styles (loaded after the Webflow stylesheet).
+   State classes on <html> are set before first paint by js/fizz-head.js:
+     .fizz-motion    motion allowed (no prefers-reduced-motion)
+     .fizz-loading   page not revealed yet (removed by fizz.js)
+     .fizz-intro     homepage intro is about to play
+     .fizz-tx-cover  arrived via a page transition; keep the page covered
+   ========================================================================== */
+
+:root {
+  --fizz-ink: #191919;
+  --fizz-tx-color: #16262e;
+  --fizz-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ---------- Page transition cover (pre-paint, swapped for #fizz-tx by JS) ---------- */
+
+html.fizz-tx-cover::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  background: var(--fizz-tx-color);
+}
+
+/* ---------- Bubble page transition ---------- */
+
+#fizz-tx {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483646;
+  overflow: hidden;
+  visibility: hidden;
+  pointer-events: none;
+  contain: strict;
+}
+#fizz-tx.is-active {
+  visibility: visible;
+  pointer-events: auto;
+}
+.fizz-tx-liquid {
+  position: absolute;
+  inset: 0;
+  background: var(--fizz-tx-color);
+  transform: translate3d(0, 115%, 0);
+  will-change: transform;
+}
+.fizz-tx-wave {
+  position: absolute;
+  left: 0;
+  width: 200%;
+  height: 12vh;
+  min-height: 60px;
+  fill: var(--fizz-tx-color);
+  animation: fizz-tx-slosh 1.6s linear infinite;
+}
+.fizz-tx-wave.is-top { bottom: calc(100% - 1px); }
+.fizz-tx-wave.is-bottom { top: calc(100% - 1px); transform: scaleY(-1); animation-direction: reverse; }
+@keyframes fizz-tx-slosh {
+  from { translate: 0 0; }
+  to { translate: -50% 0; }
+}
+.fizz-tx-bubbles { position: absolute; inset: 0; }
+.fizz-tx-bubble {
+  position: absolute;
+  top: 100%;
+  border-radius: 50%;
+  border: 1.5px solid rgba(221, 246, 255, 0.55);
+  background: radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.95) 0 7%, rgba(255, 255, 255, 0.22) 9%, rgba(196, 227, 253, 0.1) 55%, rgba(196, 227, 253, 0.04) 72%);
+  will-change: transform, opacity;
+}
+
+/* Flavor animation stage (sits inside #fizz-tx, above the liquid) */
+.fizz-tx-flavor {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+}
+.fizz-tx-flavor::before {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  background:
+    radial-gradient(40% 40% at 38% 42%, rgba(194, 58, 122, 0.45), transparent 70%),
+    radial-gradient(35% 35% at 64% 38%, rgba(226, 59, 59, 0.35), transparent 70%),
+    radial-gradient(35% 35% at 40% 66%, rgba(143, 191, 58, 0.3), transparent 70%),
+    radial-gradient(38% 38% at 62% 64%, rgba(255, 179, 71, 0.4), transparent 70%);
+  animation: fizz-flavor-glow 3s ease-in-out infinite alternate;
+}
+@keyframes fizz-flavor-glow {
+  from { transform: scale(0.85) rotate(0deg); opacity: 0.7; }
+  to { transform: scale(1.1) rotate(8deg); opacity: 1; }
+}
+.fizz-tx-flavor canvas {
+  position: relative;
+  width: min(92vw, 92vh, 900px);
+  height: min(92vw, 92vh, 900px);
+}
+.fizz-tx-skip {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  z-index: 2;
+  appearance: none;
+  border: 1px solid rgba(221, 246, 255, 0.45);
+  background: rgba(22, 38, 46, 0.55);
+  color: #ddf6ff;
+  font: 600 12px/1.2 Poppins, system-ui, sans-serif;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 12px 18px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+.fizz-tx-skip:hover { background: rgba(22, 38, 46, 0.85); }
+
+/* ---------- Homepage intro: F I Z Z → I stretches → sliding doors ---------- */
+
+.loading-intro-section { pointer-events: none; }
+.letter-i-video { display: none !important; }
+
+html.fizz-intro .loading-intro-section {
+  display: flex;
+  z-index: 2147483000;
+}
+html.fizz-intro .intro-logo-wrapper > * { opacity: 0; }
+html.fizz-intro .intro-logo-wrapper { z-index: 5; }
+@media (max-width: 479px) {
+  html.fizz-intro .intro-logo-wrapper { transform: scale(0.8); }
+}
+
+/* Bar + doors are injected into .loading-intro-section, so these z-indexes are local to it. */
+.fizz-intro-bar,
+.fizz-intro-door {
+  position: fixed;
+  pointer-events: none;
+  will-change: transform;
+}
+.fizz-intro-backdrop { position: absolute; inset: 0; z-index: 0; background: #fff; }
+.fizz-intro-bar { z-index: 6; background: var(--fizz-ink); transform-origin: 50% 0; }
+.fizz-intro-door { z-index: 1; top: 0; bottom: 0; background: #fff; }
+.fizz-intro-door::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: var(--fizz-seam, 23px);
+  background: var(--fizz-ink);
+}
+.fizz-intro-door.is-left { left: 0; }
+.fizz-intro-door.is-left::after { right: 0; }
+.fizz-intro-door.is-right { right: 0; }
+.fizz-intro-door.is-right::after { left: 0; }
+
+/* ---------- Text reveals ---------- */
+
+html.fizz-motion .fizz-reveal-mask > * {
+  transform: translate3d(0, 110%, 0);
+  transition: transform 0.9s var(--fizz-ease-out);
+}
+html.fizz-motion .fizz-reveal-mask.is-in > * { transform: none; }
+html.fizz-motion .fizz-hero .fizz-reveal-mask:nth-of-type(2) > * { transition-delay: 0.08s; }
+html.fizz-motion .fizz-hero .is-hero-second .fizz-reveal-mask > * { transition-delay: 0.16s; }
+
+/* ---------- CTA hover fill (replaces the old GSAP button script) ---------- */
+
+a.button,
+.pdp-add-btn,
+.fizz-shop-cta {
+  --fizz-fill: var(--fizz-tx-color);
+  --fizz-fill-text: var(--fizz-blue-1);
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  transition: color 0.3s ease, transform 0.15s ease;
+}
+a.button.is-outline,
+.pdp-add-btn:not(.pdp-xsell-cta) {
+  --fizz-fill: var(--fizz-blue-1);
+  --fizz-fill-text: var(--fizz-tx-color);
+}
+a.button::before,
+.pdp-add-btn::before,
+.fizz-shop-cta::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--fizz-fill);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.4s var(--fizz-ease-out);
+}
+@media (hover: hover) {
+  a.button:hover,
+  .pdp-add-btn:hover,
+  .fizz-shop-cta:hover { color: var(--fizz-fill-text); }
+  a.button:hover::before,
+  .pdp-add-btn:hover::before,
+  .fizz-shop-cta:hover::before { transform: scaleX(1); }
+}
+a.button:active,
+.pdp-add-btn:active,
+.fizz-shop-cta:active { transform: scale(0.97); }
+
+/* ---------- Marquees (CSS only, paused while off-screen) ---------- */
+
+@keyframes fizz-marquee-x { to { transform: translate3d(-100%, 0, 0); } }
+@keyframes fizz-marquee-x-reverse { from { transform: translate3d(-100%, 0, 0); } to { transform: none; } }
+@keyframes fizz-marquee-y { to { transform: translate3d(0, -50%, 0); } }
+@keyframes fizz-crossfade {
+  0% { opacity: 0; }
+  5%, 25% { opacity: 1; }
+  30%, 100% { opacity: 0; }
+}
+
+.marquee-vertical_panel { transform: none !important; }
+.marquee-vertical_track .marquee-vertical_panel + .marquee-vertical_panel,
+.marquee-vertical_track .marquee-vertical_panel + .marquee-vertical_panel .marquee-vertical_img_wrapper:first-child { margin-top: 0; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .action-heading-wrapper .rotating-text { animation: fizz-marquee-x 18s linear infinite; flex: none; }
+  .social-media-marquee .marquee-horizontal_panel { animation: fizz-marquee-x-reverse 10s linear infinite; }
+  .marquee-vertical_track { animation: fizz-marquee-y 28s linear infinite; }
+  .marquee-vertical_wrapper.is-2 .marquee-vertical_track { animation-direction: reverse; }
+
+  .action-background .action-bg-slide { opacity: 0; animation: fizz-crossfade 30s linear infinite; }
+  .action-background .action-bg-slide.is-1 { animation-delay: -1.5s; }
+  .action-background .action-bg-slide.is-2 { animation-delay: 4.5s; }
+  .action-background .action-bg-slide.is-3 { animation-delay: 10.5s; }
+  .action-background .action-bg-slide.is-4 { animation-delay: 16.5s; }
+  .action-background .action-bg-slide.is-5 { animation-delay: 22.5s; }
+
+  [data-fizz-marquee]:not(.is-in-view) .rotating-text,
+  [data-fizz-marquee]:not(.is-in-view) .marquee-horizontal_panel,
+  [data-fizz-marquee]:not(.is-in-view) .marquee-vertical_track,
+  [data-fizz-marquee]:not(.is-in-view) .action-bg-slide { animation-play-state: paused; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .action-background .action-bg-slide { opacity: 0; }
+  .action-background .action-bg-slide.is-1 { opacity: 1; }
+}
+
+@media (min-width: 768px) {
+  .home-intro_visual-content .marquee-vertical_wrapper { flex: 1 1 0; min-width: 0; width: auto; max-width: none; }
+}
+@media (max-width: 767px) {
+  .home-intro_section { min-height: 100svh; overflow: hidden; background-color: #000; isolation: isolate; }
+  .marquee-vertical_gradient { inset: 0 0 calc(32vh + 12px) 0; height: auto; }
+  .marquee-vertical_wrapper.is-mobile-hidden { display: none !important; }
+  .home-intro_visual-content .marquee-vertical_wrapper:not(.is-mobile-hidden) { width: 50% !important; }
+}
+
+/* ---------- Performance fixes ---------- */
+
+/* .glass sits below the fixed bubble video, so its blur filters never showed —
+   they only cost a full-screen repaint every frame. */
+.glass { filter: none; -webkit-backdrop-filter: none; backdrop-filter: none; }
+
+/* ---------- Product pages (shared by bottle / flavors / charge) ---------- */
+
+.pdp-thumb-strip::-webkit-scrollbar { height: 4px; }
+.pdp-thumb-strip::-webkit-scrollbar-thumb { background: rgba(178, 245, 255, 0.35); border-radius: 4px; }
+.pdp-gallery-slide[data-media-type="lifestyle"] { padding: 0; }
+.pdp-gallery-slide[data-media-type="lifestyle"] .w-embed { width: 100%; height: 100%; }
+.pdp-swatch.is-active { border-color: hsla(195.78, 100%, 93.33%, 1) !important; transform: scale(1.08); }
+.pdp-thumb.is-active,
+.pdp-thumb-embed.is-active { opacity: 1 !important; border-color: hsla(195.78, 100%, 85%, 1) !important; }
+.pdp-swatches,
+.pdp-swatch { position: relative; z-index: 5; }
+.pdp-swatch { pointer-events: auto; cursor: pointer; }
+
+/* ---------- Homepage "How it works" autoplay tabs ---------- */
+
+.auto-tabs-component .w-tab-pane {
+  display: block !important;
+  opacity: 0;
+  visibility: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+.auto-tabs-component .w--tab-active {
+  opacity: 1;
+  visibility: visible;
+  position: relative;
+  z-index: 2;
+}
+.auto-tabs-description {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition: grid-template-rows 0.8s ease, opacity 1s ease;
+}
+[data-auto-tabs="link"].w--current .auto-tabs-description { grid-template-rows: 1fr; opacity: 1; }
+
+[data-auto-tabs-button="play-icon"],
+[data-auto-tabs-button="pause-icon"] {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  transform: translateY(0.6rem);
+  opacity: 0;
+}
+[data-auto-tabs-button="play"] [data-auto-tabs-button="pause-icon"],
+[data-auto-tabs-button="pause"] [data-auto-tabs-button="play-icon"] { opacity: 1; transform: none; }
+.auto-tabs-controls { z-index: 3; }
+
+.auto-tabs-tutorial-desktop,
+.auto-tabs-tutorial-mobile { display: inline-flex; cursor: pointer; text-decoration: none; }
+.auto-tabs-tutorial-mobile { display: none; }
+.auto-tabs-tutorial-actions .w-embed,
+.auto-tabs-tutorial-actions script.w-json,
+.auto-tabs-tutorial-actions img { display: none; }
+
+html.auto-tabs-tutorial-open,
+html.auto-tabs-tutorial-open body { overflow: hidden; }
+.auto-tabs-tutorial-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+.auto-tabs-tutorial-modal.is-open { opacity: 1; visibility: visible; pointer-events: auto; }
+.auto-tabs-tutorial-modal__backdrop { position: absolute; inset: 0; background: rgba(22, 38, 46, 0.92); }
+.auto-tabs-tutorial-modal__dialog { position: relative; z-index: 1; width: min(940px, 92vw); max-height: 92vh; }
+.auto-tabs-tutorial-modal__close {
+  position: absolute;
+  top: -2.75rem;
+  right: 0;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  font-size: 2.5rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+}
+.auto-tabs-tutorial-modal__ratio {
+  position: relative;
+  width: 100%;
+  height: 0;
+  padding-bottom: 56.25%;
+  background: #000;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+.auto-tabs-tutorial-modal__ratio iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+
+.auto-tabs-animate-from-right,
+.auto-tabs-animate-from-left {
+  opacity: 0;
+  transition: transform 1.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 1s ease;
+}
+.auto-tabs-animate-from-right { transform: translateX(40%); }
+.auto-tabs-animate-from-left { transform: translateX(-40%); }
+.w-tab-pane.w--tab-active .auto-tabs-animate-from-right,
+.w-tab-pane.w--tab-active .auto-tabs-animate-from-left { transform: none; opacity: 1; }
+
+/* Phone landscape */
+@media screen and (max-width: 991px) and (max-height: 500px) and (orientation: landscape) {
+  .section-tabs-autoplay { padding-top: 1.5rem; padding-bottom: 1.5rem; }
+  .section-tabs-autoplay .page-padding { padding-right: 3vw; padding-left: 3vw; }
+  .auto-tabs-wrapper {
+    display: grid;
+    grid-template-columns: minmax(17rem, 0.85fr) minmax(0, 1.15fr);
+    column-gap: clamp(1rem, 3vw, 2.5rem);
+    align-items: stretch;
+  }
+  .auto-tabs-controls { inset: 0 auto auto 0; }
+  .auto-tabs-menu {
+    position: relative;
+    grid-column: 1;
+    display: flex;
+    column-gap: 0.75rem;
+    align-self: start;
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    margin: 3rem 0 0;
+    padding-right: 0;
+    border-left: 0;
+  }
+  .auto-tabs-link {
+    position: static !important;
+    display: flex;
+    flex: 1 1 0;
+    flex-direction: column;
+    align-items: stretch;
+    min-width: 0;
+    margin-left: 0;
+    padding: 0;
+    border-top: 0.3rem solid #8f8f8f80;
+    border-left: 0;
+  }
+  .auto-tabs-link-titel { padding-top: 0.75rem; }
+  .auto-tabs-content {
+    grid-column: 2;
+    width: 100%;
+    height: calc(100svh - 3rem);
+    min-height: 18rem;
+    max-height: 30rem;
+    margin: 0;
+    aspect-ratio: auto;
+    border-radius: 0.75rem;
+  }
+  .auto-tabs-content-inner,
+  .auto-tabs-content-inner.is-right-align { padding: 1.25rem !important; }
+}
+
+@media screen and (max-width: 767px) {
+  .auto-tabs-menu { position: relative; display: flex; column-gap: 15px; }
+  .auto-tabs-link {
+    position: static !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 0;
+  }
+  .auto-tabs-link-titel { padding-top: 1rem; }
+  .auto-tabs-tutorial-desktop { display: none !important; }
+  .auto-tabs-tutorial-mobile { display: inline-flex !important; }
+  .auto-tabs-tutorial-modal__close { top: -2.25rem; font-size: 2rem; }
+}
+
+/* Shared by phone-landscape and phone-portrait layouts */
+@media screen and (max-width: 767px), screen and (max-width: 991px) and (max-height: 500px) and (orientation: landscape) {
+  .auto-tabs-description,
+  .auto-tabs-description._2,
+  .auto-tabs-description._3 {
+    position: absolute;
+    inset: calc(100% + 0.75rem) auto auto 0 !important;
+    width: 100% !important;
+    max-width: none;
+    margin-top: 0;
+  }
+  .auto-tabs-progress-bar {
+    position: relative !important;
+    inset: auto !important;
+    order: -1;
+    align-self: flex-start;
+    height: 0.3rem !important;
+    margin-top: -0.3rem;
+    margin-left: 0;
+    transform-origin: left center;
+  }
+}
+
+/* ---------- Reduced motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  #fizz-tx,
+  .fizz-intro-bar,
+  .fizz-intro-door { display: none !important; }
+}
