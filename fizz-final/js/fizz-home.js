@@ -137,7 +137,53 @@
     });
   }
 
+  /* ---------- Hero: video card shrinks as you scroll ---------- */
+
+  // Replaces Webflow's "Hero Scroll" interaction, which scaled the video to 50% but the
+  // text + overlay layer to 55%, so the overlay always spilled past the video. Here both
+  // layers get the exact same transform, so they stay locked together.
+  function initHeroScroll() {
+    var hero = document.querySelector('[data-fizz-hero]');
+    if (!hero) return;
+    var layers = hero.querySelectorAll('.hero-video_container, .fizz-hero-content');
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    // Phones and portrait tablets keep a bigger card; wide screens shrink further.
+    function minScale() {
+      if (window.matchMedia('(max-width: 767px)').matches) return 0.84;
+      if (window.innerHeight > window.innerWidth) return 0.8;
+      return 0.62;
+    }
+    var MIN_SCALE = minScale();
+    var top = 0;
+    var range = 1;
+    var raf = 0;
+
+    function measure() {
+      top = hero.getBoundingClientRect().top + window.scrollY;
+      range = Math.max(1, (hero.offsetHeight - window.innerHeight) * 0.67);
+      MIN_SCALE = minScale();
+    }
+    function update() {
+      raf = 0;
+      var p = Math.min(1, Math.max(0, (window.scrollY - top) / range));
+      var eased = 1 - Math.pow(1 - p, 2);
+      var scale = 1 - (1 - MIN_SCALE) * eased;
+      var radius = (28 * eased) / scale; // stays ~28px on screen as the card shrinks
+      layers.forEach(function (el) {
+        el.style.transform = 'scale(' + scale.toFixed(4) + ')';
+        el.style.borderRadius = radius.toFixed(1) + 'px';
+      });
+      hero.classList.toggle('is-carded', p > 0.01);
+    }
+    measure();
+    update();
+    window.addEventListener('scroll', function () { if (!raf) raf = requestAnimationFrame(update); }, { passive: true });
+    window.addEventListener('resize', function () { measure(); update(); });
+    window.addEventListener('load', function () { measure(); update(); });
+  }
+
   function boot() {
+    initHeroScroll();
     initTabs();
     initTutorial();
   }
