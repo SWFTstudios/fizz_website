@@ -1146,26 +1146,17 @@ html.fizz-motion [data-reveal].is-in { opacity: 1; transform: none; }
   transition: transform 7s linear;
 }
 .fizz-more-slide.is-active img { transform: scale(1); }
+/* Arrows match the homepage carousels' (.dark-slide-arrow): see "Slideshow arrows" below */
 .fizz-more-arrow {
   position: absolute;
   top: 50%;
   z-index: 2;
   display: grid;
   place-items: center;
-  width: 48px;
-  height: 48px;
   padding: 0;
-  border: 0;
-  border-radius: 50%;
-  background: rgba(10, 26, 34, 0.6);
-  color: #fff;
   cursor: pointer;
   translate: 0 -50%;
-  transition: background-color 0.25s, color 0.25s, scale 0.2s;
 }
-.fizz-more-arrow:hover { background: var(--pdp-ice); color: var(--fizz-navy); }
-.fizz-more-arrow:active { scale: 0.92; }
-.fizz-more-arrow svg { width: 22px; height: 22px; }
 .fizz-more-arrow.is-prev { left: 16px; }
 .fizz-more-arrow.is-next { right: 16px; }
 .fizz-more-arrow.is-next svg { transform: scaleX(-1); }
@@ -1264,7 +1255,6 @@ html.fizz-motion [data-reveal].is-in { opacity: 1; transform: none; }
 @media (max-width: 767px) {
   .fizz-more-inner { grid-template-columns: minmax(0, 1fr); }
   .fizz-more-media { max-height: 72vh; border-radius: 20px; }
-  .fizz-more-arrow { width: 42px; height: 42px; }
   .fizz-more-arrow.is-prev { left: 10px; }
   .fizz-more-arrow.is-next { right: 10px; }
   .fizz-more-eyebrow { margin-bottom: 1rem; }
@@ -1930,7 +1920,11 @@ html.fizz-motion .about-cans.is-filled .about-cans-grid li { opacity: 1; transfo
 /* Slideshow progress + focus in Spark */
 .fizz-more-dot span::after { background: linear-gradient(90deg, var(--fizz-ice), var(--fizz-spark)); }
 
-/* Hero card (js/fizz-home.js): video + text layers scale together */
+/* Hero card (js/fizz-home.js): video + text layers scale together. The hero was 300vh, which
+   left a long stretch where the shrunken card sat pinned and still; now the shrink spans the
+   whole pinned stretch and hands off to the story section rising over it. */
+.fizz-hero { height: 230vh; }
+@media (max-width: 767px) { .fizz-hero { height: 200vh; } }
 .fizz-hero .hero-video_container,
 .fizz-hero .fizz-hero-content {
   overflow: hidden;
@@ -2159,4 +2153,294 @@ html.fizz-motion .about-cans.is-filled .about-cans-grid li { opacity: 1; transfo
   .basic-slide-wrapper { min-height: 72svh; }
   .product-slide-card { height: 72svh; }
   .shop-card-media { aspect-ratio: 4 / 5; }
+}
+
+/* ==========================================================================
+   Homepage story: photos floating in seltzer (motion, bubbles, gallery: js/fizz-seltzer.js)
+   Stack, back to front: deep bubbles (1) → far photos (2) → nearer bubbles (3)
+   → mid photos (4) → copy + hero photos (.grid-wrapper, 25) → front bubbles (26)
+   ========================================================================== */
+
+/* The section rises over the end of the hero: its top is clear water that deepens, so the
+   bubble video and the hero card sink into it as you scroll. --dive is the overlap. */
+.about-section[data-fizz-seltzer] {
+  --dive: min(32svh, 300px);
+  isolation: isolate;
+  overflow-x: clip; /* photos can drift past the edges without a sideways scroll */
+  margin-top: calc(-1 * var(--dive));
+  padding-top: calc(70px + var(--dive));
+  background: linear-gradient(180deg,
+    rgba(12, 23, 29, 0) 0,
+    rgba(12, 23, 29, 0.55) calc(var(--dive) * 0.55),
+    var(--fizz-deep) calc(var(--dive) * 1.25));
+  pointer-events: none; /* the clear top must not block the hero underneath */
+}
+@media (min-width: 768px) {
+  /* Room for photos rising through the water around the copy */
+  .about-section[data-fizz-seltzer] { min-height: calc(max(112svh, 820px) + var(--dive)); }
+}
+/* Light filtering down from the surface, depth pooling lower down. Both fade out before
+   the edges, so there is no seam with the sections around it. */
+.about-section[data-fizz-seltzer]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(70% 38% at 50% 30%, rgba(95, 216, 255, 0.06), transparent 70%),
+    radial-gradient(60% 26% at 50% 76%, rgba(23, 96, 122, 0.22), transparent 72%);
+}
+.fizz-seltzer-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  /* Bubbles fade in from below and out toward the top, no hard edges between sections */
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 22%, #000 82%, transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0, #000 22%, #000 82%, transparent 100%);
+}
+.fizz-seltzer-layer.is-deep { z-index: 1; }
+.fizz-seltzer-layer.is-mid { z-index: 3; }
+.fizz-seltzer-layer.is-front { z-index: 26; }
+/* Only the copy and the photos take taps (the full-width grid would swallow them) */
+.about-section[data-fizz-seltzer] .grid-wrapper { pointer-events: none; }
+.about-section[data-fizz-seltzer] .story-content,
+.about-section[data-fizz-seltzer] .story-image,
+.about-section[data-fizz-seltzer] .fizz-floater { pointer-events: auto; }
+.about-section[data-fizz-seltzer] .story-content { will-change: opacity, transform; }
+
+/* Hero photos */
+.about-section[data-fizz-seltzer] .story-image {
+  cursor: zoom-in;
+  transform-origin: 50% 60%;
+  will-change: transform, opacity;
+  box-shadow: 0 36px 70px -28px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(214, 238, 248, 0.06);
+  -webkit-tap-highlight-color: transparent;
+}
+/* A glassy sheen, like a photo seen through the side of a glass */
+.about-section[data-fizz-seltzer] .story-image::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(125deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.03) 26%, transparent 45%, transparent 72%, rgba(95, 216, 255, 0.08) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), inset 0 0 0 1px rgba(214, 238, 248, 0.08);
+  transition: box-shadow 0.4s ease, background-color 0.4s ease;
+}
+.about-section[data-fizz-seltzer] .story-image:hover::after {
+  background-color: rgba(196, 227, 253, 0.06);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.24), inset 0 0 0 1px rgba(196, 227, 253, 0.28);
+}
+.about-section[data-fizz-seltzer] .story-image:focus-visible {
+  outline: 2px solid var(--fizz-spark);
+  outline-offset: 4px;
+}
+.about-section[data-fizz-seltzer] .story-background-wrapper { will-change: transform; }
+
+/* Floating photos at depth */
+.fizz-floater {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0.6rem;
+  background: none;
+  cursor: zoom-in;
+  will-change: transform, opacity;
+  -webkit-tap-highlight-color: transparent;
+}
+.fizz-floater.is-far { z-index: 2; filter: blur(var(--blur, 0px)) saturate(0.75); }
+.fizz-floater.is-mid { z-index: 4; filter: blur(var(--blur, 0px)) saturate(0.9); }
+.fizz-floater-media {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  background: var(--fizz-surface);
+  box-shadow: 0 24px 50px -24px rgba(0, 0, 0, 0.7), inset 0 0 0 1px rgba(214, 238, 248, 0.08);
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.fizz-floater-media img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* Water between the viewer and the photo: farther photos sit behind more of it */
+.fizz-floater-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(125deg, rgba(255, 255, 255, 0.1), transparent 40%),
+    rgba(12, 23, 29, var(--tint, 0.2));
+  transition: background-color 0.4s ease;
+}
+.fizz-floater:hover .fizz-floater-media { transform: scale(1.05); }
+.fizz-floater:hover .fizz-floater-media::after { background-color: rgba(12, 23, 29, 0.05); }
+.fizz-floater:focus-visible { outline: 2px solid var(--fizz-spark); outline-offset: 4px; }
+
+/* Phones: the hero photos float as an overlapping, staggered pair under the copy,
+   with room above and below for the photos in the distance */
+@media (max-width: 767px) {
+  .about-section[data-fizz-seltzer] {
+    --dive: min(24svh, 200px);
+    padding-top: calc(22vw + var(--dive));
+    padding-bottom: 30vw;
+  }
+  .about-section[data-fizz-seltzer] .story-wrapper { grid-row-gap: 40px; }
+  .about-section[data-fizz-seltzer] .story-image {
+    width: 47vw;
+    height: auto;
+    max-height: none;
+    aspect-ratio: 2 / 3;
+  }
+  .about-section[data-fizz-seltzer] .story-image:first-child { z-index: 2; margin: 16vw -5vw 0 0; }
+  .about-section[data-fizz-seltzer] .story-image:last-child { z-index: 1; margin: 0 0 16vw -5vw; }
+}
+
+/* ---------- Photo lightbox: the tapped photo + "Shop the bottle" ---------- */
+
+html.fizz-lb-open,
+html.fizz-lb-open body { overflow: hidden; }
+.fizz-lb {
+  position: fixed;
+  inset: 0;
+  z-index: 100000; /* above the nav and cart, below page transitions */
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr);
+  color: var(--fizz-mist);
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.35s ease, visibility 0s linear 0.35s;
+}
+.fizz-lb.is-open { visibility: visible; opacity: 1; transition: opacity 0.35s ease; }
+.fizz-lb-backdrop {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(80% 60% at 50% 0%, rgba(23, 96, 122, 0.25), transparent 70%),
+    rgba(7, 14, 18, 0.9);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+}
+.fizz-lb-top,
+.fizz-lb-stage,
+.fizz-lb-bottom { position: relative; }
+.fizz-lb-top {
+  display: flex;
+  justify-content: flex-end;
+  padding: max(16px, env(safe-area-inset-top)) 20px 12px;
+}
+.fizz-lb-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  padding: 0;
+  border: 1px solid var(--fizz-line);
+  border-radius: 50%;
+  background: rgba(18, 34, 42, 0.72);
+  color: var(--fizz-mist);
+  cursor: pointer;
+  transition: background-color 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
+}
+.fizz-lb-btn:hover { background: var(--fizz-raised); border-color: rgba(196, 227, 253, 0.4); }
+.fizz-lb-btn:active { transform: scale(0.94); }
+.fizz-lb-btn:focus-visible { outline: 2px solid var(--fizz-spark); outline-offset: 3px; }
+.fizz-lb-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  padding: 0 24px;
+  cursor: zoom-out;
+}
+.fizz-lb-figure {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  pointer-events: none;
+}
+.fizz-lb-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0;
+  transform: translate3d(0, 18px, 0) scale(0.97);
+  transition: opacity 0.5s ease, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.fizz-lb-img.is-active { opacity: 1; transform: none; }
+.fizz-lb-bottom {
+  display: flex;
+  justify-content: center;
+  padding: 18px 20px max(22px, env(safe-area-inset-bottom));
+}
+.fizz-lb-cta {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 10px 10px 10px 22px;
+  border: 1px solid var(--fizz-line);
+  border-radius: 999px;
+  background: rgba(18, 34, 42, 0.72);
+}
+.fizz-lb-cta-text p { margin: 0; line-height: 1.3; }
+.fizz-lb-cta-name { font-weight: 600; font-size: 15px; }
+.fizz-lb-cta-meta { color: var(--fizz-fog); font-size: 13px; white-space: nowrap; }
+.fizz-lb-shop { white-space: nowrap; }
+
+@media (max-width: 767px) {
+  .fizz-lb-stage { padding: 0 12px; }
+  .fizz-lb-bottom { padding-left: 16px; padding-right: 16px; }
+  .fizz-lb-cta { width: 100%; justify-content: space-between; gap: 12px; padding: 8px 8px 8px 16px; border-radius: 22px; }
+  .fizz-lb-shop { padding: 13px 16px 13px 19px; letter-spacing: 3px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fizz-floater-media,
+  .fizz-lb,
+  .fizz-lb-img { transition: none; }
+}
+
+/* ==========================================================================
+   Slideshow arrows: every carousel uses the "Find Your Color" arrow — a navy circle with a
+   thin white arrow, a light ring on hover and a blue press. Webflow's interactions still fade
+   the homepage ones in and out, so only colours and the ring transition here.
+   ========================================================================== */
+
+.dark-slide-arrow,
+.fizz-more-arrow {
+  width: 48px;
+  height: 48px;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  background-color: var(--fizz-navy);
+  color: #fff;
+  transition: border-color 0.3s ease, background-color 0.3s ease, scale 0.2s ease;
+}
+.dark-slide-arrow:hover,
+.dark-slide-arrow.left:hover,
+.dark-slide-arrow.right:hover,
+.fizz-more-arrow:hover { border-color: #e4e9ec; border-style: solid; }
+.dark-slide-arrow:active,
+.dark-slide-arrow.left:active,
+.dark-slide-arrow.right:active,
+.fizz-more-arrow:active { background-color: var(--fizz-blue-1); }
+.fizz-more-arrow:active { scale: 0.94; }
+.fizz-more-arrow svg { width: 16px; height: 16px; }
+@media (max-width: 479px) {
+  .dark-slide-arrow,
+  .fizz-more-arrow { width: 40px; height: 40px; }
 }
