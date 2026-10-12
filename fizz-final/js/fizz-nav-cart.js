@@ -190,6 +190,12 @@
   function setCount(n) {
     if (!cartCountEl) return;
     var q = Number(n) || 0;
+    if (q > (Number(cartCountEl.textContent) || 0)) {
+      // Little pop when something lands in the cart
+      cartCountEl.classList.remove('is-bump');
+      void cartCountEl.offsetWidth;
+      cartCountEl.classList.add('is-bump');
+    }
     cartCountEl.textContent = String(q);
     if (q > 0) cartCountEl.removeAttribute('hidden');
     else cartCountEl.setAttribute('hidden', '');

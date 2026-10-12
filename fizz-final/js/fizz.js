@@ -86,28 +86,36 @@
     tx.addEventListener('touchmove', block, { passive: false });
   }
 
+  /**
+   * A rush of CO2: lots of tiny fizz with some medium and a few big bubbles, streaming
+   * up from the bottom of the screen with a slight wobble. Bigger bubbles rise faster.
+   */
   function spawnBubbles(count, spread, rise) {
     var vh = window.innerHeight;
     var frag = document.createDocumentFragment();
     for (var i = 0; i < count; i++) {
-      var size = 8 + Math.pow(Math.random(), 2.2) * 84;
+      var r = Math.random();
+      var size = r < 0.45 ? rand(3, 10) : r < 0.88 ? rand(10, 40) : rand(44, 110);
       var b = document.createElement('span');
-      b.className = 'fizz-tx-bubble';
-      b.style.width = b.style.height = size + 'px';
-      b.style.left = 'calc(' + rand(0, 100).toFixed(2) + '% - ' + size / 2 + 'px)';
+      b.className = 'fizz-tx-bubble' + (size < 10 ? ' is-tiny' : '');
+      b.style.width = b.style.height = size.toFixed(1) + 'px';
+      b.style.left = 'calc(' + rand(-2, 102).toFixed(2) + '% - ' + size / 2 + 'px)';
+      // Half the bubbles appear already rising in the bottom third, so the screen floods instantly.
+      if (Math.random() < 0.5) b.style.top = 'calc(100% - ' + rand(0, vh * 0.4).toFixed(0) + 'px)';
       frag.appendChild(b);
-      var drift = rand(-60, 60);
+      var travel = -(vh * rise + size * 2 + rand(0, vh * 0.15));
+      var sway = rand(8, 26) * (Math.random() < 0.5 ? -1 : 1);
       var anim = b.animate(
         [
-          { transform: 'translate3d(0,0,0) scale(0.5)', opacity: 0 },
-          { opacity: 1, offset: 0.12 },
-          { opacity: 0.9, offset: 0.8 },
-          { transform: 'translate3d(' + drift + 'px,' + -(vh * rise + size * 2) + 'px,0) scale(1)', opacity: 0 }
+          { transform: 'translate3d(0,0,0) scale(0.6)', opacity: 0.6 },
+          { transform: 'translate3d(' + sway + 'px,' + travel * 0.3 + 'px,0) scale(0.9)', opacity: 1, offset: 0.3 },
+          { transform: 'translate3d(' + -sway * 0.6 + 'px,' + travel * 0.65 + 'px,0) scale(1)', opacity: 0.95, offset: 0.65 },
+          { transform: 'translate3d(' + sway * 0.4 + 'px,' + travel + 'px,0) scale(1.05)', opacity: 0 }
         ],
         {
-          duration: rand(900, 1500),
-          delay: rand(0, spread),
-          easing: 'cubic-bezier(0.45, 0, 0.75, 0.6)',
+          duration: rand(520, 950) - size * 2,
+          delay: Math.pow(Math.random(), 2) * spread,
+          easing: 'cubic-bezier(0.4, 0, 0.7, 0.5)',
           fill: 'backwards'
         }
       );
@@ -117,26 +125,53 @@
   }
 
   function bubbleCount() {
-    return window.innerWidth < 768 ? 18 : 34;
+    var w = window.innerWidth;
+    return w < 600 ? 70 : w < 1024 ? 100 : 150;
   }
 
-  function animateLiquid(from, to, duration, easing) {
+  function animateLiquid(from, to, duration, easing, delay) {
     var anim = liquid.animate(
       [{ transform: from }, { transform: to }],
-      { duration: duration, easing: easing, fill: 'forwards' }
+      { duration: duration, delay: delay || 0, easing: easing, fill: 'both' }
     );
     return new Promise(function (resolve) {
       anim.onfinish = resolve;
-      setTimeout(resolve, duration + 400);
+      setTimeout(resolve, duration + (delay || 0) + 400);
     });
   }
+
+  /** Fizz-styled bubble pop around an element (e.g. after "Add to cart"). */
+  function burst(el, count) {
+    if (!motion || !el || !document.body.animate) return;
+    var box = el.getBoundingClientRect();
+    for (var i = 0; i < (count || 14); i++) {
+      var size = rand(5, 16);
+      var b = document.createElement('span');
+      b.className = 'fizz-burst';
+      b.style.cssText =
+        'width:' + size + 'px;height:' + size + 'px;' +
+        'left:' + (box.left + rand(0.1, 0.9) * box.width - size / 2) + 'px;' +
+        'top:' + (box.top + box.height * rand(0.3, 0.8) - size / 2) + 'px;';
+      document.body.appendChild(b);
+      b.animate(
+        [
+          { transform: 'translate3d(0,0,0) scale(0.3)', opacity: 0 },
+          { opacity: 1, offset: 0.2 },
+          { transform: 'translate3d(' + rand(-30, 30) + 'px,' + -rand(40, 110) + 'px,0) scale(1)', opacity: 0 }
+        ],
+        { duration: rand(600, 1000), delay: rand(0, 160), easing: 'cubic-bezier(0.2, 0.6, 0.4, 1)', fill: 'backwards' }
+      ).onfinish = (function (node) { return function () { node.remove(); }; })(b);
+    }
+  }
+  Fizz.burst = burst;
 
   /** Fizz floods up from the bottom of the screen. Resolves once fully covered. */
   function coverPage() {
     buildOverlay();
     tx.classList.add('is-active');
-    spawnBubbles(bubbleCount(), 350, 1.15);
-    return animateLiquid('translate3d(0,115%,0)', 'translate3d(0,0,0)', 750, 'cubic-bezier(0.65, 0, 0.35, 1)');
+    // The bubbles rush in first, then the fizz floods up behind them.
+    spawnBubbles(bubbleCount(), 300, 1.25);
+    return animateLiquid('translate3d(0,115%,0)', 'translate3d(0,0,0)', 650, 'cubic-bezier(0.65, 0, 0.35, 1)', 320);
   }
 
   /** Arrival: the page starts covered, then the fizz rises off the top. */
@@ -150,7 +185,7 @@
     // runs on the compositor, so a busy main thread won't make it stutter.
     pageLoaded(300).then(function () {
       requestAnimationFrame(function () {
-        spawnBubbles(bubbleCount() + 10, 250, 1.2);
+        spawnBubbles(bubbleCount(), 260, 1.25);
         setTimeout(Fizz.reveal, 350);
         animateLiquid('translate3d(0,0,0)', 'translate3d(0,-115%,0)', 950, 'cubic-bezier(0.76, 0, 0.24, 1)').then(resetOverlay);
       });
@@ -487,9 +522,25 @@
   }
 
   function setupReveals() {
+    if (!motion) return;
+
+    // Generic block reveals: anything marked [data-reveal] rises in when scrolled into view.
+    var blocks = document.querySelectorAll('[data-reveal]');
+    if (blocks.length) {
+      var blockIO = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          blockIO.unobserve(entry.target);
+          entry.target.classList.add('is-in');
+        });
+      }, { rootMargin: '0px 0px -10% 0px' });
+      Fizz.onReveal(function () {
+        blocks.forEach(function (el) { blockIO.observe(el); });
+      });
+    }
+
     var masks = document.querySelectorAll('.fizz-reveal-mask');
     if (!masks.length) return;
-    if (!motion) return;
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         if (!entry.isIntersecting) return;

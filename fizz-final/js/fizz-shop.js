@@ -227,6 +227,7 @@
       cart().addLines([line])
         .then(function (c) {
           buyLabel.textContent = 'Added ✓';
+          if (window.Fizz && Fizz.burst) Fizz.burst(buyBtn);
           status.textContent = product.title + (product.optionName ? ' — ' + variant.label : '') + ' added to your cart.';
           openBundle(key, variant, state, c);
         })
@@ -376,6 +377,7 @@
         .then(function (c) {
           addBtn.classList.add('is-added');
           label.textContent = 'Added ✓';
+          if (window.Fizz && Fizz.burst) Fizz.burst(addBtn, 10);
           updateCheckout(c);
         })
         .catch(function () { label.textContent = 'Try again'; })
@@ -470,14 +472,244 @@
   }
 
   /* ------------------------------------------------------------------ *
+   * Details rows slide open / closed
+   * ------------------------------------------------------------------ */
+
+  function initAccordions(scope) {
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    scope.querySelectorAll('details.pdp-accordion').forEach(function (row) {
+      var summary = row.querySelector('summary');
+      var body = row.querySelector('.pdp-accordion-body');
+      if (!summary || !body || reduced || !body.animate) return;
+      var anim = null;
+
+      summary.addEventListener('click', function (e) {
+        e.preventDefault();
+        var opening = !row.open || row.classList.contains('is-closing');
+        var from = anim ? getComputedStyle(body).height : null;
+        if (anim) anim.cancel();
+        row.classList.remove('is-closing');
+        row.open = true;
+        var full = body.scrollHeight + 'px';
+        var gap = getComputedStyle(body).marginBottom;
+        var open = { height: full, marginBottom: gap, opacity: 1, transform: 'none' };
+        var shut = { height: '0px', marginBottom: '0px', opacity: 0, transform: 'translate3d(0,-8px,0)' };
+        if (from) (opening ? shut : open).height = from;
+        body.style.overflow = 'hidden';
+        if (!opening) row.classList.add('is-closing');
+        anim = body.animate(opening ? [shut, open] : [open, shut], {
+          duration: opening ? 420 : 300,
+          easing: opening ? 'cubic-bezier(0.16, 1, 0.3, 1)' : 'cubic-bezier(0.4, 0, 1, 1)'
+        });
+        anim.onfinish = function () {
+          anim = null;
+          body.style.overflow = '';
+          if (!opening) {
+            row.open = false;
+            row.classList.remove('is-closing');
+          }
+        };
+      });
+    });
+  }
+
+  /* ------------------------------------------------------------------ *
    * Boot
    * ------------------------------------------------------------------ */
 
+  /* ------------------------------------------------------------------ *
+   * Quick add (slideshow + shop page): button feedback + bubble pop
+   * ------------------------------------------------------------------ */
+
+  function quickAdd(btn, label, lines, idleText, after) {
+    if (btn.classList.contains('is-busy') || !cart()) return;
+    btn.classList.add('is-busy');
+    label.textContent = 'Adding\u2026';
+    cart().addLines(lines)
+      .then(function (c) {
+        label.textContent = 'Added \u2713';
+        if (window.Fizz && Fizz.burst) Fizz.burst(btn);
+        if (after) after(c);
+      })
+      .catch(function () { label.textContent = 'Try again'; })
+      .then(function () {
+        setTimeout(function () {
+          btn.classList.remove('is-busy');
+          label.textContent = idleText;
+        }, 1800);
+      });
+  }
+
+  /* ------------------------------------------------------------------ *
+   * "More from Fizz" slideshow (bottom of each product page)
+   * ------------------------------------------------------------------ */
+
+  function initMore(section) {
+    var DURATION = 6000;
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var slides = Array.prototype.slice.call(section.querySelectorAll('.fizz-more-slide'));
+    var panels = Array.prototype.slice.call(section.querySelectorAll('.fizz-more-panel'));
+    var dots = Array.prototype.slice.call(section.querySelectorAll('.fizz-more-dot'));
+    var count = section.querySelector('[data-more-count]');
+    var index = 0;
+    var hovering = false;
+    var focused = false;
+    var visible = false;
+
+    section.style.setProperty('--more-duration', DURATION + 'ms');
+
+    function setPaused() {
+      section.classList.toggle('is-paused', reduced || hovering || focused || !visible || document.hidden);
+    }
+
+    function go(n) {
+      index = (n + slides.length) % slides.length;
+      slides.forEach(function (el, i) {
+        var on = i === index;
+        el.classList.toggle('is-active', on);
+        el.setAttribute('aria-hidden', on ? 'false' : 'true');
+      });
+      panels.forEach(function (el, i) {
+        var on = i === index;
+        el.classList.toggle('is-active', on);
+        el.inert = !on;
+        el.setAttribute('aria-hidden', on ? 'false' : 'true');
+      });
+      dots.forEach(function (el, i) {
+        el.classList.remove('is-active');
+        el.setAttribute('aria-current', i === index ? 'true' : 'false');
+      });
+      // Restart the progress bar (it drives autoplay; see animationend below).
+      void dots[index].offsetWidth;
+      dots[index].classList.add('is-active');
+      count.textContent = index + 1 + ' / ' + slides.length;
+    }
+
+    // Panels start visible to the markup's first slide; JS takes over from here.
+    panels.forEach(function (el) { el.removeAttribute('hidden'); });
+
+    section.addEventListener('animationend', function (e) {
+      if (e.animationName === 'fizz-more-progress' && !reduced) go(index + 1);
+    });
+    dots.forEach(function (dot, i) { dot.addEventListener('click', function () { go(i); }); });
+    section.querySelectorAll('[data-step]').forEach(function (btn) {
+      btn.addEventListener('click', function () { go(index + Number(btn.getAttribute('data-step'))); });
+    });
+    section.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight') go(index + 1);
+      if (e.key === 'ArrowLeft') go(index - 1);
+    });
+
+    // Swipe on the photo
+    var media = section.querySelector('.fizz-more-media');
+    var startX = null;
+    media.addEventListener('pointerdown', function (e) { startX = e.clientX; });
+    media.addEventListener('pointerup', function (e) {
+      if (startX === null) return;
+      var dx = e.clientX - startX;
+      startX = null;
+      if (Math.abs(dx) > 40) go(index + (dx < 0 ? 1 : -1));
+    });
+
+    section.addEventListener('pointerenter', function (e) { if (e.pointerType === 'mouse') { hovering = true; setPaused(); } });
+    section.addEventListener('pointerleave', function () { hovering = false; setPaused(); });
+    section.addEventListener('focusin', function () { focused = true; setPaused(); });
+    section.addEventListener('focusout', function () { focused = false; setPaused(); });
+    document.addEventListener('visibilitychange', setPaused);
+    new IntersectionObserver(function (entries) {
+      visible = entries[0].isIntersecting;
+      setPaused();
+    }, { threshold: 0.35 }).observe(section);
+
+    // Add to cart for whichever product is showing
+    section.querySelectorAll('.fizz-more-add').forEach(function (btn) {
+      var label = btn.querySelector('.fizz-more-add-label');
+      btn.addEventListener('click', function () {
+        quickAdd(btn, label, [{ merchandiseId: GID + btn.getAttribute('data-variant'), quantity: 1 }], 'Add to cart');
+      });
+    });
+
+    // Live prices
+    document.addEventListener('fizz:prices', function () {
+      panels.forEach(function (panel) {
+        var key = productForVariant(panel.querySelector('.fizz-more-add').getAttribute('data-variant'));
+        var price = panel.querySelector('.fizz-more-price');
+        if (key && price) price.textContent = money(CATALOG[key].price);
+      });
+    });
+
+    setPaused();
+    go(0);
+  }
+
+  /* ------------------------------------------------------------------ *
+   * Shop page: live prices + one-tap starter kit
+   * ------------------------------------------------------------------ */
+
+  function initShopPage(page) {
+    function kitTotal() {
+      return CATALOG.bottle.price + CATALOG.charge.price + CATALOG.flavor.price * CATALOG.flavor.variants.length;
+    }
+    var kit = page.querySelector('[data-shop-kit]');
+    var totalEl = kit && kit.querySelector('[data-kit-total]');
+
+    document.addEventListener('fizz:prices', function () {
+      page.querySelectorAll('[data-shop-price]').forEach(function (el) {
+        var p = CATALOG[el.getAttribute('data-shop-price')];
+        if (p) el.textContent = money(p.price);
+      });
+      if (totalEl) totalEl.textContent = money(kitTotal());
+    });
+    if (!kit) return;
+
+    var bottleVariant = CATALOG.bottle.variants[0].id;
+    var colorLabel = kit.querySelector('[data-kit-color]');
+    var swatches = Array.prototype.slice.call(kit.querySelectorAll('.shop-kit-swatch'));
+    swatches.forEach(function (sw, i) {
+      sw.addEventListener('click', function () {
+        swatches.forEach(function (o) {
+          o.classList.toggle('is-active', o === sw);
+          o.setAttribute('aria-checked', o === sw ? 'true' : 'false');
+        });
+        bottleVariant = sw.getAttribute('data-variant');
+        colorLabel.textContent = variantById('bottle', bottleVariant).label;
+      });
+      sw.addEventListener('keydown', function (e) {
+        var step = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+        if (!step) return;
+        e.preventDefault();
+        var next = swatches[(i + step + swatches.length) % swatches.length];
+        next.click();
+        next.focus();
+      });
+    });
+
+    var addBtn = kit.querySelector('[data-kit-add]');
+    var label = kit.querySelector('[data-kit-label]');
+    var status = kit.querySelector('[data-kit-status]');
+    addBtn.addEventListener('click', function () {
+      var lines = [{ merchandiseId: GID + bottleVariant, quantity: 1 }, { merchandiseId: GID + CATALOG.charge.variants[0].id, quantity: 1 }]
+        .concat(CATALOG.flavor.variants.map(function (v) { return { merchandiseId: GID + v.id, quantity: 1 }; }));
+      status.textContent = '';
+      quickAdd(addBtn, label, lines, 'Add kit to cart', function () {
+        status.textContent = 'Starter kit added to your cart.';
+        setTimeout(function () { cart().open(); }, 700);
+      });
+    });
+  }
+
   function boot() {
     var box = document.querySelector('[data-fizz-buybox]');
-    if (!box) return;
+    var more = document.querySelector('[data-fizz-more]');
+    var shopPage = document.querySelector('[data-fizz-shop-page]');
+    if (!box && !more && !shopPage) return;
+    if (shopPage) initShopPage(shopPage);
+    if (more) initMore(more);
+    if (box) {
+      initBuybox(box);
+      initAccordions(box);
+    }
     loadPrices();
-    initBuybox(box);
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
