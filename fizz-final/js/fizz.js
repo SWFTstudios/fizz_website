@@ -560,6 +560,51 @@
   }
 
   /* ------------------------------------------------------------------ *
+   * Details rows slide open / closed
+   * ------------------------------------------------------------------ */
+
+  function initAccordions(scope) {
+    scope.querySelectorAll('details.pdp-accordion').forEach(function (row) {
+      var summary = row.querySelector('summary');
+      var body = row.querySelector('.pdp-accordion-body');
+      if (!summary || !body || !motion || !body.animate) return;
+      var anim = null;
+
+      summary.addEventListener('click', function (e) {
+        e.preventDefault();
+        var opening = !row.open || row.classList.contains('is-closing');
+        var from = anim ? getComputedStyle(body).height : null;
+        if (anim) anim.cancel();
+        row.classList.remove('is-closing');
+        row.open = true;
+        var full = body.scrollHeight + 'px';
+        var gap = getComputedStyle(body).marginBottom;
+        var open = { height: full, marginBottom: gap, opacity: 1, transform: 'none' };
+        var shut = { height: '0px', marginBottom: '0px', opacity: 0, transform: 'translate3d(0,-8px,0)' };
+        if (from) (opening ? shut : open).height = from;
+        body.style.overflow = 'hidden';
+        if (!opening) row.classList.add('is-closing');
+        anim = body.animate(opening ? [shut, open] : [open, shut], {
+          duration: opening ? 420 : 300,
+          easing: opening ? 'cubic-bezier(0.16, 1, 0.3, 1)' : 'cubic-bezier(0.4, 0, 1, 1)'
+        });
+        anim.onfinish = function () {
+          anim = null;
+          body.style.overflow = '';
+          if (!opening) {
+            row.open = false;
+            row.classList.remove('is-closing');
+          }
+        };
+      });
+    });
+  }
+
+  /* ------------------------------------------------------------------ *
+   * Boot
+   * ------------------------------------------------------------------ */
+
+  /* ------------------------------------------------------------------ *
    * Boot
    * ------------------------------------------------------------------ */
 
@@ -567,6 +612,7 @@
     setupVideos();
     setupMarquees();
     setupReveals();
+    initAccordions(document);
     warmFlavorFrames();
 
     if (root.classList.contains('fizz-tx-cover')) uncoverPage();
