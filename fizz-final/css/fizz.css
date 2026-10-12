@@ -2312,7 +2312,7 @@ html.fizz-motion .about-cans.is-filled .about-cans-grid li { opacity: 1; transfo
   .about-section[data-fizz-seltzer] .story-image:last-child { z-index: 1; margin: 0 0 16vw -5vw; }
 }
 
-/* ---------- Photo gallery lightbox ---------- */
+/* ---------- Photo lightbox: the tapped photo + "Shop the bottle" ---------- */
 
 html.fizz-lb-open,
 html.fizz-lb-open body { overflow: hidden; }
@@ -2343,15 +2343,8 @@ html.fizz-lb-open body { overflow: hidden; }
 .fizz-lb-bottom { position: relative; }
 .fizz-lb-top {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   padding: max(16px, env(safe-area-inset-top)) 20px 12px;
-}
-.fizz-lb-count {
-  color: var(--fizz-fog);
-  font-size: 12px;
-  letter-spacing: 0.24em;
-  font-variant-numeric: tabular-nums;
 }
 .fizz-lb-btn {
   display: inline-flex;
@@ -2369,15 +2362,14 @@ html.fizz-lb-open body { overflow: hidden; }
 }
 .fizz-lb-btn:hover { background: var(--fizz-raised); border-color: rgba(196, 227, 253, 0.4); }
 .fizz-lb-btn:active { transform: scale(0.94); }
-.fizz-lb-btn:focus-visible,
-.fizz-lb-thumb:focus-visible { outline: 2px solid var(--fizz-spark); outline-offset: 3px; }
+.fizz-lb-btn:focus-visible { outline: 2px solid var(--fizz-spark); outline-offset: 3px; }
 .fizz-lb-stage {
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 0;
-  padding: 0 88px;
-  touch-action: pan-y;
+  padding: 0 24px;
+  cursor: zoom-out;
 }
 .fizz-lb-figure {
   position: relative;
@@ -2393,68 +2385,33 @@ html.fizz-lb-open body { overflow: hidden; }
   height: 100%;
   object-fit: contain;
   opacity: 0;
-  transform: translate3d(calc(var(--lb-dir, 0) * 28px), 0, 0) scale(0.985);
+  transform: translate3d(0, 18px, 0) scale(0.97);
   transition: opacity 0.5s ease, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .fizz-lb-img.is-active { opacity: 1; transform: none; }
-.fizz-lb-img.is-leaving { transform: translate3d(calc(var(--lb-dir, 0) * -28px), 0, 0) scale(0.985); }
-.fizz-lb-nav { position: absolute; top: 50%; margin-top: -23px; }
-.fizz-lb-nav.is-prev { left: 20px; }
-.fizz-lb-nav.is-next { right: 20px; }
 .fizz-lb-bottom {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  padding: 16px 20px max(18px, env(safe-area-inset-bottom));
+  justify-content: center;
+  padding: 18px 20px max(22px, env(safe-area-inset-bottom));
 }
-.fizz-lb-thumbs {
-  display: flex;
-  flex: 1 1 auto;
-  gap: 8px;
-  min-width: 0;
-  padding: 4px;
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-.fizz-lb-thumbs::-webkit-scrollbar { display: none; }
-.fizz-lb-thumb {
-  flex: 0 0 auto;
-  width: 46px;
-  height: 58px;
-  padding: 0;
-  overflow: hidden;
-  border: 0;
-  border-radius: 8px;
-  background: var(--fizz-surface);
-  opacity: 0.45;
-  cursor: pointer;
-  transition: opacity 0.25s ease, box-shadow 0.25s ease;
-}
-.fizz-lb-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.fizz-lb-thumb:hover { opacity: 0.8; }
-.fizz-lb-thumb.is-active { opacity: 1; box-shadow: 0 0 0 2px var(--fizz-ice); }
 .fizz-lb-cta {
   display: flex;
-  flex: 0 0 auto;
   align-items: center;
   gap: 18px;
-  padding: 10px 10px 10px 20px;
+  padding: 10px 10px 10px 22px;
   border: 1px solid var(--fizz-line);
   border-radius: 999px;
   background: rgba(18, 34, 42, 0.72);
 }
 .fizz-lb-cta-text p { margin: 0; line-height: 1.3; }
 .fizz-lb-cta-name { font-weight: 600; font-size: 15px; }
-.fizz-lb-cta-meta { color: var(--fizz-fog); font-size: 13px; }
+.fizz-lb-cta-meta { color: var(--fizz-fog); font-size: 13px; white-space: nowrap; }
 .fizz-lb-shop { white-space: nowrap; }
 
 @media (max-width: 767px) {
   .fizz-lb-stage { padding: 0 12px; }
-  .fizz-lb-nav { display: none; } /* swipe instead */
-  .fizz-lb-bottom { flex-direction: column; align-items: stretch; gap: 12px; padding-left: 16px; padding-right: 16px; }
-  .fizz-lb-cta { justify-content: space-between; gap: 12px; padding: 8px 8px 8px 16px; border-radius: 22px; }
-  .fizz-lb-cta-meta { white-space: nowrap; }
+  .fizz-lb-bottom { padding-left: 16px; padding-right: 16px; }
+  .fizz-lb-cta { width: 100%; justify-content: space-between; gap: 12px; padding: 8px 8px 8px 16px; border-radius: 22px; }
   .fizz-lb-shop { padding: 13px 16px 13px 19px; letter-spacing: 3px; }
 }
 @media (prefers-reduced-motion: reduce) {

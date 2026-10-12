@@ -4,9 +4,10 @@
  * Photos float as if suspended in seltzer, at different depths:
  *   deep bubbles → far photos (small, soft, dim) → nearer bubbles → mid photos
  *   → the copy and the two hero photos → a few bubbles drifting across the front.
- * The floating photos rise through the water like the bubbles do: farther ones slower,
- * swaying as they go, fading out toward the surface and resurfacing from below in a new
- * spot. Tapping any photo opens a lightbox gallery with a "Shop the bottle" call to action.
+ * About six floating photos rise through the water at a time, like the bubbles do: farther
+ * ones slower, swaying as they go, fading out toward the surface and resurfacing from below
+ * in a new spot with the next photo in the rotation. Tapping a photo opens it on its own in
+ * a lightbox with a "Shop the bottle" call to action.
  * The section overlaps the end of the hero with a clear-to-deep gradient, so the page sinks
  * into the water, and the copy surfaces as it scrolls in.
  *
@@ -78,32 +79,49 @@
   // The two hero photos already in the page (left, right).
   var HERO = ['drink', 'toss'];
 
-  // Floating photos rise through the water like bubbles, one photo each. depth: 0 = far
-  // back, 1 = against the glass. w: [desktop, phone] width as a fraction of the section;
-  // 0 = not on phones.
+  // The rotation of floating photos. depth: 0 = far back, 1 = against the glass.
+  // w: [desktop, phone] width as a fraction of the section.
   var FLOATERS = [
     { depth: 0.62, photo: 'grass', w: [0.12, 0.24] },
     { depth: 0.6, photo: 'tennis', w: [0.115, 0.27] },
-    { depth: 0.58, photo: 'courtside', w: [0.11, 0] },
+    { depth: 0.58, photo: 'courtside', w: [0.11, 0.23] },
     { depth: 0.56, photo: 'cheers', w: [0.105, 0.25] },
-    { depth: 0.54, photo: 'sunset', w: [0.105, 0] },
+    { depth: 0.54, photo: 'sunset', w: [0.105, 0.22] },
     { depth: 0.52, photo: 'blueClose', w: [0.1, 0.22] },
-    { depth: 0.5, photo: 'press', w: [0.1, 0] },
+    { depth: 0.5, photo: 'press', w: [0.1, 0.21] },
     { depth: 0.36, photo: 'rooftop', w: [0.09, 0.2] },
     { depth: 0.32, photo: 'car', w: [0.08, 0.2] },
-    { depth: 0.3, photo: 'field', w: [0.08, 0] },
+    { depth: 0.3, photo: 'field', w: [0.08, 0.17] },
     { depth: 0.28, photo: 'volley', w: [0.085, 0.18] },
-    { depth: 0.26, photo: 'sandBlue', w: [0.075, 0] },
+    { depth: 0.26, photo: 'sandBlue', w: [0.075, 0.16] },
     { depth: 0.24, photo: 'walk', w: [0.07, 0.17] },
-    { depth: 0.22, photo: 'carry', w: [0.07, 0] },
-    { depth: 0.2, photo: 'chargeLife', w: [0.075, 0] },
+    { depth: 0.22, photo: 'carry', w: [0.07, 0.16] },
+    { depth: 0.2, photo: 'chargeLife', w: [0.075, 0.16] },
     { depth: 0.19, photo: 'charge', w: [0.065, 0.16] },
-    { depth: 0.18, photo: 'tennisSit', w: [0.065, 0] },
-    { depth: 0.16, photo: 'courtTop', w: [0.06, 0] }
+    { depth: 0.18, photo: 'tennisSit', w: [0.065, 0.15] },
+    { depth: 0.16, photo: 'courtTop', w: [0.06, 0.15] }
   ];
 
-  // Gallery order: hero photos first, then near to far.
-  var GALLERY = HERO.concat(FLOATERS.map(function (f) { return f.photo; }));
+  // How many photos float at once (about six on screen; the rest are below or surfacing).
+  var SLOTS = { desk: 11, phone: 11 };
+
+  // Rotation order: one nearer photo, then two farther ones, so depths stay mixed.
+  function rotation(list) {
+    var nearer = list.filter(function (f) { return f.depth >= FAR; });
+    var farther = list.filter(function (f) { return f.depth < FAR; });
+    var out = [];
+    while (nearer.length || farther.length) {
+      if (nearer.length) out.push(nearer.shift());
+      if (farther.length) out.push(farther.shift());
+      if (farther.length) out.push(farther.shift());
+    }
+    return out;
+  }
+  var POOL = {
+    desk: rotation(FLOATERS),
+    phone: rotation(FLOATERS.filter(function (f) { return f.w[1] > 0; }))
+  };
+  var poolAt = 0;
 
   /* ---------- Cards: the two hero photos + the floaters ---------- */
 
@@ -118,7 +136,7 @@
     if (!inner || !key) return;
     el.setAttribute('role', 'button');
     el.setAttribute('tabindex', '0');
-    el.setAttribute('aria-label', 'Open photo gallery: ' + PHOTOS[key].alt);
+    el.setAttribute('aria-label', 'View photo: ' + PHOTOS[key].alt);
     cards.push({
       el: el,
       inner: inner,
@@ -136,45 +154,40 @@
     });
   });
 
-  FLOATERS.forEach(function (f) {
-    var el = document.createElement('button');
-    el.type = 'button';
-    el.className = 'fizz-floater ' + (f.depth < FAR ? 'is-far' : 'is-mid');
-    el.setAttribute('aria-label', 'Open photo gallery: ' + PHOTOS[f.photo].alt);
-    // Atmospheric depth: farther photos are softer and bluer (and smaller).
-    el.style.setProperty('--blur', Math.max(0, (FAR + 0.05 - f.depth) * 4.5).toFixed(2) + 'px');
-    el.style.setProperty('--tint', ((1 - f.depth) * 0.5).toFixed(2));
-    var media = document.createElement('span');
-    media.className = 'fizz-floater-media';
-    var img = document.createElement('img');
-    img.src = PHOTOS[f.photo].small;
-    img.alt = '';
-    img.loading = 'lazy';
-    img.decoding = 'async';
-    media.appendChild(img);
-    el.appendChild(media);
-    section.appendChild(el);
-    var card = {
-      el: el,
-      hero: false,
-      depth: f.depth,
-      cfg: f,
-      photo: f.photo,
-      x: 0,
-      y: 0,
-      w: 0,
-      h: 0,
-      ph: rand(0, TAU),
-      speed: 1,
-      hover: false,
-      delay: 0.15 + (1 - f.depth) * 0.5,
-      opacity: Math.min(1, 0.32 + f.depth * 1.2)
-    };
-    // Ease off under the cursor, so a photo is easy to catch.
-    el.addEventListener('pointerenter', function () { card.hover = true; });
-    el.addEventListener('pointerleave', function () { card.hover = false; });
-    cards.push(card);
-  });
+  // Floating cards are reusable slots: each takes the next photo in the rotation whenever it
+  // resurfaces below the section, out of sight.
+  for (var n = 0; n < Math.max(SLOTS.desk, SLOTS.phone); n++) {
+    (function () {
+      var el = document.createElement('button');
+      el.type = 'button';
+      el.className = 'fizz-floater';
+      var media = document.createElement('span');
+      media.className = 'fizz-floater-media';
+      var img = document.createElement('img');
+      img.alt = '';
+      img.decoding = 'async';
+      media.appendChild(img);
+      el.appendChild(media);
+      section.appendChild(el);
+      var card = {
+        el: el,
+        img: img,
+        hero: false,
+        cfg: null,
+        x: 0,
+        y: 0,
+        w: 0,
+        h: 0,
+        ph: rand(0, TAU),
+        speed: 1,
+        hover: false
+      };
+      // Ease off under the cursor, so a photo is easy to catch.
+      el.addEventListener('pointerenter', function () { card.hover = true; });
+      el.addEventListener('pointerleave', function () { card.hover = false; });
+      cards.push(card);
+    })();
+  }
 
   var heroes = cards.filter(function (c) { return c.hero; });
   var floaters = cards.filter(function (c) { return !c.hero; });
@@ -184,10 +197,34 @@
   var lastW = 0;
   var lastH = 0;
 
+  function slotCount() { return MOBILE.matches ? SLOTS.phone : SLOTS.desk; }
+
+  // Give a slot the next photo in the rotation that isn't already floating.
+  function assign(c) {
+    var pool = POOL[MOBILE.matches ? 'phone' : 'desk'];
+    var f = pool[0];
+    for (var i = 0; i < pool.length; i++) {
+      f = pool[poolAt++ % pool.length];
+      var taken = floaters.some(function (o) { return o !== c && !o.el.hidden && o.cfg === f; });
+      if (!taken) break;
+    }
+    c.cfg = f;
+    c.photo = f.photo;
+    c.depth = f.depth;
+    c.opacity = Math.min(1, 0.32 + f.depth * 1.2);
+    c.delay = 0.15 + (1 - f.depth) * 0.5;
+    c.el.classList.toggle('is-far', f.depth < FAR);
+    c.el.classList.toggle('is-mid', f.depth >= FAR);
+    c.el.setAttribute('aria-label', 'View photo: ' + PHOTOS[f.photo].alt);
+    // Atmospheric depth: farther photos are softer and bluer (and smaller).
+    c.el.style.setProperty('--blur', Math.max(0, (FAR + 0.05 - f.depth) * 4.5).toFixed(2) + 'px');
+    c.el.style.setProperty('--tint', ((1 - f.depth) * 0.5).toFixed(2));
+    c.img.src = PHOTOS[f.photo].small;
+    sizeFloater(c);
+  }
+
   function sizeFloater(c) {
     var frac = c.cfg.w[MOBILE.matches ? 1 : 0];
-    c.el.hidden = !frac;
-    if (!frac) return;
     c.w = Math.max(MOBILE.matches ? 64 : 84, W * frac);
     c.h = c.w * 1.25;
     c.el.style.width = c.w.toFixed(1) + 'px';
@@ -223,8 +260,9 @@
   }
 
   function launch(c) {
+    assign(c);
     c.x = pickX(c);
-    c.y = H + c.h * 0.6 + rand(0, H * 0.2);
+    c.y = H + c.h * 0.6 + rand(0, H * 0.05);
     c.v = (22 + c.depth * 52) * rand(0.85, 1.15); // nearer photos rise faster, like bigger bubbles
     c.wa = 8 + c.depth * 16;                      // sway
     c.wf = rand(0.35, 0.6);
@@ -238,19 +276,20 @@
       var cr = content.getBoundingClientRect();
       textBox = { l: cr.left - sr.left, t: cr.top - sr.top, r: cr.right - sr.left, b: cr.bottom - sr.top };
     }
-    floaters.forEach(sizeFloater);
+    floaters.forEach(function (c, i) { c.el.hidden = i >= slotCount(); });
     var shown = floaters.filter(function (c) { return !c.el.hidden; });
     if (!placed) {
-      // Start mid-rise, spread through the water, depths interleaved.
-      shown.sort(function () { return Math.random() - 0.5; });
+      // Start mid-rise, spread through the water.
+      poolAt = Math.floor(rand(0, 18));
+      shown.forEach(function (c) { c.cfg = null; c.y = -H; });
       shown.forEach(function (c, i) {
-        c.y = -H;
         launch(c);
         c.y = H * 0.2 + (H * 0.85) * ((i + rand(0.15, 0.85)) / shown.length);
       });
       placed = true;
     } else if (lastW && lastH) {
       shown.forEach(function (c) {
+        sizeFloater(c);
         c.x *= W / lastW;
         c.y *= H / lastH;
       });
@@ -629,23 +668,16 @@
     raf = 0;
   }
 
-  /* ---------- Lightbox gallery ---------- */
+  /* ---------- Lightbox: the tapped photo, with a call to action ---------- */
 
   var lb;
-  var lbImgs;
-  var lbFront = 0;
-  var lbCount;
-  var lbThumbs;
-  var lbIndex = 0;
+  var lbImg;
   var lbToken = 0;
   var lastFocus = null;
   var openedByKey = false;
+  var shownPhoto = null;
 
-  var ICON = {
-    close: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>',
-    prev: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>',
-    next: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>'
-  };
+  var CLOSE_ICON = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
 
   function lightboxOpen() { return !!lb && lb.classList.contains('is-open'); }
 
@@ -659,63 +691,31 @@
     lb.className = 'fizz-lb';
     lb.setAttribute('role', 'dialog');
     lb.setAttribute('aria-modal', 'true');
-    lb.setAttribute('aria-label', 'Fizz photo gallery');
+    lb.setAttribute('aria-label', 'Fizz photo');
     lb.setAttribute('aria-hidden', 'true');
     lb.innerHTML =
       '<div class="fizz-lb-backdrop" data-lb-close></div>' +
-      '<div class="fizz-lb-top"><span class="fizz-lb-count" aria-live="polite"></span>' +
-      '<button type="button" class="fizz-lb-btn fizz-lb-close" data-lb-close aria-label="Close gallery">' + ICON.close + '</button></div>' +
-      '<div class="fizz-lb-stage" data-lb-stage>' +
-      '<button type="button" class="fizz-lb-btn fizz-lb-nav is-prev" data-lb-step="-1" aria-label="Previous photo">' + ICON.prev + '</button>' +
-      '<figure class="fizz-lb-figure"><img class="fizz-lb-img" alt=""><img class="fizz-lb-img" alt=""></figure>' +
-      '<button type="button" class="fizz-lb-btn fizz-lb-nav is-next" data-lb-step="1" aria-label="Next photo">' + ICON.next + '</button>' +
-      '</div>' +
-      '<div class="fizz-lb-bottom">' +
-      '<div class="fizz-lb-thumbs" role="list"></div>' +
-      '<div class="fizz-lb-cta"><div class="fizz-lb-cta-text"><p class="fizz-lb-cta-name">Fizz Bottle</p>' +
-      '<p class="fizz-lb-cta-meta">$50 · Free shipping</p></div>' +
-      '<a href="bottle.html" class="button dark w-inline-block fizz-lb-shop" data-lb-shop><div class="button-text-wrapper"><div class="button-text">Shop the bottle</div></div></a></div>' +
-      '</div>';
+      '<div class="fizz-lb-top">' +
+      '<button type="button" class="fizz-lb-btn fizz-lb-close" data-lb-close aria-label="Close photo">' + CLOSE_ICON + '</button></div>' +
+      '<div class="fizz-lb-stage" data-lb-close><figure class="fizz-lb-figure"><img class="fizz-lb-img" alt=""></figure></div>' +
+      '<div class="fizz-lb-bottom"><div class="fizz-lb-cta">' +
+      '<div class="fizz-lb-cta-text"><p class="fizz-lb-cta-name">Fizz Bottle</p><p class="fizz-lb-cta-meta">$50 · Free shipping</p></div>' +
+      '<a href="bottle.html" class="button dark w-inline-block fizz-lb-shop" data-lb-shop><div class="button-text-wrapper"><div class="button-text">Shop the bottle</div></div></a>' +
+      '</div></div>';
     document.body.appendChild(lb);
-
-    lbImgs = lb.querySelectorAll('.fizz-lb-img');
-    lbCount = lb.querySelector('.fizz-lb-count');
-    lbThumbs = lb.querySelector('.fizz-lb-thumbs');
-    GALLERY.forEach(function (key, i) {
-      var b = document.createElement('button');
-      b.type = 'button';
-      b.className = 'fizz-lb-thumb';
-      b.setAttribute('role', 'listitem');
-      b.setAttribute('aria-label', 'Photo ' + (i + 1) + ': ' + PHOTOS[key].alt);
-      b.innerHTML = '<img src="' + PHOTOS[key].small + '" alt="" loading="lazy" decoding="async">';
-      b.addEventListener('click', function () { show(i, i > lbIndex ? 1 : -1); });
-      lbThumbs.appendChild(b);
-    });
+    lbImg = lb.querySelector('.fizz-lb-img');
 
     lb.addEventListener('click', function (e) {
       var el = e.target instanceof Element ? e.target : null;
       if (!el) return;
-      if (el.closest('[data-lb-close]') || el.hasAttribute('data-lb-stage')) closeLightbox();
-      var s = el.closest('[data-lb-step]');
-      if (s) go(Number(s.getAttribute('data-lb-step')));
-      if (el.closest('[data-lb-shop]')) track('gallery_shop_click', { photo: GALLERY[lbIndex] });
-    });
-
-    // Swipe between photos on touch screens.
-    var stage = lb.querySelector('[data-lb-stage]');
-    var sx = 0;
-    var sy = 0;
-    stage.addEventListener('pointerdown', function (e) { sx = e.clientX; sy = e.clientY; });
-    stage.addEventListener('pointerup', function (e) {
-      var dx = e.clientX - sx;
-      if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(e.clientY - sy)) go(dx < 0 ? 1 : -1);
+      // Tapping anywhere but the photo or the call to action closes it.
+      if (el.closest('[data-lb-shop]')) track('gallery_shop_click', { photo: shownPhoto });
+      else if (el.hasAttribute('data-lb-close') || el.closest('.fizz-lb-close')) closeLightbox();
     });
 
     document.addEventListener('keydown', function (e) {
       if (!lightboxOpen()) return;
       if (e.key === 'Escape') closeLightbox();
-      else if (e.key === 'ArrowRight') go(1);
-      else if (e.key === 'ArrowLeft') go(-1);
       else if (e.key === 'Tab') trapFocus(e);
     });
   }
@@ -736,63 +736,30 @@
     }
   }
 
-  function go(d) { show(lbIndex + d, d); }
-
-  function show(i, dir) {
-    var n = GALLERY.length;
-    lbIndex = ((i % n) + n) % n;
-    var p = PHOTOS[GALLERY[lbIndex]];
-    var token = ++lbToken;
-    var incoming = lbImgs[1 - lbFront];
-    var outgoing = lbImgs[lbFront];
-    lb.style.setProperty('--lb-dir', String(dir || 0));
-    incoming.classList.remove('is-active', 'is-leaving');
-    incoming.src = p.large;
-    incoming.alt = p.alt;
-    var swap = function () {
-      if (token !== lbToken) return;
-      outgoing.classList.remove('is-active');
-      outgoing.classList.add('is-leaving');
-      incoming.classList.add('is-active');
-      lbFront = 1 - lbFront;
-    };
-    if (incoming.decode) incoming.decode().then(swap, swap);
-    else swap();
-
-    lbCount.textContent = (lbIndex + 1) + ' / ' + n;
-    Array.prototype.forEach.call(lbThumbs.children, function (b, j) {
-      b.classList.toggle('is-active', j === lbIndex);
-      if (j === lbIndex) b.setAttribute('aria-current', 'true');
-      else b.removeAttribute('aria-current');
-    });
-    var active = lbThumbs.children[lbIndex];
-    if (active) {
-      lbThumbs.scrollTo({
-        left: active.offsetLeft - lbThumbs.clientWidth / 2 + active.offsetWidth / 2,
-        behavior: REDUCED ? 'auto' : 'smooth'
-      });
-    }
-    // Warm up the neighbours so arrowing through feels instant.
-    [lbIndex + 1, lbIndex - 1].forEach(function (k) {
-      new Image().src = PHOTOS[GALLERY[((k % n) + n) % n]].large;
-    });
-  }
-
   function openLightbox(card, byKey) {
     buildLightbox();
     openedByKey = !!byKey;
     lastFocus = document.activeElement;
     stop();
+    shownPhoto = card.photo;
+    var p = PHOTOS[card.photo];
+    var token = ++lbToken;
+    lbImg.classList.remove('is-active');
+    lbImg.src = p.large;
+    lbImg.alt = p.alt;
+    var reveal = function () { if (token === lbToken) lbImg.classList.add('is-active'); };
+    if (lbImg.decode) lbImg.decode().then(reveal, reveal);
+    else reveal();
     lb.classList.add('is-open');
     lb.setAttribute('aria-hidden', 'false');
     document.documentElement.classList.add('fizz-lb-open');
-    show(GALLERY.indexOf(card.photo), 0);
     lb.querySelector('.fizz-lb-close').focus();
     track('gallery_open', { photo: card.photo });
   }
 
   function closeLightbox() {
     if (!lightboxOpen()) return;
+    lbToken++;
     lb.classList.remove('is-open');
     lb.setAttribute('aria-hidden', 'true');
     document.documentElement.classList.remove('fizz-lb-open');
