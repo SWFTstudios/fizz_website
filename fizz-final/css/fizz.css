@@ -65,10 +65,11 @@ html.fizz-tx-cover::after {
   position: absolute;
   top: 100%;
   border-radius: 50%;
-  border: 1.5px solid rgba(221, 246, 255, 0.55);
-  background: radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.95) 0 7%, rgba(255, 255, 255, 0.22) 9%, rgba(196, 227, 253, 0.1) 55%, rgba(196, 227, 253, 0.04) 72%);
-  will-change: transform, opacity;
+  border: 2px solid rgba(235, 250, 255, 0.8);
+  background: radial-gradient(circle at 32% 28%, #fff 0 8%, rgba(255, 255, 255, 0.35) 11%, rgba(196, 227, 253, 0.22) 55%, rgba(196, 227, 253, 0.1) 72%);
+  box-shadow: 0 0 6px rgba(196, 227, 253, 0.35);
 }
+.fizz-tx-bubble.is-tiny { border: 0; background: rgba(240, 251, 255, 0.9); box-shadow: none; }
 
 /* Flavor animation stage (sits inside #fizz-tx, above the liquid) */
 .fizz-tx-flavor {
@@ -165,47 +166,210 @@ html.fizz-motion .fizz-reveal-mask.is-in > * { transform: none; }
 html.fizz-motion .fizz-hero .fizz-reveal-mask:nth-of-type(2) > * { transition-delay: 0.08s; }
 html.fizz-motion .fizz-hero .is-hero-second .fizz-reveal-mask > * { transition-delay: 0.16s; }
 
-/* ---------- CTA hover fill (replaces the old GSAP button script) ---------- */
+/* ---------- CTA hover: water fills the button from the bottom ---------- */
 
 a.button,
 .pdp-add-btn,
-.fizz-shop-cta {
+.fizz-shop-cta,
+.fizz-kit-add,
+.fizz-kit-checkout {
   --fizz-fill: var(--fizz-tx-color);
   --fizz-fill-text: var(--fizz-blue-1);
   position: relative;
   isolation: isolate;
   overflow: hidden;
-  transition: color 0.3s ease, transform 0.15s ease;
+  transition: color 0.35s ease 0.1s, transform 0.15s ease;
 }
 a.button.is-outline,
 .pdp-add-btn:not(.pdp-xsell-cta) {
   --fizz-fill: var(--fizz-blue-1);
   --fizz-fill-text: var(--fizz-tx-color);
 }
+.fizz-kit-add,
+.fizz-kit-checkout { --fizz-fill: #184f66; --fizz-fill-text: #fff; }
+
+/* The water: a wavy-topped block that rises on hover and drains on leave */
 a.button::before,
 .pdp-add-btn::before,
-.fizz-shop-cta::before {
+.fizz-shop-cta::before,
+.fizz-kit-add::before,
+.fizz-kit-checkout::before {
+  content: "";
+  position: absolute;
+  left: -6%;
+  right: -6%;
+  bottom: 0;
+  z-index: -1;
+  height: calc(100% + 14px);
+  background: var(--fizz-fill);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 56 12' preserveAspectRatio='none'%3E%3Cpath d='M0 6Q14 0 28 6T56 6V12H0Z'/%3E%3C/svg%3E") repeat-x 0 0 / 56px 12px, linear-gradient(#000 0 0) no-repeat 0 11px / 100% calc(100% - 11px);
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 56 12' preserveAspectRatio='none'%3E%3Cpath d='M0 6Q14 0 28 6T56 6V12H0Z'/%3E%3C/svg%3E") repeat-x 0 0 / 56px 12px, linear-gradient(#000 0 0) no-repeat 0 11px / 100% calc(100% - 11px);
+  transform: translate3d(0, 100%, 0);
+  transition: transform 0.75s cubic-bezier(0.2, 0.75, 0.25, 1);
+  animation: fizz-btn-wave 1.1s linear infinite paused;
+}
+/* A few bubbles rise through the water while it's full */
+a.button::after,
+.pdp-add-btn::after,
+.fizz-shop-cta::after,
+.fizz-kit-add::after,
+.fizz-kit-checkout::after {
   content: "";
   position: absolute;
   inset: 0;
   z-index: -1;
-  border-radius: inherit;
-  background: var(--fizz-fill);
-  transform: scaleX(0);
-  transform-origin: left center;
-  transition: transform 0.4s var(--fizz-ease-out);
+  background:
+    radial-gradient(circle, transparent 0 2px, rgba(255,255,255,0.85) 2.4px 3.1px, transparent 3.5px) 14% 120% / 9px 9px no-repeat,
+    radial-gradient(circle, transparent 0 1.4px, rgba(255,255,255,0.8) 1.8px 2.4px, transparent 2.8px) 38% 135% / 7px 7px no-repeat,
+    radial-gradient(circle, transparent 0 2.6px, rgba(255,255,255,0.85) 3px 3.7px, transparent 4.1px) 63% 125% / 10px 10px no-repeat,
+    radial-gradient(circle, transparent 0 1.2px, rgba(255,255,255,0.8) 1.6px 2.2px, transparent 2.6px) 86% 140% / 6px 6px no-repeat;
+  opacity: 0;
+  pointer-events: none;
+}
+@keyframes fizz-btn-wave {
+  to { -webkit-mask-position: 56px 0, 0 11px; mask-position: 56px 0, 0 11px; }
+}
+@keyframes fizz-btn-bubbles {
+  0% { opacity: 0; transform: translate3d(0, 0, 0); }
+  25% { opacity: 1; }
+  100% { opacity: 0; transform: translate3d(0, -130%, 0); }
 }
 @media (hover: hover) {
   a.button:hover,
-  .pdp-add-btn:hover,
-  .fizz-shop-cta:hover { color: var(--fizz-fill-text); }
+  .pdp-add-btn:not(:disabled):hover,
+  .fizz-shop-cta:hover,
+  .fizz-kit-add:hover,
+  .fizz-kit-checkout:hover { color: var(--fizz-fill-text); }
   a.button:hover::before,
-  .pdp-add-btn:hover::before,
-  .fizz-shop-cta:hover::before { transform: scaleX(1); }
+  .pdp-add-btn:not(:disabled):hover::before,
+  .fizz-shop-cta:hover::before,
+  .fizz-kit-add:hover::before,
+  .fizz-kit-checkout:hover::before { transform: translate3d(0, 0, 0); animation-play-state: running; }
+  a.button:hover::after,
+  .pdp-add-btn:not(:disabled):hover::after,
+  .fizz-shop-cta:hover::after,
+  .fizz-kit-add:hover::after,
+  .fizz-kit-checkout:hover::after { animation: fizz-btn-bubbles 1.5s ease-in 0.35s infinite; }
 }
 a.button:active,
 .pdp-add-btn:active,
-.fizz-shop-cta:active { transform: scale(0.97); }
+.fizz-shop-cta:active,
+.fizz-kit-add:active,
+.fizz-kit-checkout:active { transform: scale(0.96); }
+
+/* ---------- Small interactions ---------- */
+
+@keyframes fizz-pop {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.18); }
+  100% { transform: scale(1); }
+}
+.pdp-swatch.is-active,
+.fizz-kit-swatch.is-active,
+.fizz-kit-chip.is-active { animation: fizz-pop 0.35s var(--fizz-ease-out); }
+.fizz-nav-cart-count.is-bump { animation: fizz-pop 0.45s var(--fizz-ease-out); }
+.pdp-qty-btn,
+.fizz-kit-chip,
+.fizz-kit-swatch,
+.pdp-swatch { transition: transform 0.15s ease, border-color 0.2s, background-color 0.2s, box-shadow 0.2s; }
+.pdp-qty-btn:active,
+.fizz-kit-chip:active,
+.fizz-kit-swatch:active { transform: scale(0.9); }
+
+/* Shop page cards */
+.fizz-shop-media { overflow: hidden; }
+.fizz-shop-img { transition: transform 0.9s var(--fizz-ease-out); }
+@media (hover: hover) {
+  .fizz-shop-item:hover .fizz-shop-img { transform: scale(1.05); }
+}
+
+/* Bubble burst after "Add to cart" (js/fizz.js → Fizz.burst) */
+.fizz-burst {
+  position: fixed;
+  z-index: 10200;
+  border: 1.5px solid rgba(221, 246, 255, 0.85);
+  border-radius: 50%;
+  background: radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.9) 0 12%, rgba(196, 227, 253, 0.15) 40%, transparent 72%);
+  pointer-events: none;
+}
+
+/* ---------- Nav menu ---------- */
+
+.fizz-nav-menu-inner { gap: 1.25em; padding: 1em clamp(1em, 3vw, 1.5em) 1.5em; }
+.fizz-nav-list a,
+.fizz-nav-nav a { position: relative; display: inline-block; }
+.fizz-nav-list a::after,
+.fizz-nav-nav a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1.5px;
+  background: currentColor;
+  transform: scaleX(0);
+  transition: transform 0.35s var(--fizz-ease-out);
+}
+.fizz-nav-list a:hover::after,
+.fizz-nav-nav a:hover::after,
+.fizz-nav-list a:focus-visible::after { transform: scaleX(1); }
+
+.fizz-nav-social { gap: 0.75em; }
+.fizz-nav-social-link {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 50%;
+  color: #fff !important;
+  transition: background-color 0.25s, border-color 0.25s, color 0.25s, transform 0.25s var(--fizz-ease-out);
+}
+.fizz-nav-social-link svg { width: 20px; height: 20px; }
+.fizz-nav-social-link:hover,
+.fizz-nav-social-link:focus-visible {
+  border-color: var(--fizz-blue-1);
+  background: var(--fizz-blue-1);
+  color: var(--fizz-navy) !important;
+  transform: translateY(-2px);
+}
+
+/* Menu photo: fixed-shape frame, image covers it at its natural proportions */
+.fizz-nav-menu-image {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  max-height: 38vh;
+  border-radius: 14px;
+  overflow: hidden;
+}
+.fizz-nav-menu-image--mobile { aspect-ratio: 4 / 3; max-height: 34vh; }
+.fizz-nav-menu-image img {
+  position: absolute;
+  inset: 0;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center 45%;
+  transform: scale(1.08);
+  transition: transform 1.2s var(--fizz-ease-out) 0.1s;
+}
+.fizz-nav-menu.is-open .fizz-nav-menu-image img { transform: none; }
+
+/* ---------- Bottle page: key-features scroll (js/fizz-bottle-scroll.js) ---------- */
+
+.pdp-kf-lottie canvas { display: block; width: 100%; height: 100%; }
+/* A live backdrop blur over a canvas that redraws every frame was the main source of
+   scroll jank; a solid tint reads the same and costs nothing. */
+.pdp-card-overlay {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  background-color: rgba(10, 26, 34, 0.82);
+  transition: none;
+  will-change: transform, opacity;
+  pointer-events: none;
+}
 
 /* ---------- Marquees (CSS only, paused while off-screen) ---------- */
 
@@ -396,8 +560,8 @@ a.button:active,
 .pdp-qty-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 .pdp-buybox .pdp-add-btn,
 .pdp-sticky-btn {
-  --fizz-fill: #fff;
-  --fizz-fill-text: var(--fizz-navy);
+  --fizz-fill: #184f66;
+  --fizz-fill-text: #fff;
   display: flex;
   flex: 1;
   align-items: center;
@@ -613,7 +777,6 @@ html.fizz-kit-open .w-webflow-badge { top: 12px !important; bottom: auto !import
   cursor: pointer;
   transition: background-color 0.2s, color 0.2s;
 }
-.fizz-kit-add:hover { background: #fff; border-color: #fff; }
 .fizz-kit-add.is-added { background: transparent; color: var(--pdp-ice); }
 .fizz-kit-add.is-added .fizz-kit-price { display: none; }
 .fizz-kit-add.is-busy { cursor: progress; opacity: 0.7; }
@@ -636,7 +799,6 @@ html.fizz-kit-open .w-webflow-badge { top: 12px !important; bottom: auto !import
 .fizz-kit-secondary { border: 1.5px solid rgba(221, 246, 255, 0.35); background: transparent; color: var(--pdp-text); }
 .fizz-kit-secondary:hover { border-color: var(--pdp-text); }
 .fizz-kit-checkout { border: 0; background: #fff; color: var(--fizz-navy); }
-.fizz-kit-checkout:hover { background: var(--pdp-ice); }
 .fizz-kit-link {
   justify-self: center;
   padding: 0.4rem;
