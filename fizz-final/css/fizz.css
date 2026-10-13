@@ -1086,6 +1086,266 @@ html.auto-tabs-tutorial-open body { overflow: hidden; }
   }
 }
 
+/* ---------- Homepage "Keep the fizz coming" refill loop (js/fizz-refill.js) ---------- */
+/* Without JS or with reduced motion: all four steps sit on the line at once.
+   With .is-live the stage pins and the steps ride the line one at a time, left to right. */
+
+.fizz-refill {
+  --refill-steps: 4;
+  --refill-name: clamp(2.25rem, 4.6vw, 4rem);
+  --refill-gap: clamp(1rem, 2.4vw, 1.75rem);
+  --refill-dot: 10px;
+  position: relative;
+  color: #fff;
+  background: var(--fizz-deep);
+}
+.fizz-refill-stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(2.5rem, 6vh, 4.5rem);
+  min-height: 100vh;
+  min-height: 100svh;
+  padding: clamp(5rem, 12vh, 7rem) 0 clamp(4rem, 10vh, 6rem);
+  overflow: hidden;
+  isolation: isolate;
+  background:
+    radial-gradient(60% 55% at 8% 22%, #1d4d68 0%, rgba(29, 77, 104, 0) 100%),
+    radial-gradient(50% 45% at 94% 6%, #ebe8d9 0%, rgba(235, 232, 217, 0) 100%),
+    radial-gradient(55% 55% at 96% 100%, #0b3553 0%, rgba(11, 53, 83, 0) 100%),
+    radial-gradient(45% 50% at 10% 100%, #a8b9b0 0%, rgba(168, 185, 176, 0) 100%),
+    #6f8c97;
+}
+
+/* Film grain + soft edges into the dark sections above and below */
+.fizz-refill-stage::before,
+.fizz-refill-stage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+.fizz-refill-stage::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.22;
+  mix-blend-mode: overlay;
+}
+.fizz-refill-stage::after {
+  background: linear-gradient(to bottom, var(--fizz-deep) 0, rgba(12, 23, 29, 0) 72px, rgba(12, 23, 29, 0) calc(100% - 72px), var(--fizz-deep) 100%);
+}
+
+/* The frosted orb and the broken ring around it */
+.fizz-refill-bg {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+}
+.fizz-refill-orb,
+.fizz-refill-ring {
+  position: absolute;
+  left: 50%;
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(var(--refill-orb-scale, 1));
+}
+.fizz-refill-orb {
+  top: 55%;
+  width: min(100vh, 92vw);
+  aspect-ratio: 1;
+  background:
+    radial-gradient(circle at 48% 52%, #4f8199 0%, rgba(79, 129, 153, 0) 62%),
+    radial-gradient(circle at 50% 50%, #8db1bf 0%, #a6c4cd 62%, #b3cfd6 100%);
+  opacity: 0.88;
+  filter: blur(2px);
+  box-shadow: 0 0 120px rgba(179, 207, 214, 0.35);
+}
+.fizz-refill-ring {
+  top: 50%;
+  width: min(116vh, 108vw);
+  aspect-ratio: 1;
+  border: 1.5px solid rgba(255, 255, 255, 0.75);
+  /* Open on both sides where the timeline crosses */
+  -webkit-mask: linear-gradient(to bottom, #000 0 42%, transparent 42% 76%, #000 76%);
+  mask: linear-gradient(to bottom, #000 0 42%, transparent 42% 76%, #000 76%);
+  transform: translate(-50%, -50%) rotate(var(--refill-ring-turn, 0deg));
+}
+
+.fizz-refill-head {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  text-align: center;
+  text-shadow: 0 1px 24px rgba(12, 23, 29, 0.25);
+}
+.fizz-refill-title {
+  margin: 0;
+  font-family: var(--_fizz-typography---fizz-font-family);
+  font-size: clamp(2.25rem, 5vw, 4rem);
+  font-weight: 700;
+  line-height: 1.02;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+.fizz-refill-lead {
+  max-width: 28rem;
+  margin: 1rem auto 0;
+  font-family: var(--_fizz-typography---fizz-font-family);
+  font-size: clamp(1rem, 1.5vw, 1.2rem);
+  font-weight: 300;
+  line-height: 1.4;
+}
+
+/* Timeline: name, dot on the line, description */
+.fizz-refill-track {
+  position: relative;
+  width: 100%;
+}
+.fizz-refill-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--refill-name) + var(--refill-gap) + var(--refill-dot) / 2);
+  height: 1.5px;
+  background: rgba(255, 255, 255, 0.85);
+  transform: translateY(-50%);
+}
+.fizz-refill-line-fill {
+  display: none;
+}
+.fizz-refill-steps {
+  display: grid;
+  grid-template-columns: repeat(var(--refill-steps), minmax(0, 1fr));
+  gap: 1.5rem;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 clamp(1.5rem, 5vw, 4rem);
+  list-style: none;
+}
+.fizz-refill-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  text-shadow: 0 1px 24px rgba(12, 23, 29, 0.3);
+}
+.fizz-refill-name {
+  margin: 0;
+  font-family: var(--_fizz-typography---fizz-font-family);
+  font-size: var(--refill-name);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.fizz-refill-dot {
+  width: var(--refill-dot);
+  height: var(--refill-dot);
+  margin: var(--refill-gap) 0 1.25rem;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.18);
+}
+.fizz-refill-copy {
+  max-width: 17rem;
+  margin: 0;
+  font-family: var(--_fizz-typography---fizz-font-family);
+  font-size: clamp(0.95rem, 1.2vw, 1.1rem);
+  font-weight: 300;
+  line-height: 1.35;
+}
+.fizz-refill-copy strong { font-weight: 600; }
+
+.fizz-refill-pips { display: none; }
+/* All four names share one row when static, so they run smaller than the live one */
+.fizz-refill:not(.is-live) { --refill-name: clamp(2rem, 3.3vw, 3.25rem); }
+
+/* ---- Live: pinned stage, one step at a time ---- */
+
+.fizz-refill.is-live {
+  /* One screen to pin + about 80% of a screen of scroll per step */
+  height: calc(100vh + var(--refill-steps) * 80vh);
+  height: calc(100svh + var(--refill-steps) * 80svh);
+}
+.fizz-refill.is-live .fizz-refill-stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+}
+.fizz-refill.is-live .fizz-refill-line { background: rgba(255, 255, 255, 0.4); }
+.fizz-refill.is-live .fizz-refill-line-fill {
+  display: block;
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, #fff 100%);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.45);
+  transform-origin: left center;
+  transform: scaleX(var(--refill-progress, 0));
+}
+.fizz-refill.is-live .fizz-refill-steps {
+  display: block;
+  position: relative;
+  max-width: none;
+  padding: 0;
+  /* Height of one step, so the absolutely placed steps don't collapse the track */
+  min-height: calc(var(--refill-name) + var(--refill-gap) + var(--refill-dot) + 1.25rem + 4.2em);
+}
+.fizz-refill.is-live .fizz-refill-step {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: min(24rem, 84vw);
+  opacity: var(--refill-opacity, 0);
+  transform: translate3d(calc(-50% + var(--refill-x, 0px)), 0, 0);
+  will-change: transform, opacity;
+}
+.fizz-refill.is-live .fizz-refill-step:not(.is-active) { pointer-events: none; }
+.fizz-refill.is-live .fizz-refill-copy { max-width: 20rem; font-size: clamp(1rem, 1.35vw, 1.2rem); }
+
+.fizz-refill.is-live .fizz-refill-pips {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0 1rem;
+  list-style: none;
+}
+.fizz-refill-pip {
+  padding: 0.6rem 0.9rem;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 999px;
+  background: rgba(12, 23, 29, 0.12);
+  color: rgba(255, 255, 255, 0.75);
+  font-family: var(--_fizz-typography---fizz-font-family);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  line-height: 1;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+.fizz-refill-pip:hover { border-color: rgba(255, 255, 255, 0.6); color: #fff; }
+.fizz-refill-pip[aria-current="step"] {
+  border-color: #fff;
+  background: #fff;
+  color: var(--fizz-deep);
+}
+.fizz-refill-pip:focus-visible { outline: 2px solid var(--fizz-spark); outline-offset: 3px; }
+
+@media (max-width: 767px) {
+  .fizz-refill { --refill-name: clamp(2rem, 11vw, 2.75rem); }
+  .fizz-refill-ring { width: 128vw; }
+  .fizz-refill-orb { width: 112vw; }
+  /* Static fallback on phones: stack the steps, drop the line */
+  .fizz-refill:not(.is-live) .fizz-refill-line { display: none; }
+  .fizz-refill:not(.is-live) .fizz-refill-steps { grid-template-columns: 1fr; gap: 2.5rem; }
+  .fizz-refill-pip { padding: 0.55rem 0.7rem; font-size: 0.625rem; letter-spacing: 0.12em; }
+}
+
 /* ---------- Reduced motion ---------- */
 
 @media (prefers-reduced-motion: reduce) {
