@@ -3,8 +3,8 @@
  *
  * The stage pins while you scroll through the section. Each step (name, dot, description)
  * rides the timeline one at a time: it slides in from the left, holds in the centre, then
- * slides off to the right as the next one comes in behind it. The magenta arrow in front of
- * each name draws itself on the way in, and the line fills as you move through the loop.
+ * slides off to the right as the next one comes in behind it. The line fills as you move
+ * through the loop.
  *
  * Without this script, or with reduced motion, the section stays a single screen with all
  * four steps on the line at once (see "refill loop" in css/fizz.css).
@@ -61,8 +61,6 @@
       var e = smooth(u);
       step.style.setProperty('--refill-x', ((d < 0 ? -1 : 1) * e * travel).toFixed(1) + 'px');
       step.style.setProperty('--refill-opacity', (1 - smooth(Math.min(1, u * 1.8))).toFixed(3));
-      // Arrow draws in on the way in and stays drawn on the way out.
-      step.style.setProperty('--refill-draw', d < 0 ? (1 - smooth(Math.min(1, u * 1.6))).toFixed(3) : '1');
     });
     section.style.setProperty('--refill-progress', (p / N).toFixed(4));
     setActive(clamp(Math.floor(p), 0, N - 1));

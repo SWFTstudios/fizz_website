@@ -1095,7 +1095,6 @@ html.auto-tabs-tutorial-open body { overflow: hidden; }
   --refill-name: clamp(2.25rem, 4.6vw, 4rem);
   --refill-gap: clamp(1rem, 2.4vw, 1.75rem);
   --refill-dot: 10px;
-  --refill-arrow: #f046f0; /* the magenta flow arrows from the motion mockup */
   position: relative;
   color: #fff;
   background: var(--fizz-deep);
@@ -1232,9 +1231,6 @@ html.auto-tabs-tutorial-open body { overflow: hidden; }
   text-shadow: 0 1px 24px rgba(12, 23, 29, 0.3);
 }
 .fizz-refill-name {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35em;
   margin: 0;
   font-family: var(--_fizz-typography---fizz-font-family);
   font-size: var(--refill-name);
@@ -1243,19 +1239,6 @@ html.auto-tabs-tutorial-open body { overflow: hidden; }
   letter-spacing: -0.02em;
   text-transform: uppercase;
   white-space: nowrap;
-}
-.fizz-refill-arrow {
-  width: 1.3em;
-  height: 0.8em;
-  margin-left: -1.65em; /* hangs left of the word so the word stays centred over its dot */
-  flex: none;
-  overflow: visible;
-  color: var(--refill-arrow);
-  filter: drop-shadow(0 0 12px rgba(240, 70, 240, 0.35));
-}
-.fizz-refill-arrow path {
-  stroke-dasharray: 1;
-  stroke-dashoffset: calc(1 - var(--refill-draw, 1));
 }
 .fizz-refill-dot {
   width: var(--refill-dot);
@@ -1292,12 +1275,13 @@ html.auto-tabs-tutorial-open body { overflow: hidden; }
   height: 100vh;
   height: 100svh;
 }
+.fizz-refill.is-live .fizz-refill-line { background: rgba(255, 255, 255, 0.4); }
 .fizz-refill.is-live .fizz-refill-line-fill {
   display: block;
   height: 100%;
   width: 100%;
-  background: linear-gradient(90deg, rgba(240, 70, 240, 0) 0%, var(--refill-arrow) 100%);
-  box-shadow: 0 0 10px rgba(240, 70, 240, 0.5);
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, #fff 100%);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.45);
   transform-origin: left center;
   transform: scaleX(var(--refill-progress, 0));
 }
@@ -1359,13 +1343,8 @@ html.auto-tabs-tutorial-open body { overflow: hidden; }
   /* Static fallback on phones: stack the steps, drop the line */
   .fizz-refill:not(.is-live) .fizz-refill-line { display: none; }
   .fizz-refill:not(.is-live) .fizz-refill-steps { grid-template-columns: 1fr; gap: 2.5rem; }
-  .fizz-refill:not(.is-live) .fizz-refill-arrow { display: none; }
   .fizz-refill-pip { padding: 0.55rem 0.7rem; font-size: 0.625rem; letter-spacing: 0.12em; }
 }
-
-/* No-arrows variant from the mockup: add data-refill-arrows="off" to the section */
-.fizz-refill[data-refill-arrows="off"] .fizz-refill-arrow { display: none; }
-.fizz-refill[data-refill-arrows="off"] .fizz-refill-line-fill { background: rgba(255, 255, 255, 0.9); box-shadow: none; }
 
 /* ---------- Reduced motion ---------- */
 
