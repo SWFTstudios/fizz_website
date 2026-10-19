@@ -2404,7 +2404,7 @@ html.fizz-motion .about-cans.is-filled .about-cans-grid li { opacity: 1; transfo
 }
 .slider-section { padding-top: clamp(2rem, 5vw, 4.5rem); padding-bottom: clamp(2rem, 5vw, 4.5rem); }
 
-/* Coverflow / cylindrical warp (driven by js/fizz-warp-slider.js) */
+/* Homepage infinite-loop carousels (driven by js/fizz-loop-slider.js) */
 .full-width-slider-wrapper,
 .product-slider-wrapper {
   perspective: 1200px;
@@ -2414,14 +2414,34 @@ html.fizz-motion .about-cans.is-filled .about-cans-grid li { opacity: 1; transfo
   -webkit-mask-image: radial-gradient(140% 120% at 50% 50%, #000 62%, transparent 88%);
   mask-image: radial-gradient(140% 120% at 50% 50%, #000 62%, transparent 88%);
 }
-.basic-slider,
-.product-slider {
-  transform-style: preserve-3d;
+/* Stands in for Webflow's .w-slider now that the class is gone */
+[data-fizz-loop] {
+  position: relative;
+  text-align: center;
+  touch-action: pan-y;
+  cursor: grab;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
-.basic-slider .w-slide,
-.product-slider .w-slide {
-  transform-style: preserve-3d;
+[data-fizz-loop].is-dragging,
+[data-fizz-loop].is-dragging * { cursor: grabbing; }
+[data-fizz-loop] .card-hit-link { cursor: inherit; }
+/* Every slide sits on the mask's box; JS moves each one by translateX. A one-cell grid
+   (rather than position: absolute) lets the mask keep the card height from the ladder above.
+   The mask owns the 3D scene so the root stays flat and the arrows' z-index still beats
+   the edge of a rotated card poking forward. */
+[data-fizz-loop] .w-slider-mask {
+  display: grid;
+  perspective: 1200px;
+  perspective-origin: 50% 50%;
 }
+[data-fizz-loop] .w-slide {
+  grid-area: 1 / 1;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+[data-fizz-loop]:not(.is-loop-ready) .w-slide:not(:first-child) { visibility: hidden; }
 .basic-slide-wrapper,
 .product-slide-card {
   transform-style: preserve-3d;
@@ -2429,8 +2449,47 @@ html.fizz-motion .about-cans.is-filled .about-cans-grid li { opacity: 1; transfo
   will-change: transform;
   backface-visibility: hidden;
 }
+[data-fizz-loop] .feature-background,
+[data-fizz-loop] .product-image { will-change: transform; }
+/* Depth dim: side cards darken as --loop-depth (0 centre → 1 one card out) rises */
+[data-fizz-loop] .basic-slide-wrapper::after,
+[data-fizz-loop] .product-slide-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  border-radius: inherit;
+  background-color: #07090c;
+  opacity: calc(var(--loop-depth, 0) * 0.5);
+  pointer-events: none;
+}
+/* Active reveal: the centred card's heading and CTA rise in; side cards stay muted */
+[data-fizz-loop] .stacked-intro > * {
+  opacity: 0.35;
+  transform: translate3d(0, 14px, 0);
+  transition: opacity 0.45s ease, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+[data-fizz-loop] .w-slide.is-active .stacked-intro > * {
+  opacity: 1;
+  transform: none;
+}
+[data-fizz-loop] .w-slide.is-active .stacked-intro > :nth-child(2) { transition-delay: 0.08s; }
+/* Dots: the active one stretches into a pill */
+[data-fizz-loop] .w-slider-nav.w-round > .w-slider-dot {
+  border-radius: 999px;
+  transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.2s ease;
+}
+[data-fizz-loop] .w-slider-nav.w-round > .w-slider-dot.w-active { width: 3em; }
+[data-fizz-loop] .w-slider-dot:focus-visible { box-shadow: 0 0 0 2px #fff; }
 .dark-slide-arrow {
   z-index: 30;
+}
+/* Webflow's interaction fades the arrows in on hover; keyboard focus shows them too */
+[data-fizz-loop] .dark-slide-arrow:focus-visible {
+  opacity: 1 !important;
+  transform: none !important;
+  outline: 2px solid #fff;
+  outline-offset: 3px;
 }
 @media (prefers-reduced-motion: reduce) {
   .full-width-slider-wrapper,
@@ -2444,6 +2503,9 @@ html.fizz-motion .about-cans.is-filled .about-cans-grid li { opacity: 1; transfo
     transform: none !important;
     will-change: auto;
   }
+  [data-fizz-loop] .stacked-intro > *,
+  [data-fizz-loop] .w-slider-nav.w-round > .w-slider-dot { transition: none; }
+  [data-fizz-loop] .stacked-intro > * { transform: none; }
 }
 
 /* Dark theme: the bottle page's feature scroll sits on deep water, not bright sky */
