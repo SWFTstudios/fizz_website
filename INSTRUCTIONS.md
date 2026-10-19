@@ -10,15 +10,21 @@ When you open a new Cursor chat in this repo, the assistant should:
 
 This file also acts as the single source of truth for the project work queue.
 
+## Production runtime
+
+**Edit and deploy `fizz-final/` only.** Cloudflare Worker `fizz-final` serves that folder ([https://fizz-final.elombe.workers.dev/](https://fizz-final.elombe.workers.dev/)). Do not treat the Vite app (`src/`, root HTML, `dist/`) as the live site.
+
 ## Active to-dos
 
-- [Migration] **Lottie reveal timing** — Match Webflow IX2 fade-in for `.sticky-track` (see `docs/WEBFLOW-MCP-INSPECTION.md`). Element ID `62113a69-bb76-3937-b876-e1c99559ad9c`, track height `500vh`.
+- [fizz-final] **CI deploy secrets** — Ensure GitHub Actions secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` are set so `main` auto-deploys (see `docs/CLOUDFLARE-BUILDS.md`).
 
-- [Migration] **Hero scroll choreography** — `hero-track` is `300vh` with sticky `video-bg_wrapper`; Webflow uses IX2 on scroll (not `fizzzscroll` scripts). Port with GSAP ScrollTrigger or equivalent.
+- [fizz-final] **Homepage / marketing polish** — Iterate on copy, motion, and sections inside `fizz-final/` (including the “Keep the fizz coming” refill loop in `fizz-final/js/fizz-refill.js`).
 
-- [Migration] **Nav search Lottie** — Element `c515ba7c-0a1b-2f65-a43e-3a0568d7f84d` (search icon IX2).
+## Archive / not production
 
-- [Migration] Port explore flow (`explore.html` / z-scroll 3D) — uses site scripts `fizzzscrollcss0/1`, `fizzzscrolljs01/02` (separate from homepage Lottie).
+These Vite migration items are **not** the live runtime. Leave them unless explicitly asked to resume the Vite port:
+
+- [Archive] Lottie reveal timing / hero scroll / nav search Lottie / explore z-scroll ports under `src/`
 
 ## Webflow MCP reference (2026-05-26)
 
@@ -28,6 +34,6 @@ This file also acts as the single source of truth for the project work queue.
 
 ## Notes
 
-- Treat `fizz5.webflow/` as a read-only reference. Port into `src/` as new code is created.
-- Homepage Lottie scroll is **Webflow IX2** (not `fizzzscroll` JS). `fizzzscroll*` is for Explore 3D only.
+- Treat `fizz5.webflow/` as a read-only reference.
+- Production source of truth: `fizz-final/` + `wrangler.jsonc`.
 - All commits must use conventional messages and be submitted via PRs with CI checks enabled.

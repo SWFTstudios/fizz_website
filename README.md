@@ -2,7 +2,7 @@
 
 Codename: **`fizz5`**
 
-Marketing site rebuild for [fizz5.webflow.io](https://fizz5.webflow.io/). The live Webflow export in `fizz5.webflow/` is the **design reference only**; the runtime is a Vite + TypeScript app served by a single Cloudflare Worker.
+Marketing site for [fizz5.webflow.io](https://fizz5.webflow.io/). **Production** is the static site in `fizz-final/`, served by Cloudflare Worker **`fizz-final`** ([live](https://fizz-final.elombe.workers.dev/)). The Vite + TypeScript app under `src/` is **deprecated** (kept in-repo, not deployed). `fizz5.webflow/` remains a read-only design reference.
 
 This README is the living build log — update it as features land.
 
@@ -335,30 +335,11 @@ Local secrets: `.dev.vars` (not committed). Production: `wrangler secret put`.
 
 ```bash
 npm install
-npm run dev          # Vite dev server → http://localhost:5173
-npm run preview      # Preview production build
-npm run worker:dev   # Build + Wrangler dev (full Worker stack)
+npm run dev               # Wrangler serves ./fizz-final locally
+npm run check:fizz-final  # Syntax-check site scripts (same as CI)
 ```
 
-**Quality checks (same as CI):**
-
-```bash
-npm run lint:all     # ESLint + typecheck + Stylelint + deprecated-class guard
-# or individually:
-npm run lint
-npm run lint:css
-npm run lint:css:deprecated
-npm run typecheck
-npm run build
-```
-
-| Script | Purpose |
-|--------|---------|
-| `npm run lint` | ESLint on TypeScript |
-| `npm run lint:css` | Stylelint on `src/styles/**/*.css` |
-| `npm run lint:css:deprecated` | Fail if removed CTA classes are reintroduced |
-| `npm run typecheck` | `tsc --noEmit` |
-| `npm run assets:bottles` | Copy bottle renders into `public/images/bottles/` |
+Legacy Vite scripts (not used for deploy): `npm run vite:dev`, `vite:build`, `vite:preview`.
 
 **Manual test checklist:**
 
@@ -379,13 +360,16 @@ Product copy, specs, and features live in [`src/lib/shopData.ts`](src/lib/shopDa
 
 ## Deployment
 
+Primary site: **`fizz-final/`** → Worker **`fizz-final`**.
+
 ```bash
-npm run deploy   # vite build && wrangler deploy
+npm run deploy            # wrangler deploy (production)
+npm run deploy:preview    # wrangler versions upload (branch/PR preview)
 ```
 
-Config: `wrangler.jsonc` — Worker name **`fizz-website`** (matches the Cloudflare Git-connected Worker), assets from `./dist`.
+Config: [`wrangler.jsonc`](wrangler.jsonc) — assets from `./fizz-final`. Live: [https://fizz-final.elombe.workers.dev/](https://fizz-final.elombe.workers.dev/).
 
-**Workers Builds (PR check):** set **Build command** to `npm run build` and **Deploy command** to `npm run deploy` in the dashboard. Details: [`docs/CLOUDFLARE-BUILDS.md`](docs/CLOUDFLARE-BUILDS.md).
+**Auto-deploy:** pushes to `main` run [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml). Needs repo secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`. Details: [`docs/CLOUDFLARE-BUILDS.md`](docs/CLOUDFLARE-BUILDS.md).
 
 ---
 
