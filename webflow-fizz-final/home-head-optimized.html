@@ -1,0 +1,242 @@
+<!--
+  Replacement for: Webflow → Pages → Home → Page settings → Custom code → Head.
+  Same behaviour as the current code, with these changes:
+    1. The three whole-document MutationObservers are disconnected once the
+       page has loaded (they previously ran for the life of the page and fire
+       for every node Lottie/IX2 inserts).
+    2. forceIntroVisible's observer disconnects when the intro is finished.
+    3. Intro failsafe: if the intro script has not taken over after 8 s, the
+       white overlay + scroll lock are removed so visitors are never stuck.
+    4. Intro script is injected immediately when the DOM is already parsed.
+  Not changed: all CSS rules.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+<link rel="preload" as="image" fetchpriority="high" href="https://cdn.prod.website-files.com/6a8dcf9ad40a6e07fa0c7204/6a95cc626fc041500f5d0fd4_Fizz_Logo.png">
+<style>
+html.fizz-intro-skip .loading-intro-section {
+  display: none !important;
+  visibility: hidden !important;
+}
+html.fizz-intro-skip ._1,
+html.fizz-intro-skip ._2,
+html.fizz-intro-skip ._3,
+html.fizz-intro-skip ._4 {
+  visibility: hidden !important;
+}
+html.fizz-intro-active,
+html.fizz-intro-active body {
+  overflow: hidden !important;
+}
+/* Keep page in layout so lazy images can warm during intro.
+   Overlay covers content; do not use visibility:hidden on .fizz-page-content. */
+html.fizz-intro-active .fizz-page-content,
+html.fizz-intro-active .fizz-bg-video,
+html.fizz-intro-active .main-wrapper,
+html.fizz-intro-active .body-of-water {
+  pointer-events: none !important;
+}
+/* Beat IX2 pre-ix3 rule that hides intro letters until w-mod-ix3. */
+html.w-mod-js.fizz-intro-active:not(.fizz-intro-skip) :is(
+  ._1,
+  ._2,
+  ._3,
+  ._4,
+  .loading-intro-section
+) {
+  visibility: visible !important;
+}
+/* Never force the I's BG-video atom visible — it peeks through the glyph. */
+html.fizz-intro-active .letter-i-video,
+html.fizz-intro-active ._2 video:not([data-fizz-aperture-video]) {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+/* Hide letters until GSAP parks them off-screen (kills assembled-word flash). */
+html.fizz-intro-active:not(.fizz-intro-animating) :is(._1, ._2, ._3, ._4) {
+  opacity: 0 !important;
+}
+html.fizz-intro-active .loading-intro-section {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 2147483000 !important;
+  background: #ffffff !important;
+}
+html.fizz-intro-active .fizz-reveal-mask > * {
+  transform: translateY(110%);
+}
+.fizz-marquee-idle .marquee-vertical_track {
+  animation-play-state: paused !important;
+}
+html.fizz-transition-lock,
+html.fizz-transition-lock body {
+  overflow: hidden !important;
+}
+#fizz-tx {
+  z-index: 2147483647;
+}
+@media (prefers-reduced-motion: reduce) {
+  html.fizz-intro-active .fizz-reveal-mask > * {
+    transform: none;
+  }
+}
+</style>
+<script>
+(function () {
+  var KEY = 'fizz-final-intro-seen';
+  try {
+    if (sessionStorage.getItem(KEY)) {
+      document.documentElement.classList.add('fizz-intro-skip');
+    } else if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      document.documentElement.classList.add('fizz-intro-active');
+    }
+    window.addEventListener('keydown', function (e) {
+      var isHardRefresh =
+        (e.key === 'r' || e.key === 'R') &&
+        e.shiftKey &&
+        (e.metaKey || e.ctrlKey);
+      if (isHardRefresh) {
+        sessionStorage.removeItem(KEY);
+      }
+    });
+  } catch (e) {}
+})();
+</script>
+<script>
+(function () {
+  function blockWebfont(node) {
+    if (node && node.tagName === 'SCRIPT' && node.src && node.src.indexOf('webfont') > -1) {
+      node.parentNode && node.parentNode.removeChild(node);
+      return true;
+    }
+    return false;
+  }
+  if (window.WebFont && window.WebFont.load) {
+    window.WebFont.load = function () {};
+  }
+  document.querySelectorAll('script[src*="webfont"]').forEach(function (s) {
+    s.parentNode && s.parentNode.removeChild(s);
+  });
+  var mo = new MutationObserver(function (mutations) {
+    mutations.forEach(function (m) {
+      m.addedNodes.forEach(function (node) {
+        blockWebfont(node);
+      });
+    });
+  });
+  mo.observe(document.documentElement, { childList: true, subtree: true });
+  // Webflow injects its webfont script during parse; nothing to catch after load.
+  window.addEventListener('load', function () { mo.disconnect(); });
+})();
+</script>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  var classObserver;
+
+  function forceIntroVisible() {
+    if (!root.classList.contains('fizz-intro-active')) {
+      if (classObserver) classObserver.disconnect();
+      return;
+    }
+    if (root.classList.contains('fizz-intro-animating')) return;
+    var overlay = document.querySelector('.loading-intro-section');
+    if (overlay) {
+      overlay.style.setProperty('display', 'flex', 'important');
+      overlay.style.setProperty('visibility', 'visible', 'important');
+      overlay.style.setProperty('opacity', '1', 'important');
+      overlay.style.setProperty('background', '#ffffff', 'important');
+      overlay.style.setProperty('pointer-events', 'none', 'important');
+    }
+    // Letters only — never .letter-i-video (that caused video peek through the I).
+    ['_1', '_2', '_3', '_4'].forEach(function (cls) {
+      document.querySelectorAll('.' + cls).forEach(function (el) {
+        el.style.setProperty('visibility', 'visible', 'important');
+      });
+    });
+    document.querySelectorAll('.letter-i-video, ._2 video').forEach(function (el) {
+      if (el.closest('[data-fizz-mask-layer], [data-fizz-hero-bg]')) return;
+      el.style.setProperty('display', 'none', 'important');
+      el.style.setProperty('visibility', 'hidden', 'important');
+      el.style.setProperty('opacity', '0', 'important');
+    });
+  }
+  forceIntroVisible();
+  classObserver = new MutationObserver(forceIntroVisible);
+  classObserver.observe(root, { attributes: true, attributeFilter: ['class'] });
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', forceIntroVisible);
+  }
+  var n = 0;
+  var id = setInterval(function () {
+    forceIntroVisible();
+    n += 1;
+    if (
+      n > 40 ||
+      root.classList.contains('w-mod-ix3') ||
+      root.classList.contains('fizz-intro-animating') ||
+      !root.classList.contains('fizz-intro-active')
+    ) {
+      clearInterval(id);
+    }
+  }, 50);
+
+  // Failsafe: never leave visitors behind a white, scroll-locked overlay if the
+  // intro script is slow, blocked, or throws.
+  setTimeout(function () {
+    if (root.classList.contains('fizz-intro-active') && !root.classList.contains('fizz-intro-animating')) {
+      root.classList.remove('fizz-intro-active');
+      root.classList.add('fizz-intro-skip');
+      if (classObserver) classObserver.disconnect();
+    }
+  }, 8000);
+})();
+</script>
+
+<link rel="preload" as="script" href="https://cdn.prod.website-files.com/6a8dcf9ad40a6e07fa0c7204/6aa32e79ca4d4f67b7e41a59_fizz-intro-i-expand-v17d.js">
+<script>
+(function () {
+  var INTRO = 'https://cdn.prod.website-files.com/6a8dcf9ad40a6e07fa0c7204/6aa32e79ca4d4f67b7e41a59_fizz-intro-i-expand-v17d.js';
+  function injectV17() {
+    if (window.__fizzIntroV17Loading) return;
+    window.__fizzIntroV17Loading = true;
+    var s = document.createElement('script');
+    s.src = INTRO;
+    s.dataset.fizzIntro = 'v17d';
+    document.head.appendChild(s);
+  }
+  function blockOld(node) {
+    if (!node || node.tagName !== 'SCRIPT') return;
+    var src = node.src || node.getAttribute('src') || '';
+    if (src.indexOf('fizz-intro-i-expand') > -1 && src.indexOf('v17d') === -1) {
+      node.type = 'text/plain';
+      node.removeAttribute('src');
+      if (node.parentNode) node.parentNode.removeChild(node);
+      injectV17();
+      return true;
+    }
+    return false;
+  }
+  document.querySelectorAll('script[src*="fizz-intro-i-expand"]').forEach(blockOld);
+  var mo = new MutationObserver(function (mutations) {
+    mutations.forEach(function (m) {
+      m.addedNodes.forEach(blockOld);
+    });
+  });
+  mo.observe(document.documentElement, { childList: true, subtree: true });
+  window.addEventListener('load', function () { mo.disconnect(); });
+  if (document.readyState === 'loading') {
+    window.addEventListener('DOMContentLoaded', function () {
+      if (!window.__fizzIntroV17Loading) injectV17();
+    });
+  } else {
+    injectV17();
+  }
+})();
+</script>
