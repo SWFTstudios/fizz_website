@@ -2369,10 +2369,71 @@ html.fizz-motion .about-cans.is-filled .about-cans-grid li { opacity: 1; transfo
 .about-section { display: flex; align-items: center; min-height: 100svh; }
 .story-image { width: clamp(220px, 24vw, 440px); max-height: 80svh; }
 
-/* Homepage sliders */
+/* Homepage sliders — fixed heights by viewport height (not % of screen) */
 .basic-slide-wrapper,
-.product-slide-card { min-height: min(82svh, 900px); }
+.product-slide-card {
+  height: 420px;
+  min-height: 420px;
+}
+@media (min-height: 700px) {
+  .basic-slide-wrapper,
+  .product-slide-card { height: 520px; min-height: 520px; }
+}
+@media (min-height: 850px) {
+  .basic-slide-wrapper,
+  .product-slide-card { height: 620px; min-height: 620px; }
+}
+@media (min-height: 1000px) {
+  .basic-slide-wrapper,
+  .product-slide-card { height: 720px; min-height: 720px; }
+}
+@media (min-height: 1200px) {
+  .basic-slide-wrapper,
+  .product-slide-card { height: 800px; min-height: 800px; }
+}
 .slider-section { padding-top: clamp(2rem, 5vw, 4.5rem); padding-bottom: clamp(2rem, 5vw, 4.5rem); }
+
+/* Coverflow / cylindrical warp (driven by js/fizz-warp-slider.js) */
+.full-width-slider-wrapper,
+.product-slider-wrapper {
+  perspective: 1200px;
+  perspective-origin: 50% 50%;
+  transform-style: preserve-3d;
+  /* Soft bow on the band — center dips slightly vs the edges */
+  -webkit-mask-image: radial-gradient(140% 120% at 50% 50%, #000 62%, transparent 88%);
+  mask-image: radial-gradient(140% 120% at 50% 50%, #000 62%, transparent 88%);
+}
+.basic-slider,
+.product-slider {
+  transform-style: preserve-3d;
+}
+.basic-slider .w-slide,
+.product-slider .w-slide {
+  transform-style: preserve-3d;
+}
+.basic-slide-wrapper,
+.product-slide-card {
+  transform-style: preserve-3d;
+  transform-origin: 50% 50%;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+.dark-slide-arrow {
+  z-index: 30;
+}
+@media (prefers-reduced-motion: reduce) {
+  .full-width-slider-wrapper,
+  .product-slider-wrapper {
+    perspective: none;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+  .basic-slide-wrapper,
+  .product-slide-card {
+    transform: none !important;
+    will-change: auto;
+  }
+}
 
 /* Dark theme: the bottle page's feature scroll sits on deep water, not bright sky */
 .pdp-kf-video-bg::after {
@@ -2393,8 +2454,6 @@ html.fizz-motion .about-cans.is-filled .about-cans-grid li { opacity: 1; transfo
 
 @media (max-width: 991px) {
   .story-image { width: 44vw; }
-  .basic-slide-wrapper,
-  .product-slide-card { min-height: min(64svh, 120vw); }
   .auto-tabs-content { aspect-ratio: auto; height: min(56svh, 90vw); }
   /* Stack the slideshow on tablets too, so the photo can be big */
   .fizz-more-inner { grid-template-columns: minmax(0, 1fr); }
@@ -2410,8 +2469,6 @@ html.fizz-motion .about-cans.is-filled .about-cans-grid li { opacity: 1; transfo
 }
 @media (max-width: 479px) {
   .story-image { width: 42vw; height: 63vw; }
-  .basic-slide-wrapper { min-height: 72svh; }
-  .product-slide-card { height: 72svh; }
   .shop-card-media { aspect-ratio: 4 / 5; }
 }
 
