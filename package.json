@@ -11,6 +11,7 @@
     "preview": "vite preview",
     "worker:dev": "npm run build && wrangler dev",
     "deploy": "npm run build && wrangler deploy",
+    "deploy:fizz-final": "wrangler deploy --config wrangler.fizz-final.jsonc",
     "lint": "eslint .",
     "lint:css": "stylelint \"src/styles/**/*.css\"",
     "lint:css:deprecated": "node scripts/check-deprecated-css-classes.mjs",
