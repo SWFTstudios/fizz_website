@@ -1,0 +1,18 @@
+{
+  // Static-assets-only Worker for the fizz-final site (https://fizz-final.elombe.workers.dev).
+  // Deploy with: npm run deploy:fizz-final
+  // Separate from wrangler.jsonc, which is the Vite app (fizz-website).
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "fizz-final",
+  "compatibility_date": "2026-05-26",
+  "assets": {
+    "directory": "./fizz-final"
+  },
+  "observability": {
+    "logs": {
+      "enabled": true,
+      "invocation_logs": true,
+      "persist": true
+    }
+  }
+}
