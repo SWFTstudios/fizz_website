@@ -2391,6 +2391,17 @@ html.fizz-motion .about-cans.is-filled .about-cans-grid li { opacity: 1; transfo
   .basic-slide-wrapper,
   .product-slide-card { height: 800px; min-height: 800px; }
 }
+/* Narrow slide masks so cards read portrait (~2:3) vs the height ladder */
+.basic-mask,
+.product-mask { width: 30%; max-width: 420px; }
+@media (max-width: 991px) {
+  .basic-mask,
+  .product-mask { width: 38%; max-width: 380px; }
+}
+@media (max-width: 767px) {
+  .basic-mask,
+  .product-mask { width: 62%; max-width: 340px; }
+}
 .slider-section { padding-top: clamp(2rem, 5vw, 4.5rem); padding-bottom: clamp(2rem, 5vw, 4.5rem); }
 
 /* Coverflow / cylindrical warp (driven by js/fizz-warp-slider.js) */
