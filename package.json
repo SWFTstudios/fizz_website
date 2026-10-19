@@ -9,7 +9,7 @@
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
     "deploy:preview": "wrangler versions upload",
-    "check:fizz-final": "node --check fizz-final/js/fizz.js && node --check fizz-final/js/fizz-home.js && node --check fizz-final/js/fizz-refill.js && node --check fizz-final/js/fizz-intro.js && node --check fizz-final/js/fizz-nav-cart.js && node --check fizz-final/js/fizz-pages.js && node --check fizz-final/js/fizz-shop.js && node --check fizz-final/js/fizz-seltzer.js && node --check fizz-final/js/fizz-analytics.js && node --check fizz-final/js/fizz-bottle-scroll.js && node --check fizz-final/js/fizz-head.js && node --check fizz-final/js/fizz-pdp-gallery.js && node --check fizz-final/js/fizz-warp-slider.js",
+    "check:fizz-final": "node --check fizz-final/js/fizz.js && node --check fizz-final/js/fizz-home.js && node --check fizz-final/js/fizz-refill.js && node --check fizz-final/js/fizz-intro.js && node --check fizz-final/js/fizz-nav-cart.js && node --check fizz-final/js/fizz-pages.js && node --check fizz-final/js/fizz-shop.js && node --check fizz-final/js/fizz-seltzer.js && node --check fizz-final/js/fizz-analytics.js && node --check fizz-final/js/fizz-bottle-scroll.js && node --check fizz-final/js/fizz-head.js && node --check fizz-final/js/fizz-pdp-gallery.js && node --check fizz-final/js/fizz-loop-slider.js",
     "vite:dev": "vite",
     "vite:build": "vite build",
     "vite:preview": "vite preview",
