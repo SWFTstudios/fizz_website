@@ -168,7 +168,7 @@
   display: block !important;
   position: static !important;
   inset: auto !important;
-  max-height: min(90vh, 720px);
+  max-height: min(96vh, 880px);
   opacity: 1;
   pointer-events: auto;
 }
@@ -282,7 +282,7 @@
   .fizz-nav-bar { top: 0.5em; }
   .fizz-nav-container { height: 2.875em; padding: 0.5em; }
   .fizz-nav-toggle { padding: 0.5em; }
-  .fizz-nav-menu.is-open { max-height: min(90vh, 720px); }
+  .fizz-nav-menu.is-open { max-height: min(96vh, 880px); }
   .fizz-nav-menu-inner {
     min-height: 0;
     justify-content: flex-start;
