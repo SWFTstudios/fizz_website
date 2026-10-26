@@ -121,14 +121,28 @@
   background: #fffefd;
   transition: transform 0.3s ease, opacity 0.3s ease, background-color 0.3s ease;
 }
+/* Neutralize Webflow ._2 / ._3 utilities on toggle lines (they break the open X). */
+.fizz-nav-toggle-line._2,
+.fizz-nav-toggle-line._3 {
+  width: 1.75em;
+  height: 1px;
+  margin: 0;
+  display: block;
+  flex: none;
+  align-self: auto;
+  max-height: none;
+  justify-content: unset;
+  align-items: unset;
+  position: relative;
+}
 .fizz-nav.is-menu-open .fizz-nav-toggle-line,
 .fizz-nav.is-menu-open .fizz-nav-toggle > span { background: #ffffff; }
-.fizz-nav.is-menu-open .fizz-nav-toggle-line:first-child,
-.fizz-nav.is-menu-open .fizz-nav-toggle > span:first-child { transform: translateY(6px) rotate(45deg); }
+.fizz-nav.is-menu-open .fizz-nav-toggle-line:nth-child(1),
+.fizz-nav.is-menu-open .fizz-nav-toggle > span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
 .fizz-nav.is-menu-open .fizz-nav-toggle-line:nth-child(2),
 .fizz-nav.is-menu-open .fizz-nav-toggle > span:nth-child(2) { opacity: 0; transform: scaleX(0); }
-.fizz-nav.is-menu-open .fizz-nav-toggle-line:last-child,
-.fizz-nav.is-menu-open .fizz-nav-toggle > span:last-child { transform: translateY(-6px) rotate(-45deg); }
+.fizz-nav.is-menu-open .fizz-nav-toggle-line:nth-child(3),
+.fizz-nav.is-menu-open .fizz-nav-toggle > span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
 /* Shopify parity: animate via max-height/opacity only.
    Beat Webflow Designer CSS: display:none; position:fixed; inset:0 */
 .fizz-nav-menu {
