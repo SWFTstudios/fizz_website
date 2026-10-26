@@ -1228,18 +1228,48 @@ html.auto-tabs-tutorial-open body { overflow: hidden; }
   border-color: #fff;
   color: #fff;
 }
-.section.clip .dual-button {
+/* Find Your Color — match Explore carousel bleed (full grid + 5vw gutters) */
+.fizz-fyc {
+  /* Clip only the page edges (like Explore); don't inset-crop the coverflow band */
+  overflow-x: clip;
+  overflow-y: visible;
+  padding-top: clamp(2.5rem, 5vw, 3.5rem);
+  padding-bottom: clamp(2.5rem, 5vw, 3.5rem);
+}
+#w-node-_840113ad-0ab7-d36d-8024-8e1a2a26a316-fa0c724e,
+.fizz-fyc-stack {
+  grid-area: 1 / 1 / 2 / 4 !important;
+  grid-row-gap: 1.5rem;
+  align-content: start;
+  width: 100%;
+  min-width: 0;
+}
+.fizz-fyc .product-slider-wrapper {
+  /* Same shell as .full-width-slider-wrapper on Explore */
+  display: flex;
   justify-content: center;
-  margin: 1.25rem 0 0.5rem;
-}
-
-/* Find Your Color: full-bleed like Explore (.full-width-slider-wrapper) */
-#w-node-_840113ad-0ab7-d36d-8024-8e1a2a26a316-fa0c724e {
-  grid-area: 1 / 1 / 2 / 4;
-}
-.section.clip .product-slider-wrapper {
+  width: 100%;
+  max-width: none;
   padding-left: 5vw;
   padding-right: 5vw;
+  overflow: visible;
+}
+.fizz-fyc .product-slider {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.fizz-fyc .product-mask {
+  overflow: visible;
+}
+.fizz-fyc-actions {
+  justify-content: center;
+  margin: 0.25rem 0 0;
+}
+/* Shop Bottle CTAs no longer carry a trailing arrow */
+.fizz-fyc .underline-link-2 {
+  justify-content: center;
+  grid-column-gap: 0;
 }
 
 /* Static subscription explainer on Charge + How it works (no sticky scroll theater) */
