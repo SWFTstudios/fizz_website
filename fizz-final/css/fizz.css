@@ -242,13 +242,15 @@ a.button,
 .fizz-shop-cta,
 .fizz-kit-add,
 .fizz-kit-checkout,
-.shop-card-cta {
+.shop-card-cta,
+.auto-tabs-tutorial-desktop,
+.auto-tabs-tutorial-mobile {
   --fizz-fill: var(--fizz-tx-color);
   --fizz-fill-text: var(--fizz-blue-1);
   position: relative;
   isolation: isolate;
   overflow: hidden;
-  transition: color 0.35s ease 0.1s, transform 0.15s ease;
+  transition: color 0.35s ease 0.1s, transform 0.15s ease, border-color 0.35s ease;
 }
 a.button.is-outline,
 .pdp-add-btn:not(.pdp-xsell-cta) {
@@ -264,7 +266,9 @@ a.button::before,
 .fizz-shop-cta::before,
 .fizz-kit-add::before,
 .fizz-kit-checkout::before,
-.shop-card-cta::before {
+.shop-card-cta::before,
+.auto-tabs-tutorial-desktop::before,
+.auto-tabs-tutorial-mobile::before {
   content: "";
   position: absolute;
   left: -6%;
@@ -285,7 +289,9 @@ a.button::after,
 .fizz-shop-cta::after,
 .fizz-kit-add::after,
 .fizz-kit-checkout::after,
-.shop-card-cta::after {
+.shop-card-cta::after,
+.auto-tabs-tutorial-desktop::after,
+.auto-tabs-tutorial-mobile::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -312,26 +318,36 @@ a.button::after,
   .fizz-shop-cta:hover,
   .fizz-kit-add:hover,
   .fizz-kit-checkout:hover,
-  .shop-card-cta:hover { color: var(--fizz-fill-text); }
+  .shop-card-cta:hover,
+  .auto-tabs-tutorial-desktop:hover,
+  .auto-tabs-tutorial-mobile:hover { color: var(--fizz-fill-text); }
+  .auto-tabs-tutorial-desktop:hover,
+  .auto-tabs-tutorial-mobile:hover { border-color: var(--fizz-fill); }
   a.button:hover::before,
   .pdp-add-btn:not(:disabled):hover::before,
   .fizz-shop-cta:hover::before,
   .fizz-kit-add:hover::before,
   .fizz-kit-checkout:hover::before,
-  .shop-card-cta:hover::before { transform: translate3d(0, 0, 0); animation-play-state: running; }
+  .shop-card-cta:hover::before,
+  .auto-tabs-tutorial-desktop:hover::before,
+  .auto-tabs-tutorial-mobile:hover::before { transform: translate3d(0, 0, 0); animation-play-state: running; }
   a.button:hover::after,
   .pdp-add-btn:not(:disabled):hover::after,
   .fizz-shop-cta:hover::after,
   .fizz-kit-add:hover::after,
   .fizz-kit-checkout:hover::after,
-  .shop-card-cta:hover::after { animation: fizz-btn-bubbles 1.5s ease-in 0.35s infinite; }
+  .shop-card-cta:hover::after,
+  .auto-tabs-tutorial-desktop:hover::after,
+  .auto-tabs-tutorial-mobile:hover::after { animation: fizz-btn-bubbles 1.5s ease-in 0.35s infinite; }
 }
 a.button:active,
 .pdp-add-btn:active,
 .fizz-shop-cta:active,
 .fizz-kit-add:active,
 .fizz-kit-checkout:active,
-.shop-card-cta:active { transform: scale(0.96); }
+.shop-card-cta:active,
+.auto-tabs-tutorial-desktop:active,
+.auto-tabs-tutorial-mobile:active { transform: scale(0.96); }
 
 /* ---------- Small interactions ---------- */
 
@@ -940,7 +956,13 @@ html.fizz-kit-open .w-webflow-badge { top: 12px !important; bottom: auto !import
 .auto-tabs-controls { z-index: 3; }
 
 .auto-tabs-tutorial-desktop,
-.auto-tabs-tutorial-mobile { display: inline-flex; cursor: pointer; text-decoration: none; }
+.auto-tabs-tutorial-mobile {
+  display: inline-flex;
+  cursor: pointer;
+  text-decoration: none;
+  --fizz-fill: var(--fizz-ice);
+  --fizz-fill-text: var(--fizz-deep);
+}
 .auto-tabs-tutorial-mobile { display: none; }
 .auto-tabs-tutorial-actions .w-embed,
 .auto-tabs-tutorial-actions script.w-json,
@@ -1195,6 +1217,28 @@ html.auto-tabs-tutorial-open body { overflow: hidden; }
   font-size: clamp(1rem, 1.5vw, 1.2rem);
   font-weight: 300;
   line-height: 1.4;
+}
+.fizz-refill-actions {
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+.fizz-refill-actions .button.dark {
+  --fizz-fill: #fff;
+  --fizz-fill-text: var(--fizz-deep);
+  border-color: #fff;
+  color: #fff;
+}
+.section.clip .dual-button {
+  justify-content: center;
+  margin: 1.25rem 0 0.5rem;
+}
+.auto-tabs-tutorial-actions {
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+.auto-tabs-tutorial-actions .button.dark {
+  margin-right: 0.25rem;
 }
 
 /* Timeline: name, dot on the line, description */
@@ -2162,19 +2206,89 @@ html.fizz-motion .about-cans.is-filled .about-cans-grid li { opacity: 1; transfo
   pointer-events: none;
 }
 
-/* "How it works" autoplay tabs: each bar fills its own tab, in Spark */
+/* "How it works" autoplay tabs: Spark fill + kinetic labels + bubble shimmer */
 .auto-tabs-link { color: var(--fizz-haze); }
-.auto-tabs-link.w--current { color: var(--fizz-mist); border-left-color: var(--fizz-line); }
-.auto-tabs-progress-bar {
-  background-color: var(--fizz-spark);
-  background-image: linear-gradient(180deg, var(--fizz-ice), var(--fizz-spark));
-  box-shadow: 0 0 12px rgba(95, 216, 255, 0.45);
+.auto-tabs-link .fizz-heading-tab {
+  color: inherit;
+  opacity: 0.55;
+  letter-spacing: 0.04em;
+  transition: color 0.4s ease, opacity 0.4s ease, letter-spacing 0.4s ease;
 }
+.auto-tabs-link.is-complete:not(.w--current) { color: var(--fizz-fog); }
+.auto-tabs-link.is-complete:not(.w--current) .fizz-heading-tab { opacity: 0.78; }
+.auto-tabs-link.w--current {
+  color: #fff;
+  border-left-color: var(--fizz-line);
+}
+.auto-tabs-link.w--current .fizz-heading-tab {
+  color: #fff;
+  opacity: 1;
+  letter-spacing: 0.02em;
+  animation: fizz-tab-settle 0.4s var(--fizz-ease-out);
+}
+@keyframes fizz-tab-settle {
+  0% { transform: scale(0.96); }
+  40% { transform: scale(1.035); }
+  100% { transform: scale(1); }
+}
+
+.auto-tabs-progress-bar {
+  overflow: hidden;
+  background-color: var(--fizz-spark);
+  background-image: linear-gradient(180deg, var(--fizz-ice) 0%, var(--fizz-spark) 55%, #3ab8e8 100%);
+  box-shadow: 0 0 14px rgba(95, 216, 255, 0.55), 0 0 28px rgba(95, 216, 255, 0.2);
+}
+.auto-tabs-progress-bar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  background:
+    radial-gradient(circle, rgba(255, 255, 255, 0.95) 0 1.1px, transparent 1.6px) 30% 110% / 5px 5px no-repeat,
+    radial-gradient(circle, rgba(196, 227, 253, 0.9) 0 1.4px, transparent 2px) 70% 130% / 6px 6px no-repeat,
+    radial-gradient(circle, rgba(255, 255, 255, 0.85) 0 0.9px, transparent 1.4px) 45% 150% / 4px 4px no-repeat;
+}
+.auto-tabs-link.w--current .auto-tabs-progress-bar::after {
+  opacity: 1;
+  animation: fizz-bar-bubbles-y 2.2s ease-in infinite;
+}
+.auto-tabs-link.is-complete:not(.w--current) .auto-tabs-progress-bar {
+  background-color: rgba(196, 227, 253, 0.4);
+  background-image: none;
+  box-shadow: none;
+}
+.auto-tabs-link.is-complete:not(.w--current) .auto-tabs-progress-bar::after { display: none; }
+
+@keyframes fizz-bar-bubbles-y {
+  0% { transform: translate3d(0, 20%, 0); opacity: 0; }
+  20% { opacity: 1; }
+  100% { transform: translate3d(0, -120%, 0); opacity: 0; }
+}
+@keyframes fizz-bar-bubbles-x {
+  0% { transform: translate3d(-20%, 0, 0); opacity: 0; }
+  20% { opacity: 1; }
+  100% { transform: translate3d(120%, 0, 0); opacity: 0; }
+}
+
 @media (min-width: 768px) {
   .auto-tabs-link { position: relative; }
 }
 @media screen and (max-width: 767px), screen and (max-width: 991px) and (max-height: 500px) and (orientation: landscape) {
-  .auto-tabs-progress-bar { background-image: linear-gradient(90deg, var(--fizz-ice), var(--fizz-spark)); }
+  .auto-tabs-progress-bar {
+    background-image: linear-gradient(90deg, var(--fizz-ice) 0%, var(--fizz-spark) 55%, #3ab8e8 100%);
+  }
+  .auto-tabs-link.w--current .auto-tabs-progress-bar::after {
+    animation-name: fizz-bar-bubbles-x;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .auto-tabs-link.w--current .fizz-heading-tab { animation: none; }
+  .auto-tabs-progress-bar::after,
+  .auto-tabs-link.w--current .auto-tabs-progress-bar::after {
+    display: none;
+    animation: none;
+  }
 }
 
 /* Slideshow progress + focus in Spark */

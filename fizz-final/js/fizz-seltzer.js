@@ -4,10 +4,10 @@
  * Photos float as if suspended in seltzer, at different depths:
  *   deep bubbles → far photos (small, soft, dim) → nearer bubbles → mid photos
  *   → the copy and the two hero photos → a few bubbles drifting across the front.
- * About six floating photos rise through the water at a time, like the bubbles do: farther
- * ones slower, swaying as they go, fading out toward the surface and resurfacing from below
- * in a new spot with the next photo in the rotation. Tapping a photo opens it on its own in
- * a lightbox with a "Shop the bottle" call to action.
+ * A handful of floating photos (5 desk / 4 phone) rise through the water at a time, like the
+ * bubbles do: farther ones slower, swaying as they go, fading out toward the surface and
+ * resurfacing from below in a new spot with the next photo in the rotation. Tapping a photo
+ * opens it on its own in a lightbox with a "Shop the bottle" call to action.
  * The section overlaps the end of the hero with a clear-to-deep gradient, so the page sinks
  * into the water, and the copy surfaces as it scrolls in.
  *
@@ -102,8 +102,8 @@
     { depth: 0.16, photo: 'courtTop', w: [0.06, 0.15] }
   ];
 
-  // How many photos float at once (about six on screen; the rest are below or surfacing).
-  var SLOTS = { desk: 11, phone: 11 };
+  // How many photos float at once (keep the rotation pool; fewer concurrent for scroll perf).
+  var SLOTS = { desk: 5, phone: 4 };
 
   // Rotation order: one nearer photo, then two farther ones, so depths stay mixed.
   function rotation(list) {
@@ -165,6 +165,7 @@
       media.className = 'fizz-floater-media';
       var img = document.createElement('img');
       img.alt = '';
+      img.loading = 'lazy';
       img.decoding = 'async';
       media.appendChild(img);
       el.appendChild(media);
@@ -217,7 +218,7 @@
     c.el.classList.toggle('is-mid', f.depth >= FAR);
     c.el.setAttribute('aria-label', 'View photo: ' + PHOTOS[f.photo].alt);
     // Atmospheric depth: farther photos are softer and bluer (and smaller).
-    c.el.style.setProperty('--blur', Math.max(0, (FAR + 0.05 - f.depth) * 4.5).toFixed(2) + 'px');
+    c.el.style.setProperty('--blur', Math.min(2, Math.max(0, (FAR + 0.05 - f.depth) * 4.5)).toFixed(2) + 'px');
     c.el.style.setProperty('--tint', ((1 - f.depth) * 0.5).toFixed(2));
     c.img.src = PHOTOS[f.photo].small;
     sizeFloater(c);

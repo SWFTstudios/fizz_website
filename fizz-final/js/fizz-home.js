@@ -16,26 +16,52 @@
 
     var timer = null;
     var playing = true;
+    var sectionVisible = false;
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
     function bars() {
       return document.querySelectorAll('[data-auto-tabs="bar"]');
     }
 
-    function resetBars() {
-      bars().forEach(function (bar) {
-        bar.getAnimations().forEach(function (a) { a.cancel(); });
-        bar.style.width = MOBILE.matches ? '0%' : '';
-        bar.style.height = MOBILE.matches ? '' : '0%';
+    function syncComplete(activeLink) {
+      var idx = links.indexOf(activeLink);
+      links.forEach(function (l, i) {
+        l.classList.toggle('is-complete', idx > 0 && i < idx);
       });
     }
 
-    function activate(link) {
+    function resetBars() {
+      bars().forEach(function (bar) {
+        bar.getAnimations().forEach(function (a) { a.cancel(); });
+        var link = bar.closest('[data-auto-tabs="link"]');
+        var complete = link && link.classList.contains('is-complete');
+        if (MOBILE.matches) {
+          bar.style.width = complete ? '100%' : '0%';
+          bar.style.height = '';
+        } else {
+          bar.style.height = complete ? '100%' : '0%';
+          bar.style.width = '';
+        }
+      });
+    }
+
+    function puff(link) {
+      if (!sectionVisible || reduceMotion.matches) return;
+      if (!window.Fizz || typeof Fizz.burst !== 'function') return;
+      var label = link.querySelector('.fizz-heading-tab');
+      if (label) Fizz.burst(label, 7);
+    }
+
+    function activate(link, opts) {
       links.forEach(function (l) { l.classList.toggle('w--current', l === link); });
+      syncComplete(link);
       if (window.Webflow && Webflow.require) Webflow.require('tabs').redraw();
+      if (opts && opts.burst) puff(link);
     }
 
     function run(link) {
       clearTimeout(timer);
+      syncComplete(link);
       resetBars();
       if (!playing) return;
       var bar = link.querySelector('[data-auto-tabs="bar"]');
@@ -47,7 +73,7 @@
       }
       timer = setTimeout(function () {
         var next = links[(links.indexOf(link) + 1) % links.length];
-        activate(next);
+        activate(next, { burst: true });
         run(next);
       }, TAB_MS);
     }
@@ -57,7 +83,10 @@
     }
 
     links.forEach(function (link) {
-      link.addEventListener('click', function () { run(link); });
+      link.addEventListener('click', function () {
+        activate(link, { burst: true });
+        run(link);
+      });
     });
 
     if (button) {
@@ -72,7 +101,8 @@
 
     // Don't burn the timer while the section is off-screen.
     new IntersectionObserver(function (entries) {
-      if (entries[0].isIntersecting) run(current());
+      sectionVisible = entries[0].isIntersecting;
+      if (sectionVisible) run(current());
       else {
         clearTimeout(timer);
         resetBars();
