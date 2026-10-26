@@ -423,24 +423,24 @@ a.button:active,
   transform: translateY(-2px);
 }
 
-/* Menu photo: fixed-shape frame, image covers it at its natural proportions */
+/* Menu photo: taller frame, anchored to top so the bottle isn’t cropped */
 .fizz-nav-menu-image {
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 9;
-  max-height: 38vh;
+  aspect-ratio: 4 / 3;
+  max-height: 52vh;
   border-radius: 14px;
   overflow: hidden;
 }
-.fizz-nav-menu-image--mobile { aspect-ratio: 4 / 3; max-height: 34vh; }
+.fizz-nav-menu-image--mobile { aspect-ratio: 4 / 3; max-height: 42vh; }
 .fizz-nav-menu-image img {
   position: absolute;
   inset: 0;
   width: 100% !important;
   height: 100% !important;
   object-fit: cover !important;
-  object-position: center 45%;
-  transform: scale(1.08);
+  object-position: center top;
+  transform: none;
   transition: transform 1.2s var(--fizz-ease-out) 0.1s;
 }
 .fizz-nav-menu.is-open .fizz-nav-menu-image img { transform: none; }
@@ -1232,6 +1232,22 @@ html.auto-tabs-tutorial-open body { overflow: hidden; }
   justify-content: center;
   margin: 1.25rem 0 0.5rem;
 }
+
+/* Find Your Color: full-bleed like Explore (.full-width-slider-wrapper) */
+#w-node-_840113ad-0ab7-d36d-8024-8e1a2a26a316-fa0c724e {
+  grid-area: 1 / 1 / 2 / 4;
+}
+.section.clip .product-slider-wrapper {
+  padding-left: 5vw;
+  padding-right: 5vw;
+}
+
+/* Static subscription explainer on Charge + How it works (no sticky scroll theater) */
+.fizz-refill.is-static .fizz-refill-stage {
+  min-height: 0;
+  padding: clamp(4rem, 8vh, 5.5rem) 0;
+}
+.fizz-refill.is-static .fizz-refill-pips { display: none; }
 .auto-tabs-tutorial-actions {
   flex-wrap: wrap;
   align-items: center;
@@ -2479,8 +2495,8 @@ html.fizz-motion .about-cans.is-filled .about-cans-grid li { opacity: 1; transfo
    Sizing pass: sections and media use the screen on every device
    ========================================================================== */
 
-/* Homepage story ("Turn boring flat water…") */
-.about-section { display: flex; align-items: center; min-height: 100svh; }
+/* Homepage story ("Turn boring flat water…") — don't force a full viewport of empty navy under the copy */
+.about-section { display: flex; align-items: flex-start; min-height: 0; }
 .story-image { width: clamp(220px, 24vw, 440px); max-height: 80svh; }
 
 /* Homepage sliders — fixed heights by viewport height (not % of screen) */
@@ -2680,8 +2696,11 @@ html.fizz-motion .about-cans.is-filled .about-cans-grid li { opacity: 1; transfo
   pointer-events: none; /* the clear top must not block the hero underneath */
 }
 @media (min-width: 768px) {
-  /* Room for photos rising through the water around the copy */
-  .about-section[data-fizz-seltzer] { min-height: calc(max(112svh, 820px) + var(--dive)); }
+  /* Enough water for floaters around the copy, without a full extra viewport before FYC */
+  .about-section[data-fizz-seltzer] {
+    min-height: calc(max(72svh, 560px) + var(--dive));
+    align-items: flex-start;
+  }
 }
 /* Light filtering down from the surface, depth pooling lower down. Both fade out before
    the edges, so there is no seam with the sections around it. */
@@ -2797,7 +2816,7 @@ html.fizz-motion .about-cans.is-filled .about-cans-grid li { opacity: 1; transfo
   .about-section[data-fizz-seltzer] {
     --dive: min(24svh, 200px);
     padding-top: calc(22vw + var(--dive));
-    padding-bottom: 30vw;
+    padding-bottom: 14vw;
   }
   .about-section[data-fizz-seltzer] .story-wrapper { grid-row-gap: 40px; }
   .about-section[data-fizz-seltzer] .story-image {
