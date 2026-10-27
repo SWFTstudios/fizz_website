@@ -2375,6 +2375,8 @@ html.fizz-motion .about-cans.is-filled .about-cans-grid li { opacity: 1; transfo
    whole pinned stretch and hands off to the story section rising over it. */
 .fizz-hero { height: 230vh; }
 @media (max-width: 767px) { .fizz-hero { height: 200vh; } }
+/* The hero gradient overlays are decorative; on mobile they sat over the CTAs and ate taps */
+.background-image-overlay { pointer-events: none; }
 .fizz-hero .hero-video_container,
 .fizz-hero .fizz-hero-content {
   overflow: hidden;
