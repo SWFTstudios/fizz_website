@@ -461,7 +461,6 @@ a.button:active,
 
 /* ---------- Marquees (CSS only, paused while off-screen) ---------- */
 
-@keyframes fizz-marquee-x { to { transform: translate3d(-100%, 0, 0); } }
 @keyframes fizz-marquee-x-reverse { from { transform: translate3d(-100%, 0, 0); } to { transform: none; } }
 @keyframes fizz-marquee-y { to { transform: translate3d(0, -50%, 0); } }
 @keyframes fizz-crossfade {
@@ -474,8 +473,16 @@ a.button:active,
 .marquee-vertical_track .marquee-vertical_panel + .marquee-vertical_panel,
 .marquee-vertical_track .marquee-vertical_panel + .marquee-vertical_panel .marquee-vertical_img_wrapper:first-child { margin-top: 0; }
 
+/* Footer gallery: just the slow crossfade with the copy + CTA centred over it */
+.action-section {
+  align-items: center;
+  padding-top: 100px;
+  padding-bottom: 100px;
+}
+.action-section .stacked-content { align-content: center; }
+.action-section .stacked-intro.centered { align-items: center; }
+
 @media (prefers-reduced-motion: no-preference) {
-  .action-heading-wrapper .rotating-text { animation: fizz-marquee-x 18s linear infinite; flex: none; }
   .social-media-marquee .marquee-horizontal_panel { animation: fizz-marquee-x-reverse 10s linear infinite; }
   .marquee-vertical_track { animation: fizz-marquee-y 28s linear infinite; }
   .marquee-vertical_wrapper.is-2 .marquee-vertical_track { animation-direction: reverse; }
@@ -487,7 +494,6 @@ a.button:active,
   .action-background .action-bg-slide.is-4 { animation-delay: 16.5s; }
   .action-background .action-bg-slide.is-5 { animation-delay: 22.5s; }
 
-  [data-fizz-marquee]:not(.is-in-view) .rotating-text,
   [data-fizz-marquee]:not(.is-in-view) .marquee-horizontal_panel,
   [data-fizz-marquee]:not(.is-in-view) .marquee-vertical_track,
   [data-fizz-marquee]:not(.is-in-view) .action-bg-slide { animation-play-state: paused; }
@@ -543,6 +549,30 @@ a.button:active,
 }
 .pdp-gallery-slide[data-media-type="lifestyle"] { padding: 0; }
 .pdp-gallery-slide[data-media-type="lifestyle"] .w-embed { width: 100%; height: 100%; }
+/* Temporary label on AI-generated product shots until real photography lands.
+   Remove the data-ai-placeholder attribute (or this block) to drop it. */
+.pdp-gallery-slide[data-ai-placeholder],
+.shop-card-media[data-ai-placeholder] { position: relative; }
+[data-ai-placeholder]::after {
+  content: "AI Placeholder";
+  position: absolute;
+  bottom: 0.75rem;
+  left: 0.75rem;
+  z-index: 3;
+  padding: 0.35em 0.75em;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 999px;
+  background: rgba(3, 9, 13, 0.6);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+  text-transform: uppercase;
+  pointer-events: none;
+}
 .pdp-thumb-strip::-webkit-scrollbar { height: 4px; }
 .pdp-thumb-strip::-webkit-scrollbar-thumb { background: rgba(178, 245, 255, 0.35); border-radius: 4px; }
 .pdp-thumb.is-active,
@@ -2345,6 +2375,8 @@ html.fizz-motion .about-cans.is-filled .about-cans-grid li { opacity: 1; transfo
    whole pinned stretch and hands off to the story section rising over it. */
 .fizz-hero { height: 230vh; }
 @media (max-width: 767px) { .fizz-hero { height: 200vh; } }
+/* The hero gradient overlays are decorative; on mobile they sat over the CTAs and ate taps */
+.background-image-overlay { pointer-events: none; }
 .fizz-hero .hero-video_container,
 .fizz-hero .fizz-hero-content {
   overflow: hidden;
