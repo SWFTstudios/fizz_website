@@ -1269,6 +1269,40 @@ html.auto-tabs-tutorial-open body { overflow: hidden; }
   color: var(--fizz-deep);
 }
 /* Find Your Color — match Explore carousel bleed (full grid + 5vw gutters) */
+/* In-page link target sits a nav-bar height above the section, so the heading lands
+   clear of the fixed nav (Webflow's smooth scroll ignores scroll-margin) */
+.fizz-fyc { position: relative; }
+.fizz-anchor { position: absolute; top: -4.5rem; left: 0; width: 1px; height: 1px; pointer-events: none; }
+/* Colour cards behave like product cards: the centred card opens its PDP colourway,
+   and a quick-add pill drops that bottle straight into the cart */
+[data-fizz-loop] .w-slide.is-active .card-hit-link { cursor: pointer; }
+/* Card copy sits above the full-card link but lets clicks through, except the quick-add pill */
+.fizz-fyc .basic-slide-content { z-index: 31; pointer-events: none; }
+.fizz-card-quick-add {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  justify-self: center;
+  margin-top: 0.25rem;
+  padding: 0.7rem 1.25rem;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--fizz-deep);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: background-color 0.25s ease, transform 0.15s ease;
+}
+.fizz-card-quick-add:hover { background: var(--fizz-ice); }
+.fizz-card-quick-add:active { transform: scale(0.97); }
+.fizz-card-quick-add:focus-visible { outline: 2px solid var(--fizz-spark); outline-offset: 3px; }
+/* Only the centred card offers quick add */
+[data-fizz-loop] .w-slide:not(.is-active) .fizz-card-quick-add { visibility: hidden; }
 .fizz-fyc {
   /* Clip only the page edges (like Explore); don't inset-crop the coverflow band */
   overflow-x: clip;
