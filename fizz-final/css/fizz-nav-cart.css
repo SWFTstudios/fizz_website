@@ -258,26 +258,28 @@
   flex-shrink: 0;
   display: block;
 }
-.fizz-nav-menu-image {
-  width: 100%;
-  max-width: 720px;
-  border-radius: 0.375em;
-  overflow: hidden;
-  display: none;
-  height: auto;
-}
-.fizz-nav-menu-image img {
-  width: 100% !important;
-  height: auto !important;
-  max-height: none !important;
-  object-fit: contain !important;
-  object-position: center;
-  display: block;
-}
-.fizz-nav-menu-image--mobile { display: block; }
+/* Desktop: bar sits flush with the top of the viewport and the menu links run
+   in one row across the dropdown (photo sizing lives in fizz.css) */
 @media (min-width: 1025px) {
-  .fizz-nav-menu-image--desktop { display: block; }
-  .fizz-nav-menu-image--mobile { display: none; }
+  .fizz-nav-bar {
+    top: 0;
+    border-top: 0;
+    border-radius: 0 0 0.375em 0.375em;
+  }
+  .fizz-nav .fizz-nav-menu-inner {
+    align-items: stretch;
+    gap: 1.5em;
+    padding: 1.5em 2em 2em;
+  }
+  .fizz-nav-list,
+  .fizz-nav-nav > ul {
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 1em;
+    padding: 0 1em;
+  }
+  .fizz-nav-list a,
+  .fizz-nav-nav a { font-size: 1em; }
 }
 @media (max-width: 1024px) {
   .fizz-nav-bar { top: 0.5em; left: 0.5em; right: 0.5em; }
@@ -290,7 +292,6 @@
     padding-top: 2em;
     padding-bottom: 2em;
   }
-  .fizz-nav-menu-image--desktop { display: none; }
 }
 body.fizz-menu-open, body.fizz-cart-open { overflow: hidden; }
 
