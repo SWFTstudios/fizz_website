@@ -5,13 +5,13 @@
   pointer-events: auto;
   position: fixed;
   top: 1em;
-  left: 0.5em;
-  right: 0.5em;
+  left: 1em;
+  right: 1em;
   z-index: 10000;
   width: auto;
-  max-width: 720px;
-  margin-left: auto;
-  margin-right: auto;
+  max-width: none;
+  margin-left: 0;
+  margin-right: 0;
   border-radius: 0.375em;
   background: rgba(3, 9, 13, 0.41);
   border: 1px solid rgba(255, 255, 255, 0.28);
@@ -260,6 +260,7 @@
 }
 .fizz-nav-menu-image {
   width: 100%;
+  max-width: 720px;
   border-radius: 0.375em;
   overflow: hidden;
   display: none;
@@ -279,7 +280,7 @@
   .fizz-nav-menu-image--mobile { display: none; }
 }
 @media (max-width: 1024px) {
-  .fizz-nav-bar { top: 0.5em; }
+  .fizz-nav-bar { top: 0.5em; left: 0.5em; right: 0.5em; }
   .fizz-nav-container { height: 2.875em; padding: 0.5em; }
   .fizz-nav-toggle { padding: 0.5em; }
   .fizz-nav-menu.is-open { max-height: min(96vh, 880px); }

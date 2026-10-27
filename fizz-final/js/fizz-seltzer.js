@@ -61,7 +61,7 @@
     cheers: photo('6a96f4b95dc455665ea0ba84' + L + '29', 'Three Fizz bottles raised against a blue sky'),
     sunset: photo('6a96f4d098f5689a40038ffa' + L + '69', 'A Fizz bottle held up at sunset on the beach'),
     press: photo('6a96f4d925fc106e23d5f84c' + L + '52', 'Pressing the lid of a white Fizz bottle to carbonate'),
-    charge: photo('6a96f4e1e520901f07f80f4d' + L + '48', 'A Fizz CO2 charge beside the bottle'),
+    charge: photo('6a96f4e1e520901f07f80f4d' + L + '48', 'A Fizz CO2 canister beside the bottle'),
     grass: photo('6a96f4e7d0e30d8bc8aacdaa' + L + '18', 'Sitting on the grass with a black Fizz bottle'),
     walk: photo('6a96f4a0dba7c9a2440ec55c_Fizz_4x5.00_00_09_27.Still004', 'Walking on the sand with a blue Fizz bottle', { still: true }),
     car: photo('6a96f4b69088f84fc6dd53ae' + L + '11', 'A white Fizz bottle in a car cup holder'),
@@ -72,7 +72,7 @@
     volley: photo('6a96f4ddd0c177cc41c631ad' + L + '74', 'A blue Fizz bottle beside a volleyball in the sand'),
     share: photo('6a96f4d12cf312de51828786' + L + '41', 'Passing Fizz bottles over the tennis net'),
     bleachers: photo('6a96f4d72ce74d2fb0218aee' + L + '55', 'A blue Fizz bottle at the bleachers'),
-    chargeLife: photo('6a99caff47d2352ba2661c23_fizz-charge-lifestyle', 'A Fizz charge cartridge next to the bottle'),
+    chargeLife: photo('6a99caff47d2352ba2661c23_fizz-charge-lifestyle', 'A Fizz CO2 canister next to the bottle'),
     rooftop: photo('6a96f4eb4a1bebd117818394' + L + '60', 'Black, blue and white Fizz bottles on a rooftop bench')
   };
 

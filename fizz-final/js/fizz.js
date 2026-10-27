@@ -508,7 +508,7 @@
    * ------------------------------------------------------------------ */
 
   function setupMarquees() {
-    var nodes = document.querySelectorAll('.action-heading-wrapper, .social-media-marquee, .marquee-vertical_wrapper, .action-background');
+    var nodes = document.querySelectorAll('.social-media-marquee, .marquee-vertical_wrapper, .action-background');
     if (!nodes.length) return;
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
