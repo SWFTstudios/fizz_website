@@ -3054,3 +3054,34 @@ html.fizz-lb-open body { overflow: hidden; }
 .fizz-nav-shop { background: rgba(3, 9, 13, 0.75); }
 /* Product gallery arrows over light photos */
 .pdp-gallery-nav { background-color: rgba(0, 0, 0, 0.65); }
+
+/* ---------- Nav entrance after the homepage intro (js/fizz-intro.js) ----------
+   Hidden while the intro plays; then a logo-sized pill appears in the centre,
+   stretches out to full width, and the Shop / cart / menu controls fade in. */
+html.fizz-intro .fizz-nav-bar { opacity: 0; }
+html.fizz-nav-enter .fizz-nav-bar {
+  animation:
+    fizz-nav-pill-in 0.35s ease-out both,
+    fizz-nav-expand 0.8s var(--fizz-ease-out) 0.3s both;
+}
+html.fizz-nav-enter .fizz-nav-shop,
+html.fizz-nav-enter .fizz-nav-actions {
+  animation: fizz-nav-content-in 0.45s ease-out 0.95s both;
+}
+@keyframes fizz-nav-pill-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes fizz-nav-expand {
+  from { clip-path: inset(0 calc(50% - 4.5em) round 0.375em); }
+  to { clip-path: inset(0 0 round 0.375em); }
+}
+@keyframes fizz-nav-content-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html.fizz-nav-enter .fizz-nav-bar,
+  html.fizz-nav-enter .fizz-nav-shop,
+  html.fizz-nav-enter .fizz-nav-actions { animation: none; }
+}
