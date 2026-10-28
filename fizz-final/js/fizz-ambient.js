@@ -4,7 +4,7 @@
  * Two fixed canvases sit behind the page content: a far layer (small, dim, softly blurred
  * bubbles that barely move with the page) and a near layer (fewer, brighter bubbles that
  * slide with the scroll). The difference in parallax is what reads as depth, the same
- * water the homepage "Turn boring flat water…" section is set in. A few thin bubble
+ * water the homepage "No cans. No machine. Just Fizz." section is set in. A few thin bubble
  * streams rise along the edges so the copy column stays clean.
  *
  * Skipped under prefers-reduced-motion. Pauses while the tab is hidden.

@@ -77,7 +77,13 @@
       var slide = slides[index];
       var isLife = slide && slide.getAttribute('data-media-type') === 'lifestyle';
       if (stage) {
-        if (isLife) {
+        // Bottle renders sit on a lit studio stage (fizz-premium.css), tinted per colorway.
+        var studio = !isLife && !isFlavors && index <= 2;
+        stage.classList.toggle('is-studio', studio);
+        stage.setAttribute('data-tone', studio ? String(index) : '');
+        if (studio) {
+          stage.style.backgroundColor = '';
+        } else if (isLife) {
           stage.style.backgroundColor = '#16161a';
         } else {
           var cw = COLORWAYS[String(index)] || COLORWAYS['0'];

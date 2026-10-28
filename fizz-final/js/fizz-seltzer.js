@@ -1,5 +1,5 @@
 /**
- * Fizz homepage — "Turn boring flat water…" story section.
+ * Fizz homepage — "No cans. No machine. Just Fizz." story section.
  *
  * Photos float as if suspended in seltzer, at different depths:
  *   deep bubbles → far photos (small, soft, dim) → nearer bubbles → mid photos

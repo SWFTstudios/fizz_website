@@ -64,7 +64,14 @@
     });
     section.style.setProperty('--refill-progress', (p / N).toFixed(4));
     setActive(clamp(Math.floor(p), 0, N - 1));
-    stage.style.setProperty('--refill-orb-scale', (0.94 + 0.08 * (p / N)).toFixed(4));
+    // Blend in and out of the water around it: the orb grows and its glow fades up as the
+    // section rises into view, then fades back out as it scrolls away (no hard edges).
+    var vh = window.innerHeight;
+    var rect = section.getBoundingClientRect();
+    var enter = smooth(clamp((vh - rect.top) / vh, 0, 1));
+    var exit = smooth(clamp(rect.bottom / vh, 0, 1));
+    stage.style.setProperty('--refill-blend', Math.min(enter, exit).toFixed(3));
+    stage.style.setProperty('--refill-orb-scale', ((0.94 + 0.08 * (p / N)) * (0.75 + 0.25 * enter)).toFixed(4));
     stage.style.setProperty('--refill-ring-turn', (-8 + 16 * (p / N)).toFixed(2) + 'deg');
   }
 

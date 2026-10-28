@@ -1403,3 +1403,90 @@ html:not([data-fizz-page="home"]) body {
   .fizz-footer-actions .button { flex: 1 1 auto; }
   .fizz-footer-base { flex-direction: column; }
 }
+
+/* ==========================================================================
+   Refill loop: no top/bottom fade bands. The stage is the same water as the
+   rest of the page; its tint, orb and ring fade and grow in with scroll
+   (--refill-blend / --refill-orb-scale from js/fizz-refill.js).
+   ========================================================================== */
+
+.fizz-refill-stage,
+.fizz-refill.is-live .fizz-refill-stage { background: transparent; }
+.fizz-refill-stage::before,
+.fizz-refill-stage::after { display: none; }
+.fizz-refill-bg {
+  opacity: var(--refill-blend, 1);
+  background: radial-gradient(70% 60% at 50% 55%, rgba(23, 96, 122, 0.4) 0%, rgba(23, 96, 122, 0.12) 55%, rgba(23, 96, 122, 0) 100%);
+  transition: opacity 0.2s linear;
+}
+.fizz-refill-orb {
+  -webkit-mask: radial-gradient(closest-side, #000 82%, transparent 100%);
+  mask: radial-gradient(closest-side, #000 82%, transparent 100%);
+}
+
+/* ==========================================================================
+   Bottle page: the transparent bottle renders stand on a lit studio stage,
+   tinted to the colorway (js/fizz-pdp-gallery.js sets .is-studio + data-tone),
+   instead of a flat grey-white card.
+   ========================================================================== */
+
+.pdp-gallery-stage.is-studio {
+  --tone: 196, 227, 253;
+  background:
+    radial-gradient(48% 42% at 50% 34%, rgba(var(--tone), 0.28) 0%, rgba(var(--tone), 0) 100%),
+    radial-gradient(60% 18% at 50% 88%, rgba(var(--tone), 0.16) 0%, rgba(var(--tone), 0) 100%),
+    linear-gradient(180deg, #12222a 0%, #0c171d 62%, #070e12 100%);
+  transition: background 0.6s var(--fizz-premium-ease);
+}
+.pdp-gallery-stage.is-studio[data-tone="1"] { --tone: 95, 216, 255; }
+.pdp-gallery-stage.is-studio[data-tone="2"] { --tone: 82, 112, 236; }
+/* A soft contact shadow so the bottle stands rather than floats */
+.pdp-gallery-stage.is-studio::before {
+  content: "";
+  position: absolute;
+  left: 25%;
+  right: 25%;
+  bottom: 2%;
+  height: 8%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));
+  pointer-events: none;
+}
+
+.pdp-gallery-stage.is-studio .pdp-gallery-slide:not([data-media-type="lifestyle"]) .pdp-gallery-img {
+  position: relative;
+  z-index: 1;
+  filter: drop-shadow(0 30px 40px rgba(0, 0, 0, 0.45));
+}
+.pdp-sticky-thumb,
+.fizz-kit-media.is-product { background: radial-gradient(circle at 50% 35%, #1d3540 0%, #0c171d 100%); }
+
+/* Home intro: copy and buttons share one centre line */
+.about-section .story-content .dual-button {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  justify-self: center;
+  align-self: center;
+  gap: 0.75rem;
+  width: 100%;
+  margin-top: 0.5rem;
+}
+.about-section .story-content .dual-button > .button { grid-area: auto; margin: 0; }
+.about-section .story-content .stacked-intro.small,
+.about-section .story-content .width-large,
+.about-section .story-content .width-medium { margin-left: auto; margin-right: auto; justify-self: center; text-align: center; }
+
+/* Home intro: the deep backdrop fades back into the water at the bottom too, so the
+   story section below continues without a hard edge */
+.about-section[data-fizz-seltzer] {
+  background: linear-gradient(180deg,
+    rgba(12, 23, 29, 0) 0,
+    rgba(12, 23, 29, 0.55) calc(var(--dive) * 0.55),
+    rgba(12, 23, 29, 0.9) calc(var(--dive) * 1.25),
+    rgba(12, 23, 29, 0.9) calc(100% - 22vh),
+    rgba(12, 23, 29, 0) 100%);
+}
+/* The copy and the two hero photos sit in front of every drifting photo, as the seltzer
+   depth order intends, so a passing photo never covers a button */
+.about-section[data-fizz-seltzer] .grid-wrapper { position: relative; z-index: 5; }
