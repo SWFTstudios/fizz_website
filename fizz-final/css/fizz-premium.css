@@ -1,8 +1,9 @@
 /* ==========================================================================
    Fizz — premium layer (loaded last on every page, after fizz.css).
    Keeps the layout, videos, Lottie and the seltzer immersion; refines the
-   finish: Satoshi type, tighter tracking, quieter CTAs, hairline UI, and a
-   calmer motion language (no wavy fills, no bouncing pops).
+   finish: a Newsreader serif for display type over a Satoshi sans for UI and
+   body, quieter CTAs, hairline UI, and a calmer motion language (no wavy
+   fills, no bouncing pops).
    Roll back by removing this file's <link> from the pages.
    ========================================================================== */
 
@@ -21,9 +22,25 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: "Newsreader";
+  src: url("../fonts/Newsreader-Variable.woff2") format("woff2");
+  font-weight: 300 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Newsreader";
+  src: url("../fonts/Newsreader-VariableItalic.woff2") format("woff2");
+  font-weight: 300 700;
+  font-style: italic;
+  font-display: swap;
+}
+
 :root,
 body {
   --_fizz-typography---fizz-font-family: "Satoshi", "Helvetica Neue", Arial, sans-serif;
+  --fizz-serif: "Newsreader", "Iowan Old Style", Georgia, serif;
   --fizz-premium-ease: cubic-bezier(0.22, 1, 0.36, 1);
   --fizz-hairline: rgba(255, 255, 255, 0.14);
   --fizz-hairline-strong: rgba(255, 255, 255, 0.28);
@@ -306,7 +323,6 @@ a.button:active,
   text-transform: none;
 }
 .fizz-nav-shop:hover { background: #fff; color: var(--fizz-abyss); border-color: #fff; }
-.fizz-nav-link { letter-spacing: -0.03em; font-weight: 600; }
 .fizz-nav-cart-count {
   background: var(--fizz-mist);
   color: var(--fizz-abyss);
@@ -518,3 +534,103 @@ a.button:active,
 .sg-t-display { font-size: clamp(2.6rem, 7vw + 1rem, 6.25rem); line-height: 0.92; letter-spacing: -0.045em; }
 .sg-t-h2 { letter-spacing: -0.035em; }
 .sg-t-button { font-size: 0.9375rem; font-weight: 600; letter-spacing: -0.005em; text-transform: none; }
+
+/* ==========================================================================
+   Display serif: headlines, big numbers and prices in Newsreader.
+   The sans stays on buttons, labels, navigation chrome and body copy.
+   ========================================================================== */
+
+.fizz-heading-display,
+.fizz-heading-xl,
+.fizz-heading-lg,
+.fizz-heading-marquee,
+.fizz-heading-tab,
+.fizz-text-display,
+.fizz-featured-title,
+.fizz-featured-price,
+.fizz-refill-title,
+.fizz-refill-name,
+.fizz-more-title,
+.fizz-cart-title,
+.fizz-nav-link,
+.hiw-title,
+.hiw-h2,
+.hiw-step-title,
+.hiw-stats dt,
+.hiw-hero-stat strong,
+.about-title,
+.about-calc-results dt,
+.shop-title,
+.shop-card-name,
+.pdp-product-title,
+.pdp-card-title,
+.pdp-price,
+.fizz-scale .hiw-stats dt,
+.sg-t-display,
+.sg-t-h2 {
+  font-family: var(--fizz-serif);
+  font-weight: 400;
+  font-optical-sizing: auto;
+  letter-spacing: -0.02em;
+  text-transform: none;
+}
+
+.fizz-heading-display { font-size: clamp(3.4rem, 7vw + 1rem, 7rem); line-height: 0.95; letter-spacing: -0.025em; }
+.fizz-heading-xl { font-size: clamp(2.4rem, 4.8vw, 4rem); line-height: 1.04; }
+.fizz-featured-title { font-size: clamp(3rem, 5.6vw, 4.75rem); line-height: 0.95; }
+.fizz-refill-title { font-size: clamp(2.75rem, 6vw, 5.25rem); line-height: 0.98; }
+.fizz-heading-marquee { font-style: italic; letter-spacing: -0.02em; }
+.hiw-title,
+.about-title,
+.shop-title { line-height: 0.98; }
+.hiw-h2 { line-height: 1.06; }
+
+/* The italic carries the brand's voice: one accent line per headline */
+.fizz-heading-display em,
+.fizz-heading-xl em,
+.fizz-refill-title em,
+.hiw-title em,
+.about-title em,
+.shop-title em,
+.hiw-h2 em {
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.03em;
+}
+
+/* Prices and stats read like a menu card, not a dashboard */
+.fizz-featured-price,
+.pdp-price { font-weight: 400; letter-spacing: -0.01em; font-variant-numeric: lining-nums; }
+.hiw-stats dt,
+.about-calc-results dt { font-weight: 400; letter-spacing: -0.02em; font-variant-numeric: lining-nums tabular-nums; }
+
+/* Menu: serif capitals, lightly tracked, like a label on a bottle */
+.fizz-nav-list a.fizz-nav-link,
+.fizz-nav-nav a.fizz-nav-link {
+  font-family: var(--fizz-serif);
+  font-weight: 400;
+  letter-spacing: 0.08em;
+}
+.fizz-nav-list a.fizz-nav-link:hover,
+.fizz-nav-nav a.fizz-nav-link:hover { font-style: italic; }
+
+/* Fill · Push · Fizz in the serif: waiting steps dim, the live step turns italic */
+.fizz-heading-tab,
+.auto-tabs-link .fizz-heading-tab {
+  font-weight: 400;
+  font-size: clamp(3.75rem, 7.5vw, 7rem);
+  letter-spacing: -0.03em;
+  line-height: 0.95;
+}
+.auto-tabs-link.w--current .fizz-heading-tab {
+  font-style: italic;
+  color: var(--fizz-mist);
+  background: none;
+  -webkit-background-clip: border-box;
+  background-clip: border-box;
+  animation: fizz-tab-rise 0.9s var(--fizz-premium-ease) both;
+}
+@media screen and (max-width: 767px), screen and (max-width: 991px) and (max-height: 500px) and (orientation: landscape) {
+  .fizz-heading-tab,
+  .auto-tabs-link .fizz-heading-tab { font-size: clamp(2.5rem, 12vw, 3.5rem); }
+}
