@@ -1228,48 +1228,219 @@ html.auto-tabs-tutorial-open body { overflow: hidden; }
   border-color: #fff;
   color: #fff;
 }
-/* Find Your Color — match Explore carousel bleed (full grid + 5vw gutters) */
-.fizz-fyc {
-  /* Clip only the page edges (like Explore); don't inset-crop the coverflow band */
-  overflow-x: clip;
-  overflow-y: visible;
-  padding-top: clamp(2.5rem, 5vw, 3.5rem);
-  padding-bottom: clamp(2.5rem, 5vw, 3.5rem);
+/* ---------- Homepage featured Bottle PDP (Brooklyn Steel–style split) ---------- */
+.fizz-featured {
+  --featured-pad: clamp(1.5rem, 4vw, 3.5rem);
+  --pdp-text: #fff;
+  --pdp-muted: var(--fizz-fog);
+  --pdp-ice: var(--fizz-ice);
+  --pdp-line: var(--fizz-line);
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  gap: 0;
+  align-items: stretch;
+  background: var(--fizz-deep);
+  color: var(--fizz-mist);
+  overflow: hidden;
 }
-#w-node-_840113ad-0ab7-d36d-8024-8e1a2a26a316-fa0c724e,
-.fizz-fyc-stack {
-  grid-area: 1 / 1 / 2 / 4 !important;
-  grid-row-gap: 1.5rem;
-  align-content: start;
-  width: 100%;
-  min-width: 0;
-}
-.fizz-fyc .product-slider-wrapper {
-  /* Same shell as .full-width-slider-wrapper on Explore */
+.fizz-featured-media {
+  position: relative;
+  min-height: min(78vh, 820px);
+  background:
+    radial-gradient(120% 90% at 50% 20%, rgba(95, 216, 255, 0.14), transparent 55%),
+    linear-gradient(160deg, #15262f 0%, var(--fizz-abyss) 70%);
   display: flex;
+  align-items: center;
   justify-content: center;
-  width: 100%;
-  max-width: none;
-  padding-left: 5vw;
-  padding-right: 5vw;
-  overflow: visible;
+  padding: clamp(2rem, 5vw, 4rem);
 }
-.fizz-fyc .product-slider {
-  width: 100%;
+.fizz-featured-img {
+  width: min(72%, 420px);
   height: auto;
-  overflow: visible;
+  max-height: min(68vh, 640px);
+  object-fit: contain;
+  filter: drop-shadow(0 28px 48px rgba(0, 0, 0, 0.45));
+  transition: opacity 0.25s ease;
 }
-.fizz-fyc .product-mask {
-  overflow: visible;
+.fizz-featured-badge {
+  position: absolute;
+  top: clamp(1rem, 3vw, 2rem);
+  right: clamp(1rem, 3vw, 2.5rem);
+  width: clamp(6.5rem, 11vw, 8.5rem);
+  height: clamp(6.5rem, 11vw, 8.5rem);
+  color: var(--fizz-mist);
+  pointer-events: none;
 }
-.fizz-fyc-actions {
+.fizz-featured-badge-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  animation: fizz-featured-spin 18s linear infinite;
+}
+.fizz-featured-badge-text {
+  fill: var(--fizz-mist);
+  font-family: var(--_fizz-typography---fizz-font-family, "Poppins", sans-serif);
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+.fizz-featured-badge-core {
+  position: absolute;
+  inset: 22%;
+  border-radius: 50%;
+  background: var(--fizz-surface);
+  border: 1px solid rgba(196, 227, 253, 0.35);
+  display: grid;
+  place-items: center;
+}
+.fizz-featured-badge-mark {
+  width: 0.85rem;
+  height: 0.85rem;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #fff 0%, var(--fizz-spark) 55%, var(--fizz-lagoon) 100%);
+  box-shadow: 0 0 12px rgba(95, 216, 255, 0.55);
+}
+@keyframes fizz-featured-spin {
+  to { transform: rotate(360deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fizz-featured-badge-svg { animation: none; }
+}
+
+.fizz-featured-copy {
+  display: flex;
+  flex-direction: column;
   justify-content: center;
-  margin: 0.25rem 0 0;
+  gap: 1.1rem;
+  padding: var(--featured-pad) clamp(1.5rem, 5vw, 4.5rem);
+  background: var(--fizz-abyss);
+  border-left: 1px solid var(--fizz-line);
 }
-/* Shop Bottle CTAs no longer carry a trailing arrow */
-.fizz-fyc .underline-link-2 {
-  justify-content: center;
-  grid-column-gap: 0;
+.fizz-featured-eyebrow {
+  margin: 0;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--fizz-spark);
+}
+.fizz-featured-title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem 1.5rem;
+}
+.fizz-featured-title {
+  margin: 0;
+  font-family: var(--_fizz-typography---fizz-font-family, "Poppins", sans-serif);
+  font-size: clamp(2.4rem, 4.5vw, 3.6rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 0.95;
+  text-transform: uppercase;
+  color: #fff;
+}
+.fizz-featured-price {
+  margin: 0;
+  font-size: clamp(1.35rem, 2vw, 1.75rem);
+  font-weight: 600;
+  color: var(--fizz-ice);
+}
+.fizz-featured-pay {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  color: var(--fizz-fog);
+}
+.fizz-featured-desc {
+  display: grid;
+  gap: 0.85rem;
+  max-width: 36rem;
+}
+.fizz-featured-desc p {
+  margin: 0;
+  font-size: clamp(0.95rem, 1.15vw, 1.05rem);
+  font-weight: 300;
+  line-height: 1.55;
+  color: rgba(238, 246, 249, 0.88);
+}
+.fizz-featured-option { margin-top: 0.35rem; }
+.fizz-featured-copy.pdp-buybox {
+  max-width: none;
+  width: auto;
+  margin: 0;
+  padding: var(--featured-pad) clamp(1.5rem, 5vw, 4.5rem);
+  gap: 1.1rem;
+}
+.fizz-featured-copy .pdp-option-label {
+  color: var(--fizz-mist);
+  margin-bottom: 0.65rem;
+}
+.fizz-featured-copy .pdp-swatch.is-active {
+  border-color: #fff !important;
+  box-shadow: inset 0 0 0 3px var(--fizz-abyss);
+}
+.fizz-featured-buy-row {
+  margin-top: 0.5rem;
+  max-width: 28rem;
+}
+.fizz-featured-copy .pdp-add-btn {
+  flex: 1;
+  border: 1.5px solid rgba(196, 227, 253, 0.55);
+  background: transparent;
+  color: var(--fizz-ice);
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+.fizz-featured-copy .pdp-add-btn:hover {
+  background: rgba(196, 227, 253, 0.1);
+  border-color: var(--fizz-ice);
+  color: #fff;
+}
+.fizz-featured-copy .pdp-buy-status {
+  min-height: 1.25em;
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--fizz-fog);
+}
+.fizz-featured-more {
+  display: inline-flex;
+  align-self: flex-start;
+  margin-top: 0.25rem;
+  color: var(--fizz-ice);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(196, 227, 253, 0.35);
+  padding-bottom: 0.15rem;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+.fizz-featured-more:hover {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.55);
+}
+
+@media (max-width: 991px) {
+  .fizz-featured {
+    grid-template-columns: 1fr;
+  }
+  .fizz-featured-media {
+    min-height: min(56vh, 520px);
+  }
+  .fizz-featured-copy.pdp-buybox {
+    border-left: 0;
+    border-top: 1px solid var(--fizz-line);
+    padding: clamp(2rem, 6vw, 3rem) clamp(1.25rem, 5vw, 2rem) clamp(2.5rem, 8vw, 4rem);
+  }
+  .fizz-featured-badge {
+    width: 5.75rem;
+    height: 5.75rem;
+  }
 }
 
 /* Static subscription explainer on Charge + How it works (no sticky scroll theater) */
