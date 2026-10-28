@@ -1268,82 +1268,295 @@ html.auto-tabs-tutorial-open body { overflow: hidden; }
   border-color: #fff;
   color: var(--fizz-deep);
 }
-/* Find Your Color — match Explore carousel bleed (full grid + 5vw gutters) */
-/* In-page link target sits a nav-bar height above the section, so the heading lands
-   clear of the fixed nav (Webflow's smooth scroll ignores scroll-margin) */
-.fizz-fyc { position: relative; }
-.fizz-anchor { position: absolute; top: -4.5rem; left: 0; width: 1px; height: 1px; pointer-events: none; }
-/* Colour cards behave like product cards: the centred card opens its PDP colourway,
-   and a quick-add pill drops that bottle straight into the cart */
-[data-fizz-loop] .w-slide.is-active .card-hit-link { cursor: pointer; }
-/* Card copy sits above the full-card link but lets clicks through, except the quick-add pill */
-.fizz-fyc .basic-slide-content { z-index: 31; pointer-events: none; }
-.fizz-card-quick-add {
+
+/* ---------- Homepage featured Bottle PDP (premium stage, seamless with story) ---------- */
+.fizz-featured {
   position: relative;
-  display: inline-flex;
+  scroll-margin-top: 4.5rem;
+  --featured-pad: clamp(1.75rem, 4.5vw, 4rem);
+  --pdp-text: #fff;
+  --pdp-muted: var(--fizz-fog);
+  --pdp-ice: var(--fizz-ice);
+  --pdp-line: var(--fizz-line);
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+  gap: clamp(0.5rem, 2vw, 2rem);
+  align-items: center;
+  margin-top: clamp(-2.5rem, -4vw, -1.25rem);
+  padding: clamp(1rem, 3vw, 2rem) 0 clamp(3.5rem, 8vw, 5.5rem);
+  color: var(--fizz-mist);
+  overflow: hidden;
+  background:
+    radial-gradient(55% 70% at 22% 48%, rgba(95, 216, 255, 0.12), transparent 62%),
+    radial-gradient(40% 55% at 78% 42%, rgba(23, 96, 122, 0.18), transparent 70%),
+    linear-gradient(180deg, var(--fizz-deep) 0%, #0a141a 42%, var(--fizz-deep) 100%);
+}
+.fizz-featured::before,
+.fizz-featured::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+.fizz-featured::before {
+  top: 0;
+  height: clamp(4rem, 10vw, 7rem);
+  background: linear-gradient(180deg, var(--fizz-deep) 0%, transparent 100%);
+}
+.fizz-featured::after {
+  bottom: 0;
+  height: clamp(3.5rem, 8vw, 6rem);
+  background: linear-gradient(180deg, transparent 0%, var(--fizz-navy) 100%);
+}
+.fizz-featured-media,
+.fizz-featured-copy {
+  position: relative;
+  z-index: 2;
+}
+.fizz-featured-media {
+  min-height: min(72vh, 760px);
+  display: flex;
   align-items: center;
   justify-content: center;
-  justify-self: center;
-  margin-top: 0.25rem;
-  padding: 0.7rem 1.25rem;
+  padding: clamp(2rem, 5vw, 4rem) clamp(1rem, 3vw, 2rem);
+  background: transparent;
+}
+.fizz-featured-glow {
+  position: absolute;
+  width: min(78%, 520px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(196, 227, 253, 0.28) 0%, rgba(95, 216, 255, 0.14) 28%, transparent 68%);
+  filter: blur(2px);
+  opacity: 0.95;
+  pointer-events: none;
+  animation: fizz-featured-breathe 7s ease-in-out infinite;
+}
+.fizz-featured-img {
+  position: relative;
+  z-index: 1;
+  width: min(78%, 460px);
+  height: auto;
+  max-height: min(66vh, 680px);
+  object-fit: contain;
+  filter:
+    drop-shadow(0 36px 56px rgba(0, 0, 0, 0.55))
+    drop-shadow(0 0 42px rgba(95, 216, 255, 0.18));
+  transition: opacity 0.3s ease, transform 0.45s var(--fizz-ease-out, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.fizz-featured-badge {
+  position: absolute;
+  top: clamp(1.25rem, 3.5vw, 2.5rem);
+  right: clamp(1.25rem, 4vw, 3rem);
+  width: clamp(7rem, 12vw, 9rem);
+  height: clamp(7rem, 12vw, 9rem);
+  color: var(--fizz-ice);
+  pointer-events: none;
+  filter: drop-shadow(0 10px 28px rgba(0, 0, 0, 0.35));
+}
+.fizz-featured-badge-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  animation: fizz-featured-spin 18s linear infinite;
+}
+.fizz-featured-badge-text {
+  fill: var(--fizz-ice);
+  font-family: var(--_fizz-typography---fizz-font-family, "Poppins", sans-serif);
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+.fizz-featured-badge-core {
+  position: absolute;
+  inset: 22%;
+  border-radius: 50%;
+  background: rgba(18, 34, 42, 0.88);
+  border: 1px solid rgba(196, 227, 253, 0.4);
+  box-shadow: inset 0 0 18px rgba(95, 216, 255, 0.12);
+  display: grid;
+  place-items: center;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+.fizz-featured-badge-mark {
+  width: 0.9rem;
+  height: 0.9rem;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #fff 0%, var(--fizz-spark) 55%, var(--fizz-lagoon) 100%);
+  box-shadow: 0 0 16px rgba(95, 216, 255, 0.65);
+}
+@keyframes fizz-featured-spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes fizz-featured-breathe {
+  0%, 100% { transform: scale(1); opacity: 0.88; }
+  50% { transform: scale(1.06); opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fizz-featured-badge-svg,
+  .fizz-featured-glow { animation: none; }
+}
+
+.fizz-featured-copy {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1.15rem;
+  padding: var(--featured-pad) clamp(1.5rem, 5vw, 4.5rem) var(--featured-pad) clamp(1rem, 3vw, 2rem);
+  background: transparent;
+  border: 0;
+}
+.fizz-featured-eyebrow {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--fizz-spark);
+  text-shadow: 0 0 24px rgba(95, 216, 255, 0.35);
+}
+.fizz-featured-title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem 1.5rem;
+}
+.fizz-featured-title {
+  margin: 0;
+  font-family: var(--_fizz-typography---fizz-font-family, "Poppins", sans-serif);
+  font-size: clamp(2.6rem, 5vw, 4rem);
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  line-height: 0.92;
+  text-transform: uppercase;
+  color: #fff;
+  text-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+}
+.fizz-featured-price {
+  margin: 0;
+  font-size: clamp(1.4rem, 2.2vw, 1.85rem);
+  font-weight: 600;
+  color: var(--fizz-ice);
+  letter-spacing: -0.02em;
+}
+.fizz-featured-pay {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  color: var(--fizz-fog);
+}
+.fizz-featured-desc {
+  display: grid;
+  gap: 0.9rem;
+  max-width: 34rem;
+}
+.fizz-featured-desc p {
+  margin: 0;
+  font-size: clamp(0.98rem, 1.2vw, 1.08rem);
+  font-weight: 300;
+  line-height: 1.6;
+  color: rgba(238, 246, 249, 0.9);
+}
+.fizz-featured-option { margin-top: 0.45rem; }
+.fizz-featured-copy.pdp-buybox {
+  max-width: none;
+  width: auto;
+  margin: 0;
+  padding: var(--featured-pad) clamp(1.5rem, 5vw, 4.5rem) var(--featured-pad) clamp(1rem, 3vw, 2rem);
+  gap: 1.15rem;
+}
+.fizz-featured-copy .pdp-option-label {
+  color: var(--fizz-mist);
+  margin-bottom: 0.7rem;
+}
+.fizz-featured-copy .pdp-swatch {
   border-radius: 999px;
-  background: #fff;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+.fizz-featured-copy .pdp-swatch.is-active {
+  border-color: #fff !important;
+  box-shadow: inset 0 0 0 3px var(--fizz-deep), 0 0 0 1px rgba(196, 227, 253, 0.45);
+}
+.fizz-featured-buy-row {
+  margin-top: 0.65rem;
+  max-width: 28rem;
+}
+.fizz-featured-copy .pdp-qty {
+  border-color: rgba(196, 227, 253, 0.28);
+  background: rgba(7, 14, 18, 0.35);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+.fizz-featured-copy .pdp-add-btn {
+  flex: 1;
+  border: 1.5px solid rgba(196, 227, 253, 0.65);
+  background: linear-gradient(180deg, rgba(196, 227, 253, 0.14), rgba(196, 227, 253, 0.04));
+  color: var(--fizz-ice);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28);
+  transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+}
+.fizz-featured-copy .pdp-add-btn:hover {
+  background: var(--fizz-ice);
+  border-color: var(--fizz-ice);
   color: var(--fizz-deep);
-  font-size: 0.7rem;
+  box-shadow: 0 16px 40px rgba(95, 216, 255, 0.22);
+  transform: translateY(-1px);
+}
+.fizz-featured-copy .pdp-buy-status {
+  min-height: 1.25em;
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--fizz-fog);
+}
+.fizz-featured-more {
+  display: inline-flex;
+  align-self: flex-start;
+  margin-top: 0.35rem;
+  color: var(--fizz-ice);
+  font-size: 0.8rem;
   font-weight: 600;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   text-decoration: none;
-  cursor: pointer;
-  pointer-events: auto;
-  transition: background-color 0.25s ease, transform 0.15s ease;
+  border-bottom: 1px solid rgba(196, 227, 253, 0.35);
+  padding-bottom: 0.2rem;
+  transition: color 0.2s ease, border-color 0.2s ease;
 }
-.fizz-card-quick-add:hover { background: var(--fizz-ice); }
-.fizz-card-quick-add:active { transform: scale(0.97); }
-.fizz-card-quick-add:focus-visible { outline: 2px solid var(--fizz-spark); outline-offset: 3px; }
-/* Only the centred card offers quick add */
-[data-fizz-loop] .w-slide:not(.is-active) .fizz-card-quick-add { visibility: hidden; }
-.fizz-fyc {
-  /* Clip only the page edges (like Explore); don't inset-crop the coverflow band */
-  overflow-x: clip;
-  overflow-y: visible;
-  padding-top: clamp(2.5rem, 5vw, 3.5rem);
-  padding-bottom: clamp(2.5rem, 5vw, 3.5rem);
+.fizz-featured-more:hover {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.55);
 }
-#w-node-_840113ad-0ab7-d36d-8024-8e1a2a26a316-fa0c724e,
-.fizz-fyc-stack {
-  grid-area: 1 / 1 / 2 / 4 !important;
-  grid-row-gap: 1.5rem;
-  align-content: start;
-  width: 100%;
-  min-width: 0;
-}
-.fizz-fyc .product-slider-wrapper {
-  /* Same shell as .full-width-slider-wrapper on Explore */
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  max-width: none;
-  padding-left: 5vw;
-  padding-right: 5vw;
-  overflow: visible;
-}
-.fizz-fyc .product-slider {
-  width: 100%;
-  height: auto;
-  overflow: visible;
-}
-.fizz-fyc .product-mask {
-  overflow: visible;
-}
-.fizz-fyc-actions {
-  justify-content: center;
-  margin: 0.25rem 0 0;
-}
-/* Shop Bottle CTAs no longer carry a trailing arrow */
-.fizz-fyc .underline-link-2 {
-  justify-content: center;
-  grid-column-gap: 0;
+
+@media (max-width: 991px) {
+  .fizz-featured {
+    grid-template-columns: 1fr;
+    gap: 0;
+    margin-top: -1.5rem;
+    padding-bottom: clamp(3rem, 10vw, 4.5rem);
+  }
+  .fizz-featured-media {
+    min-height: min(52vh, 480px);
+    padding-bottom: 0.5rem;
+  }
+  .fizz-featured-copy.pdp-buybox {
+    border: 0;
+    padding: clamp(1.25rem, 5vw, 2rem) clamp(1.25rem, 5vw, 2rem) clamp(2rem, 7vw, 3.25rem);
+  }
+  .fizz-featured-badge {
+    width: 6rem;
+    height: 6rem;
+    top: 1rem;
+    right: 1rem;
+  }
 }
 
 /* Static subscription explainer on Charge + How it works (no sticky scroll theater) */
@@ -2795,10 +3008,13 @@ html.fizz-motion .about-cans.is-filled .about-cans-grid li { opacity: 1; transfo
   overflow-x: clip; /* photos can drift past the edges without a sideways scroll */
   margin-top: calc(-1 * var(--dive));
   padding-top: calc(70px + var(--dive));
+  /* Extra bottom pad + solid deep tail so the featured stage continues without a seam */
+  padding-bottom: clamp(2.5rem, 6vw, 4.5rem);
   background: linear-gradient(180deg,
     rgba(12, 23, 29, 0) 0,
     rgba(12, 23, 29, 0.55) calc(var(--dive) * 0.55),
-    var(--fizz-deep) calc(var(--dive) * 1.25));
+    var(--fizz-deep) calc(var(--dive) * 1.25),
+    var(--fizz-deep) 100%);
   pointer-events: none; /* the clear top must not block the hero underneath */
 }
 @media (min-width: 768px) {
