@@ -1299,3 +1299,107 @@ html:not([data-fizz-page="home"]) body {
   .fizz-story-spot.is-focus,
   .fizz-scroll-cue-line i { animation: none; }
 }
+
+/* ==========================================================================
+   Footer: a full-bleed photo slideshow with the closing CTA, then links.
+   (The five .action-bg-slide photos and their crossfade come from the
+   Webflow CSS + fizz.css; this adds a slow drift and the layout.)
+   ========================================================================== */
+
+.fizz-footer { position: relative; color: #fff; }
+.fizz-footer-hero {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: min(88vh, 820px);
+  min-height: min(88svh, 820px);
+  padding: clamp(5rem, 12vh, 8rem) clamp(1.25rem, 4vw, 3rem);
+  overflow: hidden;
+  isolation: isolate;
+}
+.fizz-footer-slides { position: absolute; inset: 0; z-index: -1; }
+.fizz-footer-slides .action-bg-slide {
+  position: absolute;
+  inset: -4%;
+  background-size: cover;
+  background-position: 50% 50%;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .fizz-footer-slides .action-bg-slide { animation-name: fizz-crossfade, fizz-footer-drift; animation-duration: 30s, 30s; animation-timing-function: linear, ease-in-out; animation-iteration-count: infinite, infinite; }
+}
+@keyframes fizz-footer-drift {
+  0% { transform: scale(1.06) translate3d(0, 0, 0); }
+  30% { transform: scale(1) translate3d(-1.5%, -1%, 0); }
+  100% { transform: scale(1) translate3d(-1.5%, -1%, 0); }
+}
+.fizz-footer-shade {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(12, 23, 29, 0.85) 0%, rgba(12, 23, 29, 0.25) 30%, rgba(12, 23, 29, 0.35) 65%, rgba(7, 14, 18, 0.95) 100%),
+    radial-gradient(60% 50% at 50% 50%, rgba(7, 14, 18, 0.45) 0%, rgba(7, 14, 18, 0) 100%);
+}
+.fizz-footer-cta { max-width: 44rem; text-align: center; }
+.fizz-footer-cta .fizz-heading-eyebrow { justify-content: center; color: rgba(238, 246, 249, 0.8); }
+.fizz-footer-title {
+  margin: 1rem 0 0;
+  font-family: var(--fizz-serif);
+  font-size: clamp(2.6rem, 5.4vw, 4.75rem);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.025em;
+  text-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+}
+.fizz-footer-title em { font-style: italic; letter-spacing: -0.03em; }
+.fizz-footer-lead { margin: 1.25rem auto 0; max-width: 30rem; color: rgba(238, 246, 249, 0.85); font-size: clamp(1rem, 1.3vw, 1.125rem); line-height: 1.6; }
+.fizz-footer-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.75rem; margin-top: 2rem; }
+
+.fizz-footer-main {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  gap: clamp(2rem, 5vw, 5rem);
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: clamp(3rem, 6vw, 4.5rem) clamp(1.25rem, 4vw, 3rem) 2rem;
+  background: transparent;
+}
+.fizz-footer-brand p { max-width: 18rem; margin: 1rem 0 0; color: var(--fizz-fog); font-size: 0.9375rem; line-height: 1.6; }
+.fizz-footer-logo img { display: block; width: 94px; height: auto; }
+.fizz-footer-cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2rem; }
+.fizz-footer-head {
+  margin: 0 0 1rem;
+  color: var(--fizz-haze);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+.fizz-footer-cols ul { display: grid; gap: 0.65rem; margin: 0; padding: 0; list-style: none; }
+.fizz-footer-cols a {
+  color: var(--fizz-mist);
+  font-family: var(--fizz-serif);
+  font-size: 1.25rem;
+  line-height: 1.2;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+.fizz-footer-cols a:hover { color: #fff; font-style: italic; }
+.fizz-footer-base {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--fizz-hairline);
+  color: var(--fizz-haze);
+  font-size: 0.8125rem;
+}
+@media (max-width: 767px) {
+  .fizz-footer-hero { min-height: 78svh; }
+  .fizz-footer-main { grid-template-columns: 1fr; }
+  .fizz-footer-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .fizz-footer-cols > div:last-child { grid-column: 1 / -1; }
+  .fizz-footer-actions .button { flex: 1 1 auto; }
+  .fizz-footer-base { flex-direction: column; }
+}

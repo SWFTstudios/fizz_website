@@ -37,7 +37,7 @@
         { id: '51885256573213', label: 'Cherry Limeade', swatch: '#e23b3b', image: 'images/6a99c5844efc137d51397380_flavor-cherry-limeade-p-500.webp' },
         { id: '51885256442141', label: 'Orange Tangerine', swatch: '#f07a1a', image: 'images/6a99c5844b05093adf51a20b_flavor-orange-tangerine-p-500.webp' }
       ],
-      pitch: 'Drop a pack, press, drink. Try one — or all three.'
+      pitch: 'Drop a pack, press, drink. Try one, or all three.'
     },
     charge: {
       title: 'Fizz Canister CO₂ 6-pack',
@@ -228,7 +228,7 @@
         .then(function (c) {
           buyLabel.textContent = 'Added ✓';
           if (window.Fizz && Fizz.burst) Fizz.burst(buyBtn);
-          status.textContent = product.title + (product.optionName ? ' — ' + variant.label : '') + ' added to your cart.';
+          status.textContent = product.title + (product.optionName ? ' (' + variant.label + ')' : '') + ' added to your cart.';
           openBundle(key, variant, state, c);
         })
         .catch(function (err) {
@@ -324,7 +324,7 @@
       options = '<div class="fizz-kit-options is-chips" role="radiogroup" aria-label="Purchase option">' +
         '<button type="button" role="radio" class="fizz-kit-chip is-active" aria-checked="true" data-plan="">One-time</button>' +
         '<button type="button" role="radio" class="fizz-kit-chip" aria-checked="false" data-plan="' + SUBSCRIBE_PLAN + '">Subscribe &amp; refill</button></div>' +
-        '<p class="fizz-kit-note" hidden>Delivery on Demand — reorder when you run low.</p>';
+        '<p class="fizz-kit-note" hidden>Delivery on Demand. Reorder when you run low.</p>';
     }
     card.innerHTML =
       '<div class="fizz-kit-media' + (key === 'bottle' ? ' is-product' : '') + '"><img alt="" src="' + p.variants[0].image + '"></div>' +
@@ -419,7 +419,7 @@
     var added = CATALOG[addedKey];
     var summary =
       (state.qty > 1 ? state.qty + ' × ' : '') + added.title +
-      (added.optionName ? ' — ' + variant.label : '') +
+      (added.optionName ? ' (' + variant.label + ')' : '') +
       (state.plan ? ' (subscription)' : '');
 
     modal = el('div', { class: 'fizz-kit', role: 'dialog', 'aria-modal': 'true', 'aria-labelledby': 'fizz-kit-title' });
@@ -430,7 +430,7 @@
         '<p class="fizz-kit-added"><span class="fizz-kit-check" aria-hidden="true">✓</span> Added to cart: ' + summary + '</p>' +
         '<h2 class="fizz-kit-heading" id="fizz-kit-title">Complete your Fizz kit</h2>' +
         '<p class="fizz-kit-sub">' + (addedKey === 'bottle'
-          ? 'Your bottle needs CO₂ to fizz — and flavor makes it fun.'
+          ? 'Your bottle needs CO₂ to fizz, and flavor makes it fun.'
           : 'Everything works together. Add what you’re missing.') + '</p>' +
         '<ul class="fizz-kit-list"></ul>' +
         '<div class="fizz-kit-footer">' +

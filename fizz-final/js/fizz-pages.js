@@ -150,7 +150,7 @@
       function copy() {
         var value = sw.getAttribute('data-copy');
         var show = function (ok) {
-          status.textContent = ok ? 'Copied ' + value : value + ' \u2014 press \u2318C / Ctrl+C to copy';
+          status.textContent = ok ? 'Copied ' + value : value + '. Press \u2318C / Ctrl+C to copy.';
           status.classList.add('is-on');
           clearTimeout(hideTimer);
           hideTimer = setTimeout(function () { status.classList.remove('is-on'); }, 1800);
