@@ -29,11 +29,15 @@ In Cloudflare: **Workers & Pages → fizz-final → Settings → Builds → Buil
 |--------|---------------------|
 | **Production branch** | `main` |
 | **Root directory** | *(empty — repo root)* |
-| **Build command** | *(empty)* — static site, no Vite build |
+| **Build command** | `npm run build` *(no-op; fizz-final is static)* **or** leave empty |
 | **Deploy command** | `npm run deploy` |
-| **Non-production deploy** | `npx wrangler versions upload` *(or `npm run deploy:preview`)* |
+| **Non-production deploy** | `npm run deploy:preview` *(or `npx wrangler versions upload`)* |
 
 Workers Builds **does not** run any build block inside `wrangler.jsonc`; only dashboard/API trigger settings apply. There is no compile step: deploy uploads `./fizz-final` as configured in [`wrangler.jsonc`](../wrangler.jsonc).
+
+`package.json` defines a no-op `build` script so dashboard configs that still call `npm run build` (the old Vite default) succeed instead of failing with `Missing script: "build"`.
+
+Prefer the GitHub Actions **Preview fizz-final** workflow for PR preview URLs: it runs `wrangler versions upload` and comments the `*.workers.dev` link on the PR. The Cloudflare bot comment often tracks the legacy **`fizz-website`** Worker and will stay red until that Builds integration is disconnected.
 
 ### Branch / PR preview URLs
 
