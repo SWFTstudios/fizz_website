@@ -123,7 +123,7 @@
         if (window.Fizz && Fizz.burst) Fizz.burst(buyBtn);
         if (status) {
           status.textContent =
-            'Fizz Bottle — ' + (LABELS[state.variantId] || '') + ' added to your cart.';
+            'Fizz Bottle (' + (LABELS[state.variantId] || '') + ') added to your cart.';
         }
         setTimeout(function () {
           cart().open();
