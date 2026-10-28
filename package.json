@@ -10,7 +10,7 @@
     "build": "node -e \"console.log('fizz-final is static assets; no compile step')\"",
     "deploy": "wrangler deploy",
     "deploy:preview": "wrangler versions upload",
-    "check:fizz-final": "node --check fizz-final/js/fizz.js && node --check fizz-final/js/fizz-home.js && node --check fizz-final/js/fizz-refill.js && node --check fizz-final/js/fizz-intro.js && node --check fizz-final/js/fizz-nav-cart.js && node --check fizz-final/js/fizz-pages.js && node --check fizz-final/js/fizz-shop.js && node --check fizz-final/js/fizz-seltzer.js && node --check fizz-final/js/fizz-analytics.js && node --check fizz-final/js/fizz-bottle-scroll.js && node --check fizz-final/js/fizz-head.js && node --check fizz-final/js/fizz-pdp-gallery.js && node --check fizz-final/js/fizz-featured.js && node --check fizz-final/js/fizz-loop-slider.js",
+    "check:fizz-final": "node --check fizz-final/js/fizz.js && node --check fizz-final/js/fizz-home.js && node --check fizz-final/js/fizz-refill.js && node --check fizz-final/js/fizz-intro.js && node --check fizz-final/js/fizz-nav-cart.js && node --check fizz-final/js/fizz-pages.js && node --check fizz-final/js/fizz-shop.js && node --check fizz-final/js/fizz-seltzer.js && node --check fizz-final/js/fizz-analytics.js && node --check fizz-final/js/fizz-bottle-scroll.js && node --check fizz-final/js/fizz-head.js && node --check fizz-final/js/fizz-pdp-gallery.js && node --check fizz-final/js/fizz-featured.js && node --check fizz-final/js/fizz-loop-slider.js && node --check fizz-final/js/fizz-ambient.js && node --check fizz-final/js/fizz-cursor.js && node --check fizz-final/js/fizz-story.js",
     "vite:dev": "vite",
     "vite:build": "vite build",
     "vite:preview": "vite preview",

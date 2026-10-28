@@ -628,3 +628,33 @@
     }
   };
 })();
+
+/* Menu photo panel: hovering or focusing a link brings its photo and note forward. */
+(function () {
+  'use strict';
+  var menu = document.querySelector('.fizz-menu');
+  if (!menu) return;
+  var links = Array.prototype.slice.call(menu.querySelectorAll('a[data-menu-img]'));
+  var imgs = Array.prototype.slice.call(menu.querySelectorAll('img[data-menu-img]'));
+  var caption = menu.querySelector('[data-menu-caption]');
+  var current = links.filter(function (l) { return l.classList.contains('w--current'); })[0];
+
+  function show(link) {
+    var i = link.getAttribute('data-menu-img');
+    imgs.forEach(function (img) { img.classList.toggle('is-active', img.getAttribute('data-menu-img') === i); });
+    links.forEach(function (l) { l.classList.toggle('is-hover', l === link); });
+    var desc = link.querySelector('.fizz-menu-desc');
+    if (caption && desc) caption.textContent = desc.textContent;
+  }
+  function reset() {
+    var home = current || links[0];
+    if (home) show(home);
+    links.forEach(function (l) { l.classList.remove('is-hover'); });
+  }
+  links.forEach(function (link) {
+    link.addEventListener('pointerenter', function () { show(link); });
+    link.addEventListener('focus', function () { show(link); });
+  });
+  menu.addEventListener('pointerleave', reset);
+  reset();
+})();
