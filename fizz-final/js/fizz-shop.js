@@ -40,7 +40,7 @@
       pitch: 'Drop a pack, press, drink. Try one — or all three.'
     },
     charge: {
-      title: 'Fizz Charge CO₂ 6-pack',
+      title: 'Fizz Canister CO₂ 6-pack',
       url: 'charge.html',
       price: 10,
       variants: [

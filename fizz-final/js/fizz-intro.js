@@ -48,6 +48,9 @@
   function finish() {
     if (done) return;
     done = true;
+    // Nav was hidden during the intro; play its entrance (css/fizz.css) now.
+    root.classList.add('fizz-nav-enter');
+    setTimeout(function () { root.classList.remove('fizz-nav-enter'); }, 1600);
     root.classList.remove('fizz-intro');
     if (overlay) {
       overlay.querySelectorAll('.fizz-intro-bar, .fizz-intro-door, .fizz-intro-backdrop, .fizz-intro-water, .fizz-intro-ripple, .intro-logo-wrapper.is-reflection').forEach(function (n) { n.remove(); });

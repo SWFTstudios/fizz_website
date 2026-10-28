@@ -408,11 +408,13 @@
     // On the root, not the mask: inert edge cards pass hit-testing through to it.
     root.addEventListener('pointerdown', onDown);
     root.addEventListener('dragstart', function (e) { e.preventDefault(); });
-    root.addEventListener('click', function (e) {
-      if (!suppressClick) return;
+    // On window (capture) so a drag's trailing click is swallowed before document-level
+    // handlers such as the cart's quick add (js/fizz-nav-cart.js) see it.
+    window.addEventListener('click', function (e) {
+      if (!suppressClick || !root.contains(e.target)) return;
       suppressClick = false;
       e.preventDefault();
-      e.stopPropagation();
+      e.stopImmediatePropagation();
     }, true);
 
     /* ---------- Trackpad horizontal scroll ---------- */

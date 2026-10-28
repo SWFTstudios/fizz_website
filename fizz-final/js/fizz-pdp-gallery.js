@@ -295,5 +295,12 @@
       swatches[0].classList.add('is-active');
       syncAtcVariant(swatches[0]);
     }
+
+    // ?color=black (e.g. from the homepage Find Your Color cards) preselects that colourway.
+    var wanted = (new URLSearchParams(location.search).get('color') || '').toLowerCase();
+    var preset = wanted && swatches.filter(function (s) {
+      return (s.getAttribute('aria-label') || '').toLowerCase() === wanted;
+    })[0];
+    if (preset) setTimeout(function () { preset.click(); }, 0);
   });
 })();
