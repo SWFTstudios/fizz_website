@@ -15,9 +15,9 @@
   var GID = 'gid://shopify/ProductVariant/';
   var PRICE = 50;
   var LABELS = {
-    '51846210421021': 'White',
-    '51846210388253': 'Black',
-    '51846210519325': 'Blue'
+    '51846210421021': 'Stone',
+    '51846210388253': 'Onyx',
+    '51846210519325': 'Pacific'
   };
 
   var swatches = Array.prototype.slice.call(box.querySelectorAll('[data-swatch]'));
@@ -58,13 +58,13 @@
     if (src) {
       img.src = src;
       if (srcset) img.srcset = srcset;
-      img.alt = 'Fizz Bottle in ' + (LABELS[state.variantId] || 'White');
+      img.alt = 'Fizz Bottle in ' + (LABELS[state.variantId] || 'Stone');
     }
     render();
   }
 
   function render() {
-    if (optionValue) optionValue.textContent = LABELS[state.variantId] || 'White';
+    if (optionValue) optionValue.textContent = LABELS[state.variantId] || 'Stone';
     box.querySelectorAll('[data-fizz-price]').forEach(function (el) {
       el.textContent = money(PRICE);
     });

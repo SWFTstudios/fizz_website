@@ -50,7 +50,7 @@ html.fizz-tx-cover::after {
   background: var(--fizz-tx-color);
 }
 
-/* ---------- Bubble page transition ---------- */
+/* ---------- Page transition: deep-water veil + fine bubbles ---------- */
 
 #fizz-tx {
   position: fixed;
@@ -72,31 +72,41 @@ html.fizz-tx-cover::after {
   transform: translate3d(0, 115%, 0);
   will-change: transform;
 }
-.fizz-tx-wave {
+/* Soft surface above and below the rising water: a gradient veil, not a cartoon wave */
+.fizz-tx-edge {
   position: absolute;
   left: 0;
-  width: 200%;
-  height: 12vh;
-  min-height: 60px;
-  fill: var(--fizz-tx-color);
-  animation: fizz-tx-slosh 1.6s linear infinite;
+  right: 0;
+  height: 35vh;
+  pointer-events: none;
 }
-.fizz-tx-wave.is-top { bottom: calc(100% - 1px); }
-.fizz-tx-wave.is-bottom { top: calc(100% - 1px); transform: scaleY(-1); animation-direction: reverse; }
-@keyframes fizz-tx-slosh {
-  from { translate: 0 0; }
-  to { translate: -50% 0; }
+.fizz-tx-edge.is-top {
+  bottom: calc(100% - 1px);
+  background: linear-gradient(to top, var(--fizz-tx-color) 0%, rgba(12, 23, 29, 0.6) 45%, rgba(12, 23, 29, 0) 100%);
+}
+.fizz-tx-edge.is-top::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 18%;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(196, 227, 253, 0) 0%, rgba(196, 227, 253, 0.35) 50%, rgba(196, 227, 253, 0) 100%);
+  filter: blur(0.5px);
+}
+.fizz-tx-edge.is-bottom {
+  top: calc(100% - 1px);
+  background: linear-gradient(to bottom, var(--fizz-tx-color) 0%, rgba(12, 23, 29, 0.6) 45%, rgba(12, 23, 29, 0) 100%);
 }
 .fizz-tx-bubbles { position: absolute; inset: 0; }
 .fizz-tx-bubble {
   position: absolute;
   top: 100%;
   border-radius: 50%;
-  border: 2px solid rgba(235, 250, 255, 0.8);
-  background: radial-gradient(circle at 32% 28%, #fff 0 8%, rgba(255, 255, 255, 0.35) 11%, rgba(196, 227, 253, 0.22) 55%, rgba(196, 227, 253, 0.1) 72%);
-  box-shadow: 0 0 6px rgba(196, 227, 253, 0.35);
+  background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.95) 0 18%, rgba(214, 238, 248, 0.45) 45%, rgba(214, 238, 248, 0.08) 75%, transparent 100%);
+  box-shadow: 0 0 4px rgba(196, 227, 253, 0.25);
 }
-.fizz-tx-bubble.is-tiny { border: 0; background: rgba(240, 251, 255, 0.9); box-shadow: none; }
+.fizz-tx-bubble.is-tiny { background: rgba(240, 251, 255, 0.85); box-shadow: 0 0 3px rgba(196, 227, 253, 0.4); }
 
 /* Flavor animation stage (sits inside #fizz-tx, above the liquid) */
 .fizz-tx-flavor {
@@ -136,7 +146,7 @@ html.fizz-tx-cover::after {
   border: 1px solid rgba(221, 246, 255, 0.45);
   background: rgba(22, 38, 46, 0.55);
   color: var(--fizz-mist);
-  font: 600 12px/1.2 Poppins, system-ui, sans-serif;
+  font: 600 12px/1.2 var(--_fizz-typography---fizz-font-family, system-ui), sans-serif;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   padding: 12px 18px;
@@ -1365,7 +1375,7 @@ html.auto-tabs-tutorial-open body { overflow: hidden; }
 }
 .fizz-featured-badge-text {
   fill: var(--fizz-ice);
-  font-family: var(--_fizz-typography---fizz-font-family, "Poppins", sans-serif);
+  font-family: var(--_fizz-typography---fizz-font-family, "Satoshi", sans-serif);
   font-size: 11.5px;
   font-weight: 600;
   letter-spacing: 0.22em;
@@ -1429,7 +1439,7 @@ html.auto-tabs-tutorial-open body { overflow: hidden; }
 }
 .fizz-featured-title {
   margin: 0;
-  font-family: var(--_fizz-typography---fizz-font-family, "Poppins", sans-serif);
+  font-family: var(--_fizz-typography---fizz-font-family, "Satoshi", sans-serif);
   font-size: clamp(2.6rem, 5vw, 4rem);
   font-weight: 600;
   letter-spacing: -0.035em;

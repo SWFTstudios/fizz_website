@@ -19,6 +19,9 @@
     'fizz-flavor-orange-tangerine': 'gid://shopify/ProductVariant/51885256442141'
   };
 
+  // Shopify still titles the bottle variants White / Black / Blue; show the colorway names.
+  var COLOR_NAMES = { White: 'Stone', Black: 'Onyx', Blue: 'Pacific' };
+
   var BOTTLE_SWATCH_VARIANTS = {
     '0': '51846210421021',
     '1': '51846210388253',
@@ -222,6 +225,7 @@
         var img = (merch.image && merch.image.url) || '';
         var title = product.title || 'Item';
         var variant = merch.title && merch.title !== 'Default Title' ? merch.title : '';
+        if (COLOR_NAMES[variant]) variant = COLOR_NAMES[variant];
         var plan = node.sellingPlanAllocation && node.sellingPlanAllocation.sellingPlan;
         var lineTotal = node.cost && node.cost.totalAmount;
         return (
@@ -623,4 +627,34 @@
       return fetchCart(getCartId());
     }
   };
+})();
+
+/* Menu photo panel: hovering or focusing a link brings its photo and note forward. */
+(function () {
+  'use strict';
+  var menu = document.querySelector('.fizz-menu');
+  if (!menu) return;
+  var links = Array.prototype.slice.call(menu.querySelectorAll('a[data-menu-img]'));
+  var imgs = Array.prototype.slice.call(menu.querySelectorAll('img[data-menu-img]'));
+  var caption = menu.querySelector('[data-menu-caption]');
+  var current = links.filter(function (l) { return l.classList.contains('w--current'); })[0];
+
+  function show(link) {
+    var i = link.getAttribute('data-menu-img');
+    imgs.forEach(function (img) { img.classList.toggle('is-active', img.getAttribute('data-menu-img') === i); });
+    links.forEach(function (l) { l.classList.toggle('is-hover', l === link); });
+    var desc = link.querySelector('.fizz-menu-desc');
+    if (caption && desc) caption.textContent = desc.textContent;
+  }
+  function reset() {
+    var home = current || links[0];
+    if (home) show(home);
+    links.forEach(function (l) { l.classList.remove('is-hover'); });
+  }
+  links.forEach(function (link) {
+    link.addEventListener('pointerenter', function () { show(link); });
+    link.addEventListener('focus', function () { show(link); });
+  });
+  menu.addEventListener('pointerleave', reset);
+  reset();
 })();

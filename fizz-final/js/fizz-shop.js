@@ -21,9 +21,9 @@
       url: 'bottle.html',
       price: 50,
       variants: [
-        { id: '51846210421021', label: 'White', swatch: '#ffffff', image: 'images/6a9838827fdf3fc468b579c6_bottle-white-p-500.webp' },
-        { id: '51846210388253', label: 'Black', swatch: '#1a1a1a', image: 'images/6a9838827fdf3fc468b579c0_bottle-black-p-500.webp' },
-        { id: '51846210519325', label: 'Blue', swatch: '#2a4494', image: 'images/6a9838827fdf3fc468b579d9_bottle-blue-p-500.webp' }
+        { id: '51846210421021', label: 'Stone', swatch: '#ffffff', image: 'images/6a9838827fdf3fc468b579c6_bottle-white-p-500.webp' },
+        { id: '51846210388253', label: 'Onyx', swatch: '#1a1a1a', image: 'images/6a9838827fdf3fc468b579c0_bottle-black-p-500.webp' },
+        { id: '51846210519325', label: 'Pacific', swatch: '#2a4494', image: 'images/6a9838827fdf3fc468b579d9_bottle-blue-p-500.webp' }
       ],
       pitch: 'The portable carbonating bottle that started it all.'
     },
