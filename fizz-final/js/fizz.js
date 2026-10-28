@@ -2,7 +2,7 @@
  * Fizz — shared site script (every page).
  *
  *  1. Page reveal       — one place that decides when the page is "shown"
- *  2. Bubble transition — fizz rises over the page on leave, drains away on arrival
+ *  2. Page transition   — a deep-water veil with fine bubbles rises on leave, lifts on arrival
  *  3. Flavor animation  — plays whenever a link goes to the Flavors page
  *  4. Link handling     — routes internal link clicks to 2 or 3
  *  5. Lazy videos       — off-screen videos load/play only when near the viewport
@@ -62,9 +62,6 @@
   var tx, liquid, bubbleLayer, flavorStage;
   var busy = false;
 
-  var WAVE =
-    '<path d="M0 50 C120 20 240 20 360 50 S600 80 720 50 S960 20 1080 50 S1320 80 1440 50 V100 H0Z"/>';
-
   function buildOverlay() {
     if (tx) return;
     tx = document.createElement('div');
@@ -72,8 +69,8 @@
     tx.setAttribute('aria-hidden', 'true');
     tx.innerHTML =
       '<div class="fizz-tx-liquid">' +
-      '<svg class="fizz-tx-wave is-top" viewBox="0 0 1440 100" preserveAspectRatio="none">' + WAVE + '</svg>' +
-      '<svg class="fizz-tx-wave is-bottom" viewBox="0 0 1440 100" preserveAspectRatio="none">' + WAVE + '</svg>' +
+      '<div class="fizz-tx-edge is-top"></div>' +
+      '<div class="fizz-tx-edge is-bottom"></div>' +
       '</div>' +
       '<div class="fizz-tx-flavor"></div>' +
       '<div class="fizz-tx-bubbles"></div>';
@@ -87,35 +84,40 @@
   }
 
   /**
-   * A rush of CO2: lots of tiny fizz with some medium and a few big bubbles, streaming
-   * up from the bottom of the screen with a slight wobble. Bigger bubbles rise faster.
+   * Fine carbonation: mostly pin-point bubbles with a few small ones, some rising in
+   * thin champagne-style streams and the rest scattered. Bigger bubbles rise faster.
    */
   function spawnBubbles(count, spread, rise) {
     var vh = window.innerHeight;
     var frag = document.createDocumentFragment();
+    var streams = [];
+    for (var s = 0; s < 9; s++) streams.push(rand(4, 96));
     for (var i = 0; i < count; i++) {
       var r = Math.random();
-      var size = r < 0.45 ? rand(3, 10) : r < 0.88 ? rand(10, 40) : rand(44, 110);
+      var size = r < 0.7 ? rand(1.5, 3.5) : r < 0.95 ? rand(3.5, 6) : rand(6, 9);
+      var inStream = Math.random() < 0.55;
+      var x = inStream ? streams[i % streams.length] + rand(-0.4, 0.4) : rand(0, 100);
       var b = document.createElement('span');
-      b.className = 'fizz-tx-bubble' + (size < 10 ? ' is-tiny' : '');
+      b.className = 'fizz-tx-bubble' + (size < 3.5 ? ' is-tiny' : '');
       b.style.width = b.style.height = size.toFixed(1) + 'px';
-      b.style.left = 'calc(' + rand(-2, 102).toFixed(2) + '% - ' + size / 2 + 'px)';
-      // Half the bubbles appear already rising in the bottom third, so the screen floods instantly.
-      if (Math.random() < 0.5) b.style.top = 'calc(100% - ' + rand(0, vh * 0.4).toFixed(0) + 'px)';
+      b.style.left = 'calc(' + x.toFixed(2) + '% - ' + size / 2 + 'px)';
+      // Some bubbles start already rising in the lower part of the screen.
+      if (Math.random() < 0.4) b.style.top = 'calc(100% - ' + rand(0, vh * 0.35).toFixed(0) + 'px)';
       frag.appendChild(b);
-      var travel = -(vh * rise + size * 2 + rand(0, vh * 0.15));
-      var sway = rand(8, 26) * (Math.random() < 0.5 ? -1 : 1);
+      var travel = -(vh * rise + size * 2 + rand(0, vh * 0.1));
+      var sway = rand(1, inStream ? 3 : 7) * (Math.random() < 0.5 ? -1 : 1);
+      var peak = rand(0.45, 0.85);
       var anim = b.animate(
         [
-          { transform: 'translate3d(0,0,0) scale(0.6)', opacity: 0.6 },
-          { transform: 'translate3d(' + sway + 'px,' + travel * 0.3 + 'px,0) scale(0.9)', opacity: 1, offset: 0.3 },
-          { transform: 'translate3d(' + -sway * 0.6 + 'px,' + travel * 0.65 + 'px,0) scale(1)', opacity: 0.95, offset: 0.65 },
-          { transform: 'translate3d(' + sway * 0.4 + 'px,' + travel + 'px,0) scale(1.05)', opacity: 0 }
+          { transform: 'translate3d(0,0,0) scale(0.7)', opacity: 0 },
+          { transform: 'translate3d(' + sway + 'px,' + travel * 0.35 + 'px,0) scale(0.95)', opacity: peak, offset: 0.3 },
+          { transform: 'translate3d(' + -sway * 0.6 + 'px,' + travel * 0.7 + 'px,0) scale(1)', opacity: peak * 0.9, offset: 0.7 },
+          { transform: 'translate3d(' + sway * 0.3 + 'px,' + travel + 'px,0) scale(1)', opacity: 0 }
         ],
         {
-          duration: rand(520, 950) - size * 2,
-          delay: Math.pow(Math.random(), 2) * spread,
-          easing: 'cubic-bezier(0.4, 0, 0.7, 0.5)',
+          duration: rand(700, 1100) - size * 20,
+          delay: (inStream ? (i / count) : Math.pow(Math.random(), 2)) * spread,
+          easing: 'cubic-bezier(0.45, 0, 0.6, 0.6)',
           fill: 'backwards'
         }
       );
@@ -126,7 +128,7 @@
 
   function bubbleCount() {
     var w = window.innerWidth;
-    return w < 600 ? 70 : w < 1024 ? 100 : 150;
+    return w < 600 ? 45 : w < 1024 ? 65 : 90;
   }
 
   function animateLiquid(from, to, duration, easing, delay) {
@@ -145,7 +147,7 @@
     if (!motion || !el || !document.body.animate) return;
     var box = el.getBoundingClientRect();
     for (var i = 0; i < (count || 14); i++) {
-      var size = rand(5, 16);
+      var size = rand(2, 6);
       var b = document.createElement('span');
       b.className = 'fizz-burst';
       b.style.cssText =
@@ -169,9 +171,9 @@
   function coverPage() {
     buildOverlay();
     tx.classList.add('is-active');
-    // The bubbles rush in first, then the fizz floods up behind them.
+    // A first stream of fine bubbles, then the water rises smoothly behind it.
     spawnBubbles(bubbleCount(), 300, 1.25);
-    return animateLiquid('translate3d(0,115%,0)', 'translate3d(0,0,0)', 650, 'cubic-bezier(0.65, 0, 0.35, 1)', 320);
+    return animateLiquid('translate3d(0,135%,0)', 'translate3d(0,0,0)', 700, 'cubic-bezier(0.7, 0, 0.3, 1)', 200);
   }
 
   /** Arrival: the page starts covered, then the fizz rises off the top. */
@@ -187,7 +189,7 @@
       requestAnimationFrame(function () {
         spawnBubbles(bubbleCount(), 260, 1.25);
         setTimeout(Fizz.reveal, 350);
-        animateLiquid('translate3d(0,0,0)', 'translate3d(0,-115%,0)', 950, 'cubic-bezier(0.76, 0, 0.24, 1)').then(resetOverlay);
+        animateLiquid('translate3d(0,0,0)', 'translate3d(0,-135%,0)', 1000, 'cubic-bezier(0.7, 0, 0.3, 1)').then(resetOverlay);
       });
     });
   }

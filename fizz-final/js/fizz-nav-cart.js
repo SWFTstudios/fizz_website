@@ -19,6 +19,9 @@
     'fizz-flavor-orange-tangerine': 'gid://shopify/ProductVariant/51885256442141'
   };
 
+  // Shopify still titles the bottle variants White / Black / Blue; show the colorway names.
+  var COLOR_NAMES = { White: 'Stone', Black: 'Onyx', Blue: 'Pacific' };
+
   var BOTTLE_SWATCH_VARIANTS = {
     '0': '51846210421021',
     '1': '51846210388253',
@@ -222,6 +225,7 @@
         var img = (merch.image && merch.image.url) || '';
         var title = product.title || 'Item';
         var variant = merch.title && merch.title !== 'Default Title' ? merch.title : '';
+        if (COLOR_NAMES[variant]) variant = COLOR_NAMES[variant];
         var plan = node.sellingPlanAllocation && node.sellingPlanAllocation.sellingPlan;
         var lineTotal = node.cost && node.cost.totalAmount;
         return (
