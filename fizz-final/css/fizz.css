@@ -2958,6 +2958,40 @@ html.fizz-motion .about-cans.is-filled .about-cans-grid li { opacity: 1; transfo
   opacity: calc(var(--loop-depth, 0) * 0.5);
   pointer-events: none;
 }
+/* Menu cards: title + CTA centered in the card (no trailing arrow) */
+[data-fizz-loop] .basic-slide-wrapper {
+  align-items: center;
+}
+[data-fizz-loop] .basic-slide-content {
+  width: 100%;
+  max-width: none;
+  margin-inline: auto;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+}
+[data-fizz-loop] .stacked-intro {
+  width: 100%;
+  align-items: center;
+  place-items: center;
+  text-align: center;
+}
+[data-fizz-loop] .stacked-intro .fizz-heading-lg {
+  text-align: center;
+  width: 100%;
+}
+[data-fizz-loop] .underline-link-2 {
+  display: inline-flex !important;
+  justify-content: center;
+  align-items: center;
+  width: auto;
+  margin-inline: auto;
+  grid-column-gap: 0;
+}
+[data-fizz-loop] .link-arrow-wrapper,
+[data-fizz-loop] .arrow-icon {
+  display: none !important;
+}
 /* Active reveal: the centred card's heading and CTA rise in; side cards stay muted */
 [data-fizz-loop] .stacked-intro > * {
   opacity: 0.35;
