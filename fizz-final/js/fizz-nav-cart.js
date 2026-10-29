@@ -658,3 +658,51 @@
   menu.addEventListener('pointerleave', reset);
   reset();
 })();
+
+/* Shared footer: one partial injected wherever [data-fizz-footer] is placed. */
+(function () {
+  'use strict';
+  var host = document.querySelector('[data-fizz-footer]');
+  if (!host) return;
+
+  function resolvePartial() {
+    var scripts = document.getElementsByTagName('script');
+    for (var i = 0; i < scripts.length; i++) {
+      var src = scripts[i].src || '';
+      if (src.indexOf('fizz-nav-cart.js') !== -1) {
+        return src.replace(/js\/fizz-nav-cart\.js.*$/, 'partials/footer.html');
+      }
+    }
+    return 'partials/footer.html';
+  }
+
+  fetch(resolvePartial(), { credentials: 'same-origin' })
+    .then(function (res) {
+      if (!res.ok) throw new Error('footer ' + res.status);
+      return res.text();
+    })
+    .then(function (html) {
+      var wrap = document.createElement('div');
+      wrap.innerHTML = html.trim();
+      var footer = wrap.firstElementChild;
+      if (!footer) return;
+      host.replaceWith(footer);
+      var reveals = footer.querySelectorAll('[data-reveal]');
+      if (!reveals.length) return;
+      if (!document.documentElement.classList.contains('fizz-motion')) {
+        reveals.forEach(function (el) { el.classList.add('is-in'); });
+        return;
+      }
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          io.unobserve(entry.target);
+          entry.target.classList.add('is-in');
+        });
+      }, { rootMargin: '0px 0px -10% 0px' });
+      reveals.forEach(function (el) { io.observe(el); });
+    })
+    .catch(function () {
+      host.hidden = true;
+    });
+})();

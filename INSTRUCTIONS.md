@@ -18,7 +18,7 @@ This file also acts as the single source of truth for the project work queue.
 
 - [fizz-final] **CI deploy secrets** — Ensure GitHub Actions secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` are set so `main` auto-deploys (see `docs/CLOUDFLARE-BUILDS.md`).
 
-- [fizz-final] **Homepage / marketing polish** — Iterate on copy, motion, and sections inside `fizz-final/` (including the “Keep the fizz coming” refill loop in `fizz-final/js/fizz-refill.js`).
+- [fizz-final] **Homepage / marketing polish** — Iterate on copy, motion, and sections inside `fizz-final/` (including the canister refill subscription loop in `fizz-final/js/fizz-refill.js`).
 
 ## Archive / not production
 

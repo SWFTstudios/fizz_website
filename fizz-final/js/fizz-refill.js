@@ -1,5 +1,6 @@
 /**
- * Fizz homepage — "Keep the fizz coming" refill loop (Use → Return → Refill → Repeat).
+ * Fizz homepage — canister refill subscription loop
+ * (Use it → Mail it back → We refill it → Subscribe).
  *
  * The stage pins while you scroll through the section. Each step (name, dot, description)
  * rides the timeline one at a time: it slides in from the left, holds in the centre, then

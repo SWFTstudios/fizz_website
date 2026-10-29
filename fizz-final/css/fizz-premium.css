@@ -857,7 +857,7 @@ a.button:active,
 .fizz-ambient {
   position: fixed;
   inset: 0;
-  z-index: -1;
+  z-index: -2; /* under the hero bubble-video when that layer is on */
   width: 100vw;
   height: 100vh;
   pointer-events: none;
@@ -866,25 +866,45 @@ a.button:active,
 }
 .fizz-ambient-on .fizz-ambient { opacity: 1; }
 .fizz-ambient.is-far { filter: blur(1.2px); }
-.fizz-ambient-on .fizz-ambient.is-far { opacity: 0.8; }
+.fizz-ambient-on .fizz-ambient.is-far { opacity: 0.85; }
+.fizz-ambient.is-near { opacity: 0; }
+.fizz-ambient-on .fizz-ambient.is-near { opacity: 1; }
 
-/* Inner pages have no bubble video, so the water itself gets a little light from above */
-html:not([data-fizz-page="home"]) body {
+/* Deep blue water field site-wide; coded ambient bubbles + orbs sit on top of this */
+body {
   background:
     radial-gradient(90% 60% at 50% -10%, rgba(23, 96, 122, 0.45) 0%, rgba(23, 96, 122, 0) 70%),
     radial-gradient(70% 50% at 100% 100%, rgba(11, 53, 83, 0.5) 0%, rgba(11, 53, 83, 0) 70%),
+    radial-gradient(55% 45% at 0% 70%, rgba(11, 53, 83, 0.35) 0%, rgba(11, 53, 83, 0) 70%),
     var(--fizz-deep);
   background-attachment: fixed;
+}
+
+/* Homepage bubble-video backdrop: only while the hero card is shrinking */
+.fizz-bg-video {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.55s ease, visibility 0.55s ease;
+}
+html.fizz-bg-bubbles .fizz-bg-video {
+  opacity: 1;
+  visibility: visible;
 }
 
 .section-tabs-autoplay,
 .slider-section,
 .slider-section .section.no-padding.clip,
+.fizz-just,
 .fizz-refill,
 .hiw,
 .about,
 .pdp-hero,
-.fizz-more { background-color: transparent; }
+.fizz-more,
+.fizz-story,
+.shop { background-color: transparent; }
+
+.shop-hero .shop-eyebrow { justify-content: center; }
 .fizz-refill-stage {
   background:
     radial-gradient(60% 55% at 12% 18%, rgba(23, 96, 122, 0.45) 0%, rgba(23, 96, 122, 0) 100%),
@@ -1194,6 +1214,41 @@ html:not([data-fizz-page="home"]) body {
 .fizz-story-swatch.is-pacific { --sw: #2a4494; }
 .fizz-story-swatch.is-active { border-color: #fff; background: rgba(255, 255, 255, 0.08); }
 .fizz-story-cta { display: inline-flex; margin-top: 1.75rem; }
+
+.fizz-story-arrows {
+  display: flex;
+  gap: 0.65rem;
+  margin: 0 0 1rem;
+}
+.fizz-story:not(.is-live) .fizz-story-arrows { display: none; }
+.fizz-story-arrow {
+  display: grid;
+  place-items: center;
+  padding: 0;
+  cursor: pointer;
+}
+.fizz-story-arrow:disabled {
+  opacity: 0.35;
+  cursor: default;
+  pointer-events: none;
+}
+.fizz-story.is-live .fizz-story-stage.is-swipeable {
+  touch-action: pan-y;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.fizz-story.is-live .fizz-story-stage.is-swipeable.is-swiping {
+  cursor: grabbing;
+}
+.fizz-story.is-live .fizz-story-stage.is-swipeable a,
+.fizz-story.is-live .fizz-story-stage.is-swipeable button,
+.fizz-story.is-live .fizz-story-stage.is-swipeable [data-story-spot],
+.fizz-story.is-live .fizz-story-stage.is-swipeable [data-story-color] {
+  cursor: pointer;
+  user-select: auto;
+  -webkit-user-select: auto;
+}
 
 .fizz-story-progress { display: flex; gap: 0.5rem; max-width: 22rem; }
 .fizz-story:not(.is-live) .fizz-story-progress { display: none; }

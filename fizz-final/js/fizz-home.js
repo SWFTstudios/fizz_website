@@ -198,6 +198,7 @@
       range = Math.max(1, hero.offsetHeight - window.innerHeight - overlap);
       MIN_SCALE = minScale();
     }
+    var bgVideo = document.querySelector('.fizz-bg-video video');
     function update() {
       raf = 0;
       var p = Math.min(1, Math.max(0, (window.scrollY - top) / range));
@@ -210,6 +211,17 @@
         el.style.borderRadius = radius.toFixed(1) + 'px';
       });
       hero.classList.toggle('is-carded', p > 0.01);
+      // Bubble bokeh video only while the hero card is shrinking in view — not behind
+      // Just Fizz / explore carousel (those use the coded ambient water field).
+      var showBubbles = p > 0.04 && p < 0.92 && hero.getBoundingClientRect().bottom > window.innerHeight * 0.2;
+      document.documentElement.classList.toggle('fizz-bg-bubbles', showBubbles);
+      if (bgVideo) {
+        if (showBubbles) {
+          if (bgVideo.paused && bgVideo.readyState >= 2) bgVideo.play().catch(function () {});
+        } else if (!bgVideo.paused) {
+          bgVideo.pause();
+        }
+      }
     }
     measure();
     update();
