@@ -190,6 +190,63 @@
     });
   }
 
+  /* Tutorial modal (shared with homepage-style Watch tutorial CTAs) */
+  var TUTORIAL = {
+    desktop: 'https://player.vimeo.com/video/1221538140?autoplay=1&title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479',
+    mobile: 'https://player.vimeo.com/video/1223164997?h=53591d98ff&autoplay=1&title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479'
+  };
+  var tutorialModal, tutorialFrame, tutorialRatio;
+
+  function buildTutorialModal() {
+    if (tutorialModal) return;
+    tutorialModal = document.createElement('div');
+    tutorialModal.className = 'auto-tabs-tutorial-modal';
+    tutorialModal.setAttribute('aria-hidden', 'true');
+    tutorialModal.innerHTML =
+      '<div class="auto-tabs-tutorial-modal__backdrop" data-tutorial-close></div>' +
+      '<div class="auto-tabs-tutorial-modal__dialog" role="dialog" aria-modal="true" aria-label="Watch tutorial">' +
+      '<button type="button" class="auto-tabs-tutorial-modal__close" data-tutorial-close aria-label="Close video">&times;</button>' +
+      '<div class="auto-tabs-tutorial-modal__ratio"><iframe title="Fizz tutorial" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" allowfullscreen></iframe></div>' +
+      '</div>';
+    document.body.appendChild(tutorialModal);
+    tutorialRatio = tutorialModal.querySelector('.auto-tabs-tutorial-modal__ratio');
+    tutorialFrame = tutorialModal.querySelector('iframe');
+    tutorialModal.querySelectorAll('[data-tutorial-close]').forEach(function (el) {
+      el.addEventListener('click', closeTutorial);
+    });
+  }
+
+  function openTutorial(kind) {
+    buildTutorialModal();
+    var mobile = kind === 'mobile' || window.innerWidth <= 767;
+    tutorialRatio.style.paddingBottom = mobile ? '125%' : '56.25%';
+    tutorialFrame.src = mobile ? TUTORIAL.mobile : TUTORIAL.desktop;
+    tutorialModal.classList.add('is-open');
+    tutorialModal.setAttribute('aria-hidden', 'false');
+    document.documentElement.classList.add('auto-tabs-tutorial-open');
+  }
+
+  function closeTutorial() {
+    if (!tutorialModal) return;
+    tutorialModal.classList.remove('is-open');
+    tutorialModal.setAttribute('aria-hidden', 'true');
+    tutorialFrame.src = '';
+    document.documentElement.classList.remove('auto-tabs-tutorial-open');
+  }
+
+  function tutorialModalClicks() {
+    if (!document.querySelector('[data-tutorial-video]')) return;
+    document.addEventListener('click', function (e) {
+      var t = e.target instanceof Element && e.target.closest('[data-tutorial-video]');
+      if (!t) return;
+      e.preventDefault();
+      openTutorial(t.getAttribute('data-tutorial-video'));
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') closeTutorial();
+    });
+  }
+
   function boot() {
     styleGuide();
     smoothAnchors();
@@ -198,6 +255,7 @@
     countUps();
     cans();
     calculator();
+    tutorialModalClicks();
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
