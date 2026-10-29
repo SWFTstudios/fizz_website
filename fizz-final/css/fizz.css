@@ -2662,9 +2662,9 @@ html.fizz-motion .about-cans.is-filled .about-cans-grid li { opacity: 1; transfo
 /* Slideshow progress + focus in Spark */
 .fizz-more-dot span::after { background: linear-gradient(90deg, var(--fizz-ice), var(--fizz-spark)); }
 
-/* Hero card (js/fizz-home.js): video + text layers scale together. The hero was 300vh, which
-   left a long stretch where the shrunken card sat pinned and still; now the shrink spans the
-   whole pinned stretch and hands off to the story section rising over it. */
+/* Hero card (js/fizz-home.js): video + text layers scale + float up together on first scroll,
+   as if the sparkling bubble field is carrying the card away. Shrink spans the pinned stretch
+   and hands off to the next section rising over it. */
 .fizz-hero { height: 230vh; }
 @media (max-width: 767px) { .fizz-hero { height: 200vh; } }
 /* The hero gradient overlays are decorative; on mobile they sat over the CTAs and ate taps */
@@ -2672,10 +2672,16 @@ html.fizz-motion .about-cans.is-filled .about-cans-grid li { opacity: 1; transfo
 .fizz-hero .hero-video_container,
 .fizz-hero .fizz-hero-content {
   overflow: hidden;
-  transform-origin: 50% 50%;
-  will-change: transform;
+  /* Anchor low so scale itself reads as a lift; JS adds translateY on top. */
+  transform-origin: 50% 82%;
+  will-change: transform, opacity;
+  transition: box-shadow 0.45s ease;
 }
-.fizz-hero.is-carded .hero-video_container { box-shadow: 0 40px 120px rgba(0, 0, 0, 0.45); }
+.fizz-hero.is-carded .hero-video_container {
+  box-shadow:
+    0 28px 80px rgba(0, 0, 0, 0.4),
+    0 0 60px rgba(95, 216, 255, 0.12);
+}
 
 /* ==========================================================================
    Style guide (style-guide.html)

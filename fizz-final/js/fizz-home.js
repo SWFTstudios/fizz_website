@@ -167,29 +167,46 @@
     });
   }
 
-  /* ---------- Hero: video card shrinks as you scroll ---------- */
+  /* ---------- Hero: video card shrinks + floats up on first scroll ---------- */
 
   // Replaces Webflow's "Hero Scroll" interaction, which scaled the video to 50% but the
   // text + overlay layer to 55%, so the overlay always spilled past the video. Here both
-  // layers get the exact same transform, so they stay locked together.
+  // layers get the exact same transform, so they stay locked together. On the first swipe
+  // the card also lifts — like the sparkling bubble field is carrying it away.
   function initHeroScroll() {
     var hero = document.querySelector('[data-fizz-hero]');
     if (!hero) return;
     var layers = hero.querySelectorAll('.hero-video_container, .fizz-hero-content');
+    var content = hero.querySelector('.fizz-hero-content');
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    function isMobile() { return window.matchMedia('(max-width: 767px)').matches; }
     // Phones and portrait tablets keep a bigger card; wide screens shrink further.
     function minScale() {
-      if (window.matchMedia('(max-width: 767px)').matches) return 0.84;
-      if (window.innerHeight > window.innerWidth) return 0.8;
-      return 0.62;
+      if (isMobile()) return 0.82;
+      if (window.innerHeight > window.innerWidth) return 0.78;
+      return 0.58;
+    }
+    // How far the card drifts upward (px) as if the bubbles are lifting it.
+    function maxLift() {
+      return Math.round(window.innerHeight * (isMobile() ? 0.14 : 0.2));
     }
     var MIN_SCALE = minScale();
+    var FLOAT_MAX = maxLift();
     var top = 0;
     var range = 1;
     var raf = 0;
+    var armed = false; // first wheel/touch at the top kicks the bubble field on
 
-    // The shrink runs across the whole pinned stretch and finishes just as the next section
-    // starts to rise over the card, so there's no dead zone where the card sits still.
+    // Front-loaded: the first swipe does most of the lift/scale so it feels intentional.
+    function easeFloat(t) {
+      t = Math.min(1, Math.max(0, t));
+      // First ~28% of the pin does most of the lift so the opening swipe feels decisive.
+      if (t <= 0.28) return 0.62 * (1 - Math.pow(1 - t / 0.28, 2.4));
+      return 0.62 + 0.38 * (1 - Math.pow(1 - (t - 0.28) / 0.72, 1.6));
+    }
+
+    // The motion spans the whole pinned stretch and finishes as the next section rises.
     function measure() {
       var rect = hero.getBoundingClientRect();
       var next = hero.nextElementSibling;
@@ -197,23 +214,31 @@
       top = rect.top + window.scrollY;
       range = Math.max(1, hero.offsetHeight - window.innerHeight - overlap);
       MIN_SCALE = minScale();
+      FLOAT_MAX = maxLift();
     }
     var bgVideo = document.querySelector('.fizz-bg-video video');
     function update() {
       raf = 0;
       var p = Math.min(1, Math.max(0, (window.scrollY - top) / range));
-      // Mostly linear with a soft ease-out: it keeps moving right up to the hand-off.
-      var eased = 0.6 * p + 0.4 * (1 - Math.pow(1 - p, 2));
+      var eased = easeFloat(p);
       var scale = 1 - (1 - MIN_SCALE) * eased;
+      var lift = FLOAT_MAX * eased;
+      // Soft overshoot near the end so it keeps drifting up into the bubbles.
+      var drift = FLOAT_MAX * 0.08 * Math.sin(Math.min(1, eased) * Math.PI);
+      var y = -(lift + drift);
       var radius = (28 * eased) / scale; // stays ~28px on screen as the card shrinks
+      var transform = 'translate3d(0, ' + y.toFixed(1) + 'px, 0) scale(' + scale.toFixed(4) + ')';
       layers.forEach(function (el) {
-        el.style.transform = 'scale(' + scale.toFixed(4) + ')';
+        el.style.transform = transform;
         el.style.borderRadius = radius.toFixed(1) + 'px';
       });
-      hero.classList.toggle('is-carded', p > 0.01);
-      // Bubble bokeh video only while the hero card is shrinking in view — not behind
-      // Just Fizz / explore carousel (those use the coded ambient water field).
-      var showBubbles = p > 0.04 && p < 0.92 && hero.getBoundingClientRect().bottom > window.innerHeight * 0.2;
+      if (content) {
+        // Let the video read as the thing being carried; type fades as it lifts away.
+        content.style.opacity = String((1 - 0.72 * eased).toFixed(3));
+      }
+      hero.classList.toggle('is-carded', p > 0.008 || armed);
+      // Bubble bokeh turns on with the first lift — not behind Just Fizz / explore.
+      var showBubbles = (armed || p > 0.01) && p < 0.94 && hero.getBoundingClientRect().bottom > window.innerHeight * 0.12;
       document.documentElement.classList.toggle('fizz-bg-bubbles', showBubbles);
       if (bgVideo) {
         if (showBubbles) {
@@ -222,10 +247,26 @@
           bgVideo.pause();
         }
       }
+      if (p > 0.02) armed = true;
+      if (p === 0) armed = false;
     }
+
+    function armFromGesture() {
+      if (window.scrollY - top > 4) return;
+      if (armed) return;
+      armed = true;
+      document.documentElement.classList.add('fizz-bg-bubbles');
+      if (bgVideo && bgVideo.paused && bgVideo.readyState >= 2) {
+        bgVideo.play().catch(function () {});
+      }
+      if (!raf) raf = requestAnimationFrame(update);
+    }
+
     measure();
     update();
     window.addEventListener('scroll', function () { if (!raf) raf = requestAnimationFrame(update); }, { passive: true });
+    window.addEventListener('wheel', armFromGesture, { passive: true });
+    window.addEventListener('touchstart', armFromGesture, { passive: true });
     window.addEventListener('resize', function () { measure(); update(); });
     window.addEventListener('load', function () { measure(); update(); });
   }
