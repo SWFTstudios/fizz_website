@@ -958,7 +958,7 @@ html.fizz-bg-bubbles .fizz-bg-video {
   padding-bottom: clamp(2rem, 6vh, 4rem);
 }
 
-/* Media: the bottle, its halo, a column of rising bubbles, the canister photo */
+/* Media: the bottle, its halo, the canister photo */
 .fizz-story-media {
   position: relative;
   display: grid;
@@ -1031,31 +1031,6 @@ html.fizz-bg-bubbles .fizz-bg-video {
 }
 .fizz-story.is-live[data-chapter="1"] .fizz-story-canister { opacity: 1; transform: none; }
 .fizz-story:not(.is-live) .fizz-story-canister { position: relative; right: auto; bottom: auto; opacity: 1; transform: none; margin-top: 1rem; }
-
-/* Soft rise cue on the bottle-features chapter (kept subtle; not a fourth story beat) */
-.fizz-story-rise {
-  position: absolute;
-  z-index: 3;
-  left: 50%;
-  top: 28%;
-  width: 24%;
-  height: 50%;
-  transform: translateX(-50%);
-  opacity: 0;
-  transition: opacity 0.8s ease;
-  pointer-events: none;
-  -webkit-mask: linear-gradient(to top, transparent 0%, #000 20%, #000 75%, transparent 100%);
-  mask: linear-gradient(to top, transparent 0%, #000 20%, #000 75%, transparent 100%);
-  background:
-    radial-gradient(circle, rgba(255, 255, 255, 0.9) 0 1px, transparent 1.6px) 0 0 / 14px 22px,
-    radial-gradient(circle, rgba(214, 238, 248, 0.8) 0 1.4px, transparent 2px) 7px 9px / 19px 29px,
-    radial-gradient(circle, rgba(255, 255, 255, 0.7) 0 0.8px, transparent 1.3px) 3px 15px / 11px 17px;
-  animation: fizz-story-rise 2.4s linear infinite;
-}
-.fizz-story.is-live[data-chapter="0"] .fizz-story-rise { opacity: 0.55; }
-@keyframes fizz-story-rise {
-  to { background-position: 0 -88px, 7px -107px, 3px -53px; }
-}
 
 /* Tap-for-more points */
 .fizz-story-spot {
@@ -1292,7 +1267,7 @@ html.fizz-bg-bubbles .fizz-bg-video {
     padding-bottom: 1.5rem;
   }
   .fizz-story-media { height: 100%; min-height: 0; min-width: 0; width: 100%; }
-  .fizz-story-bottle-wrap { height: auto; width: min(100%, 44svh); }
+  .fizz-story-bottle-wrap { height: 100%; width: auto; max-width: 100%; }
   .fizz-story:not(.is-live) .fizz-story-media { height: 60svh; }
   .fizz-story-copy { gap: 1rem; }
   .fizz-story-title { font-size: clamp(2.1rem, 9vw, 2.75rem); }
@@ -1303,7 +1278,7 @@ html.fizz-bg-bubbles .fizz-bg-video {
   .fizz-story-actions { flex-direction: column; align-items: stretch; }
   .fizz-story-actions .fizz-story-cta { width: 100%; justify-content: center; }
   .fizz-story-hint { display: none; }
-  .fizz-story-canister { width: 110px; right: 2%; }
+  .fizz-story-canister { width: 84px; right: 2%; bottom: 2%; }
   .fizz-story.is-live[data-chapter="1"] .fizz-story-bottle-wrap { transform: translate3d(-14%, 0, 0) scale(0.86); }
   .fizz-story-swatch { padding-right: 0.75rem; font-size: 0.8125rem; }
   .fizz-story-swatch::before { width: 1.25rem; height: 1.25rem; }
@@ -1357,7 +1332,6 @@ html.fizz-bg-bubbles .fizz-bg-video {
   80%, 100% { transform: translate3d(0, 50px, 0); opacity: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .fizz-story-rise,
   .fizz-story-spot.is-focus,
   .fizz-scroll-cue-line i { animation: none; }
 }

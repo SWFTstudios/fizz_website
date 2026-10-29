@@ -2958,6 +2958,22 @@ html.fizz-motion .about-cans.is-filled .about-cans-grid li { opacity: 1; transfo
   opacity: calc(var(--loop-depth, 0) * 0.5);
   pointer-events: none;
 }
+/* Explore cards: centred heading + CTA, no arrow */
+[data-fizz-loop] .basic-slide-content {
+  width: 100%;
+  max-width: none;
+  text-align: center;
+}
+[data-fizz-loop] .basic-slide-content .stacked-intro {
+  align-items: center;
+  place-items: center;
+  text-align: center;
+}
+[data-fizz-loop] .basic-slide-content .underline-link-2 {
+  justify-content: center;
+  /* offsets the trailing letter-spacing so the label sits dead centre */
+  padding-left: 4px;
+}
 /* Active reveal: the centred card's heading and CTA rise in; side cards stay muted */
 [data-fizz-loop] .stacked-intro > * {
   opacity: 0.35;
