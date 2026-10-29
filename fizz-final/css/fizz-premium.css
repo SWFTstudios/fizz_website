@@ -948,7 +948,7 @@ html.fizz-bg-bubbles .fizz-bg-video {
   margin: 0 auto;
   padding: clamp(5rem, 10vh, 7rem) clamp(1.25rem, 4vw, 3rem);
 }
-.fizz-story.is-live { height: 420vh; height: 420svh; }
+.fizz-story.is-live { height: 320vh; height: 320svh; }
 .fizz-story.is-live .fizz-story-stage {
   position: sticky;
   top: 0;
@@ -992,11 +992,10 @@ html.fizz-bg-bubbles .fizz-bg-video {
 }
 .fizz-story-bottle.is-swapping { opacity: 0; transform: scale(0.97); }
 
-/* Chapter choreography */
+/* Chapter choreography (0 bottle features → 1 canister → 2 colorway) */
 .fizz-story.is-live .fizz-story-bottle-wrap { transform: translate3d(0, 4%, 0) scale(0.92); }
 .fizz-story.is-live[data-chapter="1"] .fizz-story-bottle-wrap { transform: translate3d(-18%, 0, 0) scale(0.86); }
-.fizz-story.is-live[data-chapter="2"] .fizz-story-bottle-wrap { transform: translate3d(0, -1%, 0) scale(1.02); }
-.fizz-story.is-live[data-chapter="3"] .fizz-story-bottle-wrap { transform: translate3d(0, 0, 0) scale(0.96) rotate(-4deg); }
+.fizz-story.is-live[data-chapter="2"] .fizz-story-bottle-wrap { transform: translate3d(0, 0, 0) scale(0.96) rotate(-4deg); }
 
 .fizz-story-canister {
   position: absolute;
@@ -1033,7 +1032,7 @@ html.fizz-bg-bubbles .fizz-bg-video {
 .fizz-story.is-live[data-chapter="1"] .fizz-story-canister { opacity: 1; transform: none; }
 .fizz-story:not(.is-live) .fizz-story-canister { position: relative; right: auto; bottom: auto; opacity: 1; transform: none; margin-top: 1rem; }
 
-/* The fizz: fine bubbles stream up through the bottle in chapter 3 */
+/* Soft rise cue on the bottle-features chapter (kept subtle; not a fourth story beat) */
 .fizz-story-rise {
   position: absolute;
   z-index: 3;
@@ -1053,8 +1052,7 @@ html.fizz-bg-bubbles .fizz-bg-video {
     radial-gradient(circle, rgba(255, 255, 255, 0.7) 0 0.8px, transparent 1.3px) 3px 15px / 11px 17px;
   animation: fizz-story-rise 2.4s linear infinite;
 }
-.fizz-story.is-live[data-chapter="2"] .fizz-story-rise { opacity: 1; }
-.fizz-story.is-live[data-chapter="2"] .fizz-story-halo { opacity: 1.4; filter: brightness(1.4); }
+.fizz-story.is-live[data-chapter="0"] .fizz-story-rise { opacity: 0.55; }
 @keyframes fizz-story-rise {
   to { background-position: 0 -88px, 7px -107px, 3px -53px; }
 }
@@ -1100,7 +1098,7 @@ html.fizz-bg-bubbles .fizz-bg-video {
   0% { box-shadow: 0 0 0 0 rgba(95, 216, 255, 0.5); }
   70%, 100% { box-shadow: 0 0 0 14px rgba(95, 216, 255, 0); }
 }
-.fizz-story.is-live[data-chapter="3"] .fizz-story-spot { opacity: 0; pointer-events: none; }
+.fizz-story.is-live[data-chapter="2"] .fizz-story-spot { opacity: 0; pointer-events: none; }
 .fizz-story-pop {
   position: absolute;
   z-index: 5;
@@ -1213,7 +1211,14 @@ html.fizz-bg-bubbles .fizz-bg-video {
 .fizz-story-swatch.is-onyx { --sw: #1a1a1a; }
 .fizz-story-swatch.is-pacific { --sw: #2a4494; }
 .fizz-story-swatch.is-active { border-color: #fff; background: rgba(255, 255, 255, 0.08); }
-.fizz-story-cta { display: inline-flex; margin-top: 1.75rem; }
+.fizz-story-cta { display: inline-flex; margin-top: 0; }
+.fizz-story-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.75rem;
+}
+.fizz-story-actions .fizz-story-cta { margin-top: 0; }
 
 .fizz-story-arrows {
   display: flex;
@@ -1294,7 +1299,9 @@ html.fizz-bg-bubbles .fizz-bg-video {
   .fizz-story-text { margin-top: 0.75rem; font-size: 0.95rem; }
   .fizz-story-link,
   .fizz-story-swatches,
-  .fizz-story-cta { margin-top: 1rem; }
+  .fizz-story-actions { margin-top: 1rem; }
+  .fizz-story-actions { flex-direction: column; align-items: stretch; }
+  .fizz-story-actions .fizz-story-cta { width: 100%; justify-content: center; }
   .fizz-story-hint { display: none; }
   .fizz-story-canister { width: 110px; right: 2%; }
   .fizz-story.is-live[data-chapter="1"] .fizz-story-bottle-wrap { transform: translate3d(-14%, 0, 0) scale(0.86); }

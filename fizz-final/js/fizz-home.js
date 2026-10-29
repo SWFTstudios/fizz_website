@@ -83,7 +83,9 @@
     }
 
     links.forEach(function (link) {
-      link.addEventListener('click', function () {
+      // Tap Fill / Push / Fizz headings to jump views (desktop + mobile).
+      link.addEventListener('click', function (e) {
+        e.preventDefault();
         activate(link, { burst: true });
         run(link);
       });
@@ -98,6 +100,80 @@
     }
 
     MOBILE.addEventListener('change', function () { run(current()); });
+
+    // Mobile: swipe left/right across Fill → Push → Fizz.
+    (function bindTabSwipe() {
+      var surface = links[0].closest('.auto-tabs-component') || links[0].closest('.section-tabs-autoplay');
+      if (!surface) return;
+      var startX = 0;
+      var startY = 0;
+      var tracking = false;
+      var axis = null;
+      var SWIPE = 40;
+      var LOCK = 12;
+
+      function point(e) {
+        if (e.touches && e.touches[0]) return { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        if (e.changedTouches && e.changedTouches[0]) {
+          return { x: e.changedTouches[0].clientX, y: e.changedTouches[0].clientY };
+        }
+        return { x: e.clientX, y: e.clientY };
+      }
+
+      function begin(e) {
+        if (!MOBILE.matches) return;
+        if (e.type === 'pointerdown' && e.pointerType === 'mouse' && e.button !== 0) return;
+        var t = e.target;
+        if (t && t.closest && t.closest('[data-auto-tabs-button], [data-tutorial-video], a.button, button.auto-tabs-button')) return;
+        var p = point(e);
+        tracking = true;
+        axis = null;
+        startX = p.x;
+        startY = p.y;
+      }
+
+      function move(e) {
+        if (!tracking) return;
+        var p = point(e);
+        var dx = p.x - startX;
+        var dy = p.y - startY;
+        if (!axis) {
+          if (Math.abs(dx) < LOCK && Math.abs(dy) < LOCK) return;
+          axis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+          if (axis === 'y') tracking = false;
+        }
+        if (axis === 'x' && e.cancelable) e.preventDefault();
+      }
+
+      function end(e) {
+        if (!tracking) return;
+        var p = point(e);
+        var dx = p.x - startX;
+        var dy = p.y - startY;
+        var wasX = axis === 'x';
+        tracking = false;
+        axis = null;
+        if (!wasX || Math.abs(dx) < SWIPE || Math.abs(dx) <= Math.abs(dy)) return;
+        var i = links.indexOf(current());
+        var next = dx < 0 ? links[Math.min(links.length - 1, i + 1)] : links[Math.max(0, i - 1)];
+        if (!next || next === current()) return;
+        activate(next, { burst: true });
+        run(next);
+      }
+
+      surface.classList.add('is-swipeable');
+      if (window.PointerEvent) {
+        surface.addEventListener('pointerdown', begin);
+        surface.addEventListener('pointermove', move, { passive: false });
+        surface.addEventListener('pointerup', end);
+        surface.addEventListener('pointercancel', end);
+      } else {
+        surface.addEventListener('touchstart', begin, { passive: true });
+        surface.addEventListener('touchmove', move, { passive: false });
+        surface.addEventListener('touchend', end);
+        surface.addEventListener('touchcancel', end);
+      }
+    })();
 
     // Don't burn the timer while the section is off-screen.
     new IntersectionObserver(function (entries) {
@@ -271,10 +347,28 @@
     window.addEventListener('load', function () { measure(); update(); });
   }
 
+  /* ---------- In-page jump: story "See how it works" → Fill / Push / Fizz ---------- */
+
+  function initHowItWorksJump() {
+    document.addEventListener('click', function (e) {
+      var link = e.target instanceof Element && e.target.closest('a[href="#how-it-works"]');
+      if (!link) return;
+      var target = document.getElementById('how-it-works');
+      if (!target) return;
+      e.preventDefault();
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      try { history.pushState(null, '', '#how-it-works'); } catch (err) {}
+      // Prefer the Fill tab when arriving from the story CTA.
+      var fill = document.querySelector('#how-it-works [data-auto-tabs="link"]');
+      if (fill) fill.click();
+    });
+  }
+
   function boot() {
     initHeroScroll();
     initTabs();
     initTutorial();
+    initHowItWorksJump();
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);

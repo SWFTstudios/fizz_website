@@ -1,13 +1,13 @@
 /**
  * Fizz homepage — "Meet the bottle" scroll story, plus the hero's "Scroll to explore" cue.
  *
- * The section is four screens tall; its stage stays pinned while the page scrolls through
- * four chapters (still water → the canister → the fizz → your colorway). Scroll progress
- * picks the chapter, fills the progress bars and sets data-chapter on the section, which
- * the CSS uses to move the bottle, bring in the actual-size canister photo and start the
- * rising bubbles. Points on the bottle open short notes ("tap for more"), and the colorway
- * swatches swap the bottle. Horizontal swipe / drag and prev/next arrows also advance
- * chapters like a slideshow, staying in sync with scroll position.
+ * The section is three screens tall; its stage stays pinned while the page scrolls through
+ * three chapters (the Fizz Bottle → the canister → your colorway). Scroll progress picks
+ * the chapter, fills the progress bars and sets data-chapter on the section, which the CSS
+ * uses to move the bottle and bring in the actual-size canister photo. Points on the bottle
+ * open short feature notes ("tap for more"), and the colorway swatches swap the bottle.
+ * Horizontal swipe / drag and prev/next arrows also advance chapters like a slideshow,
+ * staying in sync with scroll position.
  *
  * Without motion (prefers-reduced-motion) nothing is pinned: chapters simply stack.
  */
@@ -30,7 +30,7 @@
   var prevBtn = section.querySelector('[data-story-prev]');
   var nextBtn = section.querySelector('[data-story-next]');
   var N = chapters.length;
-  var FOCUS_SPOT = ['fill', 'base', 'lid', null]; // the point each chapter draws the eye to
+  var FOCUS_SPOT = ['lid', 'base', null]; // the point each chapter draws the eye to
 
   function clamp(v, a, b) { return v < a ? a : v > b ? b : v; }
 
