@@ -2401,6 +2401,25 @@ html.fizz-motion [data-reveal].is-in { opacity: 1; transform: none; }
   text-align: center;
 }
 
+/* Bottle PDP: guide CTA after Inside the bottle — quiet glass, not a solid card wash */
+.bottle-guide-cta {
+  max-width: 48rem;
+  margin: 0 auto clamp(3rem, 7vw, 5rem);
+  padding: clamp(2.5rem, 5vw, 3.5rem) clamp(1.25rem, 4vw, 2rem);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1.5rem;
+  background: rgba(12, 23, 29, 0.42);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  text-align: center;
+}
+.bottle-guide-cta .hiw-head { margin-bottom: 0; }
+.bottle-guide-cta .hiw-actions { margin-top: 1.75rem; }
+@media (max-width: 767px) {
+  .bottle-guide-cta { margin-left: 1rem; margin-right: 1rem; }
+  .bottle-guide-cta .hiw-actions { flex-direction: column; }
+}
+
 @media (max-width: 991px) {
   .hiw-flow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .hiw-flow li:nth-child(2)::after { display: none; }
