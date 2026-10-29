@@ -936,6 +936,10 @@ html:not([data-fizz-page="home"]) body {
   height: 100svh;
   padding-top: clamp(4.5rem, 9vh, 6rem);
   padding-bottom: clamp(2rem, 6vh, 4rem);
+  /* Vertical page scroll stays with the browser; horizontal swipes are handled in JS. */
+  touch-action: pan-y;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 /* Media: the bottle, its halo, a column of rising bubbles, the canister photo */
