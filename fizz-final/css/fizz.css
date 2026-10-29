@@ -2976,10 +2976,7 @@ html.fizz-motion .about-cans.is-filled .about-cans-grid li { opacity: 1; transfo
   pointer-events: none;
 }
 
-/* "More from Fizz": photo fills more of the screen */
-.fizz-more { display: flex; align-items: center; min-height: 100svh; }
-.fizz-more-inner { width: 100%; }
-.fizz-more-media { max-height: 86svh; }
+/* "More from Fizz" sizing is defined with the shared chrome rules below. */
 
 /* Content pages: steps + parts diagram scale with the viewport height */
 .hiw-step-media { max-height: min(80svh, 760px); }
@@ -3276,7 +3273,8 @@ html.fizz-lb-open body { overflow: hidden; }
    ========================================================================== */
 
 .dark-slide-arrow,
-.fizz-more-arrow {
+.fizz-more-arrow,
+.fizz-story-arrow {
   width: 48px;
   height: 48px;
   border: 1px solid transparent;
@@ -3288,16 +3286,110 @@ html.fizz-lb-open body { overflow: hidden; }
 .dark-slide-arrow:hover,
 .dark-slide-arrow.left:hover,
 .dark-slide-arrow.right:hover,
-.fizz-more-arrow:hover { border-color: #e4e9ec; border-style: solid; }
+.fizz-more-arrow:hover,
+.fizz-story-arrow:hover { border-color: #e4e9ec; border-style: solid; }
 .dark-slide-arrow:active,
 .dark-slide-arrow.left:active,
 .dark-slide-arrow.right:active,
-.fizz-more-arrow:active { background-color: var(--fizz-blue-1); }
-.fizz-more-arrow:active { scale: 0.94; }
-.fizz-more-arrow svg { width: 16px; height: 16px; }
+.fizz-more-arrow:active,
+.fizz-story-arrow:active { background-color: var(--fizz-blue-1); }
+.fizz-more-arrow:active,
+.fizz-story-arrow:active { scale: 0.94; }
+.fizz-more-arrow svg,
+.fizz-story-arrow svg { width: 16px; height: 16px; }
 @media (max-width: 479px) {
   .dark-slide-arrow,
-  .fizz-more-arrow { width: 40px; height: 40px; }
+  .fizz-more-arrow,
+  .fizz-story-arrow { width: 40px; height: 40px; }
+}
+
+/* Intro "No cans" without floating cards — centered copy before the explore carousel */
+.about-section#just-fizz {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: min(72vh, 720px);
+  padding: clamp(4rem, 10vw, 7rem) clamp(1.25rem, 4vw, 3rem);
+  background: transparent;
+}
+.about-section#just-fizz .grid-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+.about-section#just-fizz .story-wrapper.is-intro-only {
+  display: block;
+  width: 100%;
+  max-width: 52rem;
+  margin: 0 auto;
+  padding: 0;
+  text-align: center;
+}
+.about-section#just-fizz .story-content { width: 100%; }
+.about-section#just-fizz .stacked-intro,
+.about-section#just-fizz .stacked-intro.small {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.about-section#just-fizz .dual-button {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+/* Bottle PDP: keep bubble video inside the sticky feature reveal only */
+.pdp-key-features {
+  margin-top: 0 !important;
+  position: relative;
+  z-index: 1;
+}
+.pdp-hero {
+  position: relative;
+  z-index: 2;
+  isolation: isolate;
+  background-color: var(--fizz-navy);
+}
+
+/* "More from Fizz": secondary strip, heading above the grid */
+.fizz-more {
+  display: block;
+  min-height: 0;
+  padding: clamp(2.5rem, 6vw, 4.5rem) clamp(1.25rem, 5vw, 4rem);
+}
+.fizz-more-heading {
+  max-width: 1280px;
+  margin: 0 auto 1.5rem;
+  color: var(--pdp-text);
+  font-family: "Newsreader", Georgia, serif;
+  font-size: clamp(1.6rem, 3vw, 2.25rem);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+.fizz-more-heading .fizz-more-count {
+  margin-left: 0.65rem;
+  color: var(--pdp-muted);
+  font-family: "Satoshi", system-ui, sans-serif;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  vertical-align: middle;
+}
+.fizz-more-inner { width: 100%; }
+.fizz-more-media {
+  aspect-ratio: 4 / 5;
+  max-height: 52vh;
+  border-radius: 18px;
+}
+.fizz-more-title { font-size: clamp(1.5rem, 3vw, 2.25rem); }
+.fizz-more-copy .fizz-more-eyebrow { display: none; }
+@media (max-width: 991px) {
+  .fizz-more-media { height: min(48svh, 90vw); max-height: none; }
 }
 
 /* ---------- Button legibility: every label clears WCAG AAA (7:1) ---------- */

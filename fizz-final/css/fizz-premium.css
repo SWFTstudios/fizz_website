@@ -1195,6 +1195,25 @@ html:not([data-fizz-page="home"]) body {
 .fizz-story-swatch.is-active { border-color: #fff; background: rgba(255, 255, 255, 0.08); }
 .fizz-story-cta { display: inline-flex; margin-top: 1.75rem; }
 
+.fizz-story-arrows {
+  display: flex;
+  gap: 0.65rem;
+  margin: 0 0 1rem;
+}
+.fizz-story:not(.is-live) .fizz-story-arrows { display: none; }
+.fizz-story-arrow {
+  display: grid;
+  place-items: center;
+  padding: 0;
+  cursor: pointer;
+}
+.fizz-story-arrow:disabled {
+  opacity: 0.35;
+  cursor: default;
+  pointer-events: none;
+}
+.fizz-story-stage { touch-action: pan-y; }
+
 .fizz-story-progress { display: flex; gap: 0.5rem; max-width: 22rem; }
 .fizz-story:not(.is-live) .fizz-story-progress { display: none; }
 .fizz-story-progress button {
