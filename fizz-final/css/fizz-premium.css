@@ -1212,7 +1212,23 @@ html:not([data-fizz-page="home"]) body {
   cursor: default;
   pointer-events: none;
 }
-.fizz-story-stage { touch-action: pan-y; }
+.fizz-story.is-live .fizz-story-stage.is-swipeable {
+  touch-action: pan-y;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.fizz-story.is-live .fizz-story-stage.is-swipeable.is-swiping {
+  cursor: grabbing;
+}
+.fizz-story.is-live .fizz-story-stage.is-swipeable a,
+.fizz-story.is-live .fizz-story-stage.is-swipeable button,
+.fizz-story.is-live .fizz-story-stage.is-swipeable [data-story-spot],
+.fizz-story.is-live .fizz-story-stage.is-swipeable [data-story-color] {
+  cursor: pointer;
+  user-select: auto;
+  -webkit-user-select: auto;
+}
 
 .fizz-story-progress { display: flex; gap: 0.5rem; max-width: 22rem; }
 .fizz-story:not(.is-live) .fizz-story-progress { display: none; }

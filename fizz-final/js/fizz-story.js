@@ -143,61 +143,106 @@
   if (prevBtn) prevBtn.addEventListener('click', function () { goToChapter(active - 1); });
   if (nextBtn) nextBtn.addEventListener('click', function () { goToChapter(active + 1); });
 
-  /* ---------- Swipe / drag slideshow ---------- */
+  /* ---------- Swipe / drag slideshow (whole pinned stage) ---------- */
 
-  if (stage) {
+  (function bindSwipe() {
+    var surface = stage || section;
+    if (!surface) return;
+
     var startX = 0;
     var startY = 0;
     var tracking = false;
     var axis = null; // 'x' | 'y' | null
-    var SWIPE = 48;
+    var pointerId = null;
+    var SWIPE = 36;
+    var LOCK = 10;
 
     function ignoreTarget(el) {
       return !!(el && el.closest && el.closest(
-        '[data-story-spot], [data-story-pop], [data-story-color], [data-story-go], [data-story-prev], [data-story-next], a, button'
+        '[data-story-spot], [data-story-pop], [data-story-color], [data-story-go], [data-story-prev], [data-story-next], a, button, input, label'
       ));
     }
 
-    function onPointerDown(e) {
-      if (e.pointerType === 'mouse' && e.button !== 0) return;
+    function point(e) {
+      if (e.touches && e.touches[0]) return { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      if (e.changedTouches && e.changedTouches[0]) {
+        return { x: e.changedTouches[0].clientX, y: e.changedTouches[0].clientY };
+      }
+      return { x: e.clientX, y: e.clientY };
+    }
+
+    function begin(e) {
+      if (e.type === 'pointerdown' && e.pointerType === 'mouse' && e.button !== 0) return;
       if (ignoreTarget(e.target)) return;
+      var p = point(e);
       tracking = true;
       axis = null;
-      startX = e.clientX;
-      startY = e.clientY;
-      try { stage.setPointerCapture(e.pointerId); } catch (err) {}
-    }
-
-    function onPointerMove(e) {
-      if (!tracking) return;
-      var dx = e.clientX - startX;
-      var dy = e.clientY - startY;
-      if (!axis) {
-        if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
-        axis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+      startX = p.x;
+      startY = p.y;
+      pointerId = e.pointerId != null ? e.pointerId : 'touch';
+      surface.classList.add('is-swiping');
+      if (e.pointerId != null) {
+        try { surface.setPointerCapture(e.pointerId); } catch (err) {}
       }
-      if (axis === 'x') e.preventDefault();
     }
 
-    function onPointerUp(e) {
+    function move(e) {
       if (!tracking) return;
-      tracking = false;
-      var dx = e.clientX - startX;
-      var dy = e.clientY - startY;
+      if (pointerId !== 'touch' && e.pointerId != null && e.pointerId !== pointerId) return;
+      var p = point(e);
+      var dx = p.x - startX;
+      var dy = p.y - startY;
+      if (!axis) {
+        if (Math.abs(dx) < LOCK && Math.abs(dy) < LOCK) return;
+        axis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+        if (axis === 'y') {
+          // Let the page keep scrolling; abandon this gesture.
+          tracking = false;
+          surface.classList.remove('is-swiping');
+          if (e.pointerId != null) {
+            try { surface.releasePointerCapture(e.pointerId); } catch (err) {}
+          }
+          return;
+        }
+      }
+      if (axis === 'x') {
+        if (e.cancelable) e.preventDefault();
+      }
+    }
+
+    function end(e) {
+      if (!tracking) return;
+      if (pointerId !== 'touch' && e.pointerId != null && e.pointerId !== pointerId) return;
+      var p = point(e);
+      var dx = p.x - startX;
+      var dy = p.y - startY;
       var wasX = axis === 'x';
+      tracking = false;
       axis = null;
-      try { stage.releasePointerCapture(e.pointerId); } catch (err) {}
+      pointerId = null;
+      surface.classList.remove('is-swiping');
+      if (e.pointerId != null) {
+        try { surface.releasePointerCapture(e.pointerId); } catch (err) {}
+      }
       if (!wasX) return;
-      if (Math.abs(dx) < SWIPE || Math.abs(dx) < Math.abs(dy)) return;
+      if (Math.abs(dx) < SWIPE || Math.abs(dx) <= Math.abs(dy)) return;
       if (dx < 0) goToChapter(active + 1);
       else goToChapter(active - 1);
     }
 
-    stage.addEventListener('pointerdown', onPointerDown);
-    stage.addEventListener('pointermove', onPointerMove, { passive: false });
-    stage.addEventListener('pointerup', onPointerUp);
-    stage.addEventListener('pointercancel', function () { tracking = false; axis = null; });
-  }
+    surface.classList.add('is-swipeable');
+    if (window.PointerEvent) {
+      surface.addEventListener('pointerdown', begin);
+      surface.addEventListener('pointermove', move, { passive: false });
+      surface.addEventListener('pointerup', end);
+      surface.addEventListener('pointercancel', end);
+    } else {
+      surface.addEventListener('touchstart', begin, { passive: true });
+      surface.addEventListener('touchmove', move, { passive: false });
+      surface.addEventListener('touchend', end);
+      surface.addEventListener('touchcancel', end);
+    }
+  })();
 
   /* ---------- Hero: "Scroll to explore" ---------- */
 
