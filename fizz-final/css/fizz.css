@@ -3308,11 +3308,11 @@ html.fizz-lb-open body { overflow: hidden; }
   position: relative;
   z-index: 2;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
   width: 100%;
-  min-height: min(70vh, 680px);
-  padding: clamp(4rem, 10vw, 7rem) clamp(1.25rem, 5vw, 3rem);
+  min-height: 0;
+  padding: clamp(2rem, 4vw, 3.25rem) clamp(1.25rem, 5vw, 3rem) clamp(0.75rem, 2vw, 1.25rem);
   text-align: center;
   background: transparent;
 }
@@ -3339,7 +3339,7 @@ html.fizz-lb-open body { overflow: hidden; }
   font-weight: 400;
 }
 .fizz-just-copy {
-  margin: 1.25rem 0 0;
+  margin: 1rem 0 0;
   max-width: 34rem;
   color: var(--fizz-fog, rgba(221, 246, 255, 0.78));
   font-family: "Satoshi", system-ui, sans-serif;
@@ -3348,21 +3348,17 @@ html.fizz-lb-open body { overflow: hidden; }
   line-height: 1.55;
   text-wrap: pretty;
 }
-.fizz-just-actions {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  gap: 0.85rem;
-  width: 100%;
-  margin-top: 2rem;
+/* Pull the explore carousel up under the intro copy */
+.fizz-just + .slider-section {
+  margin-top: 0;
+  padding-top: 0 !important;
+  padding-bottom: clamp(1.5rem, 4vw, 3rem) !important;
 }
-.fizz-just-actions .button {
-  flex: 0 0 auto;
-  width: auto;
-  min-width: 11.5rem;
-  height: auto;
-  aspect-ratio: auto;
+.fizz-just + .slider-section > .section,
+.fizz-just + .slider-section > .section.clip,
+.fizz-just + .slider-section > .section.no-padding {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
 }
 
 /* Bottle PDP: keep bubble video inside the sticky feature reveal only */
