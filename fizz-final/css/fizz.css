@@ -2545,8 +2545,17 @@ html.fizz-motion .about-cans.is-filled .about-cans-grid li { opacity: 1; transfo
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(7, 14, 18, 0.55) 0%, rgba(12, 23, 29, 0.78) 100%);
+  background: linear-gradient(180deg, rgba(7, 14, 18, 0.45) 0%, rgba(12, 23, 29, 0.72) 100%);
   pointer-events: none;
+}
+
+/* Keep Just Fizz + explore carousel on the coded water field (no video) */
+.fizz-just,
+.fizz-just + .slider-section {
+  position: relative;
+  z-index: 1;
+  isolation: isolate;
+  background: transparent;
 }
 
 /* "How it works" autoplay tabs: Spark fill + kinetic labels + bubble shimmer */

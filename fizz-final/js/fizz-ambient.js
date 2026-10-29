@@ -1,11 +1,11 @@
 /**
  * Fizz — site-wide carbonation behind every section.
  *
- * Two fixed canvases sit behind the page content: a far layer (small, dim, softly blurred
- * bubbles that barely move with the page) and a near layer (fewer, brighter bubbles that
- * slide with the scroll). The difference in parallax is what reads as depth, the same
- * water the homepage "No cans. No machine. Just Fizz." section is set in. A few thin bubble
- * streams rise along the edges so the copy column stays clean.
+ * Two fixed canvases sit behind the page content: a far layer (soft orbiting glow orbs +
+ * small dim bubbles) and a near layer (brighter bubbles that slide with the scroll). The
+ * difference in parallax is what reads as depth — a coded water field instead of the
+ * bubble-video backdrop (that video is reserved for the hero card shrink and the bottle
+ * PDP key-features scrub).
  *
  * Skipped under prefers-reduced-motion. Pauses while the tab is hidden.
  */
@@ -37,6 +37,7 @@
   var bubbles = [];
   var sites = [];
   var chain = [];
+  var orbs = [];
   var lastY = window.scrollY;
 
   function bubble(anywhere) {
@@ -69,6 +70,25 @@
     };
   }
 
+  function makeOrbs() {
+    var n = MOBILE.matches ? 3 : 5;
+    var list = [];
+    for (var i = 0; i < n; i++) {
+      list.push({
+        cx: rand(0.15, 0.85),
+        cy: rand(0.2, 0.85),
+        rx: rand(0.08, 0.22) * (MOBILE.matches ? 0.7 : 1),
+        ry: rand(0.06, 0.18) * (MOBILE.matches ? 0.7 : 1),
+        r: rand(H * 0.18, H * 0.42),
+        speed: rand(0.04, 0.11) * (i % 2 ? 1 : -1),
+        ph: rand(0, TAU),
+        a: rand(0.1, 0.22),
+        cool: Math.random() < 0.5 // teal vs ice
+      });
+    }
+    return list;
+  }
+
   function count() {
     return Math.min(MOBILE.matches ? 90 : 220, Math.round((W * H) / (MOBILE.matches ? 4200 : 6200)));
   }
@@ -94,6 +114,27 @@
       st.age = rand(0, st.life * 0.7);
       sites.push(st);
     }
+    orbs = makeOrbs();
+  }
+
+  function drawOrb(ctx, o, t) {
+    var x = W * o.cx + Math.cos(t * o.speed + o.ph) * W * o.rx;
+    var y = H * o.cy + Math.sin(t * o.speed * 0.85 + o.ph) * H * o.ry;
+    var g = ctx.createRadialGradient(x, y, 0, x, y, o.r);
+    if (o.cool) {
+      g.addColorStop(0, 'rgba(95, 216, 255,' + (o.a * 0.9).toFixed(3) + ')');
+      g.addColorStop(0.35, 'rgba(23, 96, 122,' + (o.a * 0.45).toFixed(3) + ')');
+      g.addColorStop(1, 'rgba(11, 53, 83, 0)');
+    } else {
+      g.addColorStop(0, 'rgba(196, 227, 253,' + (o.a * 0.75).toFixed(3) + ')');
+      g.addColorStop(0.4, 'rgba(45, 120, 150,' + (o.a * 0.35).toFixed(3) + ')');
+      g.addColorStop(1, 'rgba(12, 23, 29, 0)');
+    }
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.arc(x, y, o.r, 0, TAU);
+    ctx.fill();
   }
 
   function draw(ctx, b, alpha) {
@@ -172,6 +213,10 @@
 
     prep(fctx);
     prep(nctx);
+    // Soft orbiting glows live on the far layer so content stays readable.
+    for (var o = 0; o < orbs.length; o++) drawOrb(fctx, orbs[o], t);
+    fctx.fillStyle = RGB;
+    fctx.strokeStyle = RGB;
     for (var k = 0; k < bubbles.length; k++) {
       var q = bubbles[k];
       draw(q.z < 0.5 ? fctx : nctx, q, q.a * Math.min(1, q.y / (H * 0.25))); // fade toward the surface
