@@ -849,8 +849,7 @@ a.button:active,
 }
 
 /* ==========================================================================
-   Depth: site-wide carbonation (js/fizz-ambient.js) and the underwater
-   cursor (js/fizz-cursor.js). Sections that used to paint a flat Deep fill
+   Depth: site-wide carbonation (js/fizz-ambient.js). Sections that used to paint a flat Deep fill
    go clear so the water continues behind them.
    ========================================================================== */
 
@@ -910,15 +909,6 @@ html.fizz-bg-bubbles .fizz-bg-video {
     radial-gradient(60% 55% at 12% 18%, rgba(23, 96, 122, 0.45) 0%, rgba(23, 96, 122, 0) 100%),
     radial-gradient(55% 55% at 92% 100%, rgba(11, 53, 83, 0.6) 0%, rgba(11, 53, 83, 0) 100%),
     rgba(12, 23, 29, 0.35);
-}
-
-.fizz-cursor {
-  position: fixed;
-  inset: 0;
-  z-index: 2147483000;
-  width: 100vw;
-  height: 100vh;
-  pointer-events: none;
 }
 
 /* ==========================================================================
