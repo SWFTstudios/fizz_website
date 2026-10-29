@@ -2682,16 +2682,17 @@ html.fizz-motion .about-cans.is-filled .about-cans-grid li { opacity: 1; transfo
   will-change: transform, opacity;
   transition: box-shadow 0.45s ease;
 }
-/* Keep the hero copy and CTAs above the browser's bottom bar / home indicator:
-   svh is the visible height with toolbars shown, and the bottom padding lifts the centred block. */
+/* Keep the hero copy and CTAs clear of the browser's bottom bar and the fixed "Scroll to explore"
+   cue (about 7rem tall, pinned to the bottom): svh is the visible height with toolbars shown, and the
+   bottom padding lifts the centred block above the cue so everything shows before the first scroll. */
 .fizz-hero .hero-content_container {
-  box-sizing: border-box;
   height: 100vh;
   height: 100svh;
-  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 5.5rem);
 }
-@media (max-width: 767px) {
-  .fizz-hero .hero-content_container { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 7rem); }
+.fizz-hero .fizz-section.is-hero {
+  box-sizing: border-box;
+  padding-top: 5rem;
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 9.5rem);
 }
 .fizz-hero.is-carded .hero-video_container {
   box-shadow:
