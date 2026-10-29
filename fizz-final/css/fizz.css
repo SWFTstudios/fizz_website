@@ -3360,6 +3360,21 @@ html.fizz-lb-open body { overflow: hidden; }
   padding-top: 0 !important;
   padding-bottom: 0 !important;
 }
+.fizz-just + .slider-section .basic-slide-wrapper,
+.fizz-just + .slider-section .product-slide-card {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  min-height: min(58vh, 520px);
+  height: min(58vh, 520px);
+}
+@media (max-width: 767px) {
+  .fizz-just + .slider-section .basic-slide-wrapper,
+  .fizz-just + .slider-section .product-slide-card {
+    min-height: min(62vh, 480px);
+    height: auto;
+    padding-top: 0.5rem;
+  }
+}
 
 /* Bottle PDP: keep bubble video inside the sticky feature reveal only */
 .pdp-key-features {
