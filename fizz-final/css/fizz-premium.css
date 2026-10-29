@@ -1032,30 +1032,7 @@ html.fizz-bg-bubbles .fizz-bg-video {
 .fizz-story.is-live[data-chapter="1"] .fizz-story-canister { opacity: 1; transform: none; }
 .fizz-story:not(.is-live) .fizz-story-canister { position: relative; right: auto; bottom: auto; opacity: 1; transform: none; margin-top: 1rem; }
 
-/* Soft rise cue on the bottle-features chapter (kept subtle; not a fourth story beat) */
-.fizz-story-rise {
-  position: absolute;
-  z-index: 3;
-  left: 50%;
-  top: 28%;
-  width: 24%;
-  height: 50%;
-  transform: translateX(-50%);
-  opacity: 0;
-  transition: opacity 0.8s ease;
-  pointer-events: none;
-  -webkit-mask: linear-gradient(to top, transparent 0%, #000 20%, #000 75%, transparent 100%);
-  mask: linear-gradient(to top, transparent 0%, #000 20%, #000 75%, transparent 100%);
-  background:
-    radial-gradient(circle, rgba(255, 255, 255, 0.9) 0 1px, transparent 1.6px) 0 0 / 14px 22px,
-    radial-gradient(circle, rgba(214, 238, 248, 0.8) 0 1.4px, transparent 2px) 7px 9px / 19px 29px,
-    radial-gradient(circle, rgba(255, 255, 255, 0.7) 0 0.8px, transparent 1.3px) 3px 15px / 11px 17px;
-  animation: fizz-story-rise 2.4s linear infinite;
-}
-.fizz-story.is-live[data-chapter="0"] .fizz-story-rise { opacity: 0.55; }
-@keyframes fizz-story-rise {
-  to { background-position: 0 -88px, 7px -107px, 3px -53px; }
-}
+/* Rising bubble-dot overlay removed from the bottle story stage */
 
 /* Tap-for-more points */
 .fizz-story-spot {
@@ -1283,30 +1260,66 @@ html.fizz-bg-bubbles .fizz-bg-video {
 }
 .fizz-story-progress button[style] span::after { transform: scaleX(var(--fill, 0)); }
 
-/* Phone: bottle on top, chapter copy below */
-@media (max-width: 767px) {
-  .fizz-story-stage { grid-template-columns: 1fr; gap: 1rem; }
-  .fizz-story.is-live .fizz-story-stage {
-    grid-template-rows: minmax(0, 1fr) auto;
-    padding-top: 4.5rem;
-    padding-bottom: 1.5rem;
+/* Tablet: keep two columns but shrink the bottle so it can't spill into copy */
+@media (max-width: 1024px) and (min-width: 768px) {
+  .fizz-story-stage {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: clamp(1.25rem, 3vw, 2.5rem);
   }
-  .fizz-story-media { height: 100%; min-height: 0; min-width: 0; width: 100%; }
-  .fizz-story-bottle-wrap { height: auto; width: min(100%, 44svh); }
-  .fizz-story:not(.is-live) .fizz-story-media { height: 60svh; }
-  .fizz-story-copy { gap: 1rem; }
-  .fizz-story-title { font-size: clamp(2.1rem, 9vw, 2.75rem); }
-  .fizz-story-text { margin-top: 0.75rem; font-size: 0.95rem; }
+  .fizz-story-media { height: min(64vh, 560px); height: min(64svh, 560px); }
+  .fizz-story.is-live .fizz-story-bottle-wrap { transform: translate3d(0, 0, 0) scale(0.88); }
+  .fizz-story.is-live[data-chapter="1"] .fizz-story-bottle-wrap { transform: translate3d(-8%, 0, 0) scale(0.8); }
+  .fizz-story.is-live[data-chapter="2"] .fizz-story-bottle-wrap { transform: translate3d(0, 0, 0) scale(0.9) rotate(-3deg); }
+  .fizz-story-title { font-size: clamp(2.2rem, 4vw, 3.25rem); }
+}
+
+/* Phone: bottle on top, chapter copy below — bottle sized to its row so it can't overlap copy */
+@media (max-width: 767px) {
+  .fizz-story-stage { grid-template-columns: 1fr; gap: 0.75rem; }
+  .fizz-story.is-live .fizz-story-stage {
+    /* auto/auto: media only as tall as the bottle, copy sits fully below with a clear gap */
+    grid-template-rows: auto auto;
+    align-content: start;
+    justify-items: stretch;
+    gap: 0.85rem;
+    padding-top: 4.25rem;
+    padding-bottom: 1.25rem;
+  }
+  .fizz-story-media {
+    height: auto;
+    max-height: 38svh;
+    min-height: 0;
+    min-width: 0;
+    width: 100%;
+    overflow: visible;
+  }
+  .fizz-story-bottle-wrap {
+    height: auto;
+    width: min(68%, 34svh);
+    max-height: 36svh;
+  }
+  .fizz-story.is-live .fizz-story-bottle-wrap { transform: translate3d(0, 0, 0) scale(0.92); }
+  .fizz-story.is-live[data-chapter="1"] .fizz-story-bottle-wrap { transform: translate3d(-6%, 0, 0) scale(0.86); }
+  .fizz-story.is-live[data-chapter="2"] .fizz-story-bottle-wrap { transform: translate3d(0, 0, 0) scale(0.9) rotate(-3deg); }
+  .fizz-story:not(.is-live) .fizz-story-media { height: auto; max-height: 50svh; }
+  .fizz-story-copy {
+    position: relative;
+    z-index: 2;
+    gap: 0.85rem;
+    padding-top: 0.15rem;
+  }
+  .fizz-story-title { font-size: clamp(1.9rem, 8vw, 2.45rem); }
+  .fizz-story-text { margin-top: 0.65rem; font-size: 0.95rem; }
   .fizz-story-link,
   .fizz-story-swatches,
-  .fizz-story-actions { margin-top: 1rem; }
+  .fizz-story-actions { margin-top: 0.85rem; }
   .fizz-story-actions { flex-direction: column; align-items: stretch; }
   .fizz-story-actions .fizz-story-cta { width: 100%; justify-content: center; }
   .fizz-story-hint { display: none; }
-  .fizz-story-canister { width: 110px; right: 2%; }
-  .fizz-story.is-live[data-chapter="1"] .fizz-story-bottle-wrap { transform: translate3d(-14%, 0, 0) scale(0.86); }
+  .fizz-story-canister { width: 96px; right: 4%; bottom: 4%; }
   .fizz-story-swatch { padding-right: 0.75rem; font-size: 0.8125rem; }
   .fizz-story-swatch::before { width: 1.25rem; height: 1.25rem; }
+  .fizz-story-progress { max-width: 100%; }
 }
 
 /* ---------- Hero: "Scroll to explore" ---------- */
@@ -1357,7 +1370,6 @@ html.fizz-bg-bubbles .fizz-bg-video {
   80%, 100% { transform: translate3d(0, 50px, 0); opacity: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .fizz-story-rise,
   .fizz-story-spot.is-focus,
   .fizz-scroll-cue-line i { animation: none; }
 }
