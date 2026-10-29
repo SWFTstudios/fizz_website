@@ -901,7 +901,10 @@ html.fizz-bg-bubbles .fizz-bg-video {
 .about,
 .pdp-hero,
 .fizz-more,
-.fizz-story { background-color: transparent; }
+.fizz-story,
+.shop { background-color: transparent; }
+
+.shop-hero .shop-eyebrow { justify-content: center; }
 .fizz-refill-stage {
   background:
     radial-gradient(60% 55% at 12% 18%, rgba(23, 96, 122, 0.45) 0%, rgba(23, 96, 122, 0) 100%),
