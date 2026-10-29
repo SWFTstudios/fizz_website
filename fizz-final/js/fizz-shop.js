@@ -324,7 +324,7 @@
       options = '<div class="fizz-kit-options is-chips" role="radiogroup" aria-label="Purchase option">' +
         '<button type="button" role="radio" class="fizz-kit-chip is-active" aria-checked="true" data-plan="">One-time</button>' +
         '<button type="button" role="radio" class="fizz-kit-chip" aria-checked="false" data-plan="' + SUBSCRIBE_PLAN + '">Subscribe &amp; refill</button></div>' +
-        '<p class="fizz-kit-note" hidden>Delivery on Demand. Reorder when you run low.</p>';
+        '<p class="fizz-kit-note" hidden>$10 a month for a 6-pack, delivered monthly. Cancel anytime.</p>';
     }
     card.innerHTML =
       '<div class="fizz-kit-media' + (key === 'bottle' ? ' is-product' : '') + '"><img alt="" src="' + p.variants[0].image + '"></div>' +
