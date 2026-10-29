@@ -3303,43 +3303,67 @@ html.fizz-lb-open body { overflow: hidden; }
   .fizz-story-arrow { width: 40px; height: 40px; }
 }
 
-/* Intro "No cans" without floating cards — centered copy before the explore carousel */
-.about-section#just-fizz {
+/* Intro "No cans" — dedicated centered block (avoids Webflow story-grid scrunch) */
+.fizz-just {
   position: relative;
   z-index: 2;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: min(72vh, 720px);
-  padding: clamp(4rem, 10vw, 7rem) clamp(1.25rem, 4vw, 3rem);
+  width: 100%;
+  min-height: min(70vh, 680px);
+  padding: clamp(4rem, 10vw, 7rem) clamp(1.25rem, 5vw, 3rem);
+  text-align: center;
   background: transparent;
 }
-.about-section#just-fizz .grid-wrapper {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-}
-.about-section#just-fizz .story-wrapper.is-intro-only {
-  display: block;
-  width: 100%;
-  max-width: 52rem;
-  margin: 0 auto;
-  padding: 0;
-  text-align: center;
-}
-.about-section#just-fizz .story-content { width: 100%; }
-.about-section#just-fizz .stacked-intro,
-.about-section#just-fizz .stacked-intro.small {
+.fizz-just-inner {
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: min(100%, 46rem);
+  margin: 0 auto;
   text-align: center;
 }
-.about-section#just-fizz .dual-button {
+.fizz-just-title {
+  margin: 0;
+  max-width: 100%;
+  color: var(--fizz-mist, #ddf6ff);
+  font-family: "Newsreader", Georgia, serif;
+  font-size: clamp(2.6rem, 6vw, 4.25rem);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1.12;
+  text-wrap: balance;
+}
+.fizz-just-title em {
+  font-style: italic;
+  font-weight: 400;
+}
+.fizz-just-copy {
+  margin: 1.25rem 0 0;
+  max-width: 34rem;
+  color: var(--fizz-fog, rgba(221, 246, 255, 0.78));
+  font-family: "Satoshi", system-ui, sans-serif;
+  font-size: clamp(1rem, 1.6vw, 1.2rem);
+  font-weight: 400;
+  line-height: 1.55;
+  text-wrap: pretty;
+}
+.fizz-just-actions {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 0.75rem;
+  align-items: center;
+  gap: 0.85rem;
+  width: 100%;
+  margin-top: 2rem;
+}
+.fizz-just-actions .button {
+  flex: 0 0 auto;
+  width: auto;
+  min-width: 11.5rem;
+  height: auto;
+  aspect-ratio: auto;
 }
 
 /* Bottle PDP: keep bubble video inside the sticky feature reveal only */
