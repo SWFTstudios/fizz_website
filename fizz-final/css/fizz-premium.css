@@ -1182,6 +1182,7 @@ html.fizz-bg-bubbles .fizz-bg-video {
 .fizz-story-actions {
   display: flex;
   flex-wrap: wrap;
+  justify-content: flex-start; /* .dual-button centres its buttons; here they align with the copy */
   gap: 0.75rem;
   margin-top: 1.75rem;
 }
