@@ -1562,6 +1562,9 @@ html.fizz-bg-bubbles .fizz-bg-video {
 .fz-br { display: inline; }
 .fz-br.is-off { display: none; }
 .fz-br-mark { display: inline; }
+/* Phone-only break (Flavors description: "One bottle, any flavor." on its own line) */
+.fz-br-m { display: none; }
+@media (max-width: 767px) { .fz-br-m { display: inline; } }
 
 /* Home carousel cards: title and CTA sit closer together */
 [data-fizz-loop] .stacked-intro .fizz-heading-lg {
