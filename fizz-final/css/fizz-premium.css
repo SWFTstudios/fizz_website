@@ -1703,3 +1703,13 @@ html.fizz-bg-bubbles .fizz-bg-video {
   /* Swipe + dots on phones, as on the reference layout */
   .pdp-gallery-nav { display: none; }
 }
+
+/* Product pages, phones: quantity stepper and Add to cart stack full-width,
+   so the button label never wraps */
+@media (max-width: 767px) {
+  .pdp-hero .pdp-buy-row { flex-direction: column; gap: 0.6rem; }
+  .pdp-hero .pdp-qty { width: 100%; justify-content: space-between; }
+  .pdp-hero .pdp-qty-btn { width: 56px; }
+  .pdp-hero .pdp-qty-input { flex: 1; }
+  .pdp-hero .pdp-buy-row .pdp-add-btn { flex: none; width: 100%; white-space: nowrap; }
+}
