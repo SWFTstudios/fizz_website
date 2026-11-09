@@ -610,11 +610,85 @@
    * Boot
    * ------------------------------------------------------------------ */
 
+  /* ---------- Editorial line breaks ----------
+   * Copy carries <br class="fz-br"> where the design review asked a line to end. A forced
+   * break only reads well when the sentence before it ends a full line; in a narrower
+   * column that sentence wraps first and the break would strand a short tail
+   * ("quarter turn." alone on a line). Each break is re-checked whenever its paragraph
+   * changes width (or webfonts land) and switched off when it would leave a tail shorter
+   * than half the column, so the copy simply flows there instead. A break marked
+   * .is-keep is never switched off. */
+  var FZ_BR_MIN_LINE = 0.5;
+
+  function fitLineBreaks(p) {
+    var box = p.getBoundingClientRect();
+    if (!box.width) return;
+    var brs = p.querySelectorAll('br.fz-br');
+    var i;
+    for (i = 0; i < brs.length; i++) brs[i].classList.remove('is-off');
+    var segStart = null;
+    for (i = 0; i < brs.length; i++) {
+      var br = brs[i];
+      // .is-keep: the review asked for this break at this exact width; always honour it
+      if (br.classList.contains('is-keep')) { segStart = br; continue; }
+      var mark = br.previousSibling;
+      if (!mark || mark.nodeType !== 1 || !mark.classList.contains('fz-br-mark')) {
+        mark = document.createElement('span');
+        mark.className = 'fz-br-mark';
+        mark.setAttribute('aria-hidden', 'true');
+        br.parentNode.insertBefore(mark, br);
+      }
+      var m = mark.getBoundingClientRect();
+      var mid = (m.top + m.bottom) / 2;
+      var range = document.createRange();
+      if (segStart) range.setStartAfter(segStart); else range.setStart(p, 0);
+      range.setEndBefore(mark);
+      var rects = range.getClientRects();
+      var left = Infinity, wrapped = false;
+      for (var r = 0; r < rects.length; r++) {
+        var rc = rects[r];
+        if (!rc.width) continue;
+        if (rc.top <= mid && rc.bottom >= mid) left = Math.min(left, rc.left);
+        else if (rc.bottom < mid) wrapped = true;
+      }
+      if (wrapped && left !== Infinity && (m.left - left) / box.width < FZ_BR_MIN_LINE) {
+        br.classList.add('is-off');
+      }
+      segStart = br;
+    }
+  }
+
+  function setupLineBreaks() {
+    var paras = [];
+    document.querySelectorAll('br.fz-br').forEach(function (br) {
+      if (paras.indexOf(br.parentElement) < 0) paras.push(br.parentElement);
+    });
+    if (!paras.length) return;
+    var widths = new WeakMap();
+    function run(p, force) {
+      var w = Math.round(p.getBoundingClientRect().width);
+      if (!force && widths.get(p) === w) return;
+      widths.set(p, w);
+      fitLineBreaks(p);
+    }
+    paras.forEach(function (p) { run(p, true); });
+    if ('ResizeObserver' in window) {
+      var ro = new ResizeObserver(function (entries) {
+        entries.forEach(function (e) { run(e.target, false); });
+      });
+      paras.forEach(function (p) { ro.observe(p); });
+    }
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(function () { paras.forEach(function (p) { run(p, true); }); });
+    }
+  }
+
   function boot() {
     setupVideos();
     setupMarquees();
     setupReveals();
     initAccordions(document);
+    setupLineBreaks();
     warmFlavorFrames();
 
     if (root.classList.contains('fizz-tx-cover')) uncoverPage();

@@ -20,7 +20,7 @@
       prev.className = 'pdp-gallery-nav pdp-gallery-nav--prev';
       prev.setAttribute('data-gallery-prev', 'true');
       prev.setAttribute('aria-label', 'Previous image');
-      prev.innerHTML = '<span aria-hidden="true">‹</span>';
+      prev.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12H21M9 6L3 12L9 18" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/></svg>';
       stage.appendChild(prev);
     }
     if (!next) {
@@ -29,7 +29,7 @@
       next.className = 'pdp-gallery-nav pdp-gallery-nav--next';
       next.setAttribute('data-gallery-next', 'true');
       next.setAttribute('aria-label', 'Next image');
-      next.innerHTML = '<span aria-hidden="true">›</span>';
+      next.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12H21M9 6L3 12L9 18" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/></svg>';
       stage.appendChild(next);
     }
     return { prev: prev, next: next };
@@ -64,6 +64,26 @@
 
     var nav = ensureNav(stage);
 
+    /* Dots under the photo: the phone/tablet pager (the thumbnail strip is desktop-only) */
+    var dots = [];
+    if (stage && slides.length > 1) {
+      var dotWrap = document.createElement('div');
+      dotWrap.className = 'pdp-gallery-dots';
+      slides.forEach(function (_, i) {
+        var d = document.createElement('button');
+        d.type = 'button';
+        d.className = 'pdp-gallery-dot';
+        d.setAttribute('aria-label', 'Show image ' + (i + 1) + ' of ' + slides.length);
+        d.addEventListener('click', function (e) {
+          e.preventDefault();
+          setIndex(i);
+        });
+        dotWrap.appendChild(d);
+        dots.push(d);
+      });
+      stage.parentNode.insertBefore(dotWrap, stage.nextSibling);
+    }
+
     function setIndex(next) {
       if (!slides.length) return;
       index = ((next % slides.length) + slides.length) % slides.length;
@@ -73,6 +93,11 @@
         var on = i === index;
         thumb.classList.toggle('is-active', on);
         thumb.setAttribute('aria-current', on ? 'true' : 'false');
+      });
+      dots.forEach(function (d, i) {
+        var on = i === index;
+        d.classList.toggle('is-active', on);
+        d.setAttribute('aria-current', on ? 'true' : 'false');
       });
       var slide = slides[index];
       var isLife = slide && slide.getAttribute('data-media-type') === 'lifestyle';
