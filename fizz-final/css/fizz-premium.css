@@ -1560,6 +1560,8 @@ html.fizz-bg-bubbles .fizz-bg-video {
 /* Editorial line breaks placed in the copy: each <br class="fz-br"> ends a line at a
    sentence or clause the design review marked "End here". */
 .fz-br { display: inline; }
+.fz-br.is-off { display: none; }
+.fz-br-mark { display: inline; }
 
 /* Home carousel cards: title and CTA sit closer together */
 [data-fizz-loop] .stacked-intro .fizz-heading-lg {
