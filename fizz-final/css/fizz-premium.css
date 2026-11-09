@@ -1555,3 +1555,27 @@ html.fizz-bg-bubbles .fizz-bg-video {
 /* The copy and the two hero photos sit in front of every drifting photo, as the seltzer
    depth order intends, so a passing photo never covers a button */
 .about-section[data-fizz-seltzer] .grid-wrapper { position: relative; z-index: 5; }
+
+/* ---------- Review notes (Nov 2026) ---------- */
+/* Editorial line breaks placed in the copy: each <br class="fz-br"> ends a line at a
+   sentence or clause the design review marked "End here". */
+.fz-br { display: inline; }
+
+/* Home carousel cards: title and CTA sit closer together */
+[data-fizz-loop] .stacked-intro .fizz-heading-lg {
+  margin-bottom: 0;
+  line-height: 1;
+}
+[data-fizz-loop] .stacked-intro .underline-link-2 { margin-top: 0.15rem; }
+
+/* Bottle page key-feature cards: copy centred in its card */
+.pdp-card-overlay,
+.pdp-card-overlay .pdp-card-title,
+.pdp-card-overlay .pdp-card-text { text-align: center; }
+
+/* About can calculator: results in the sans, not the serif */
+.about-calc-results dt {
+  font-family: var(--_fizz-typography---fizz-font-family);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+}
