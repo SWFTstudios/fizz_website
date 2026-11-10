@@ -2538,8 +2538,7 @@ html.fizz-motion .about-cans.is-filled .about-cans-grid li { opacity: 1; transfo
 .about-value-list li { padding-top: 1.5rem; border-top: 1px solid rgba(221, 246, 255, 0.2); }
 .about-value-list li:nth-child(2) { transition-delay: 0.1s; }
 .about-value-list li:nth-child(3) { transition-delay: 0.2s; }
-.about-value-list span { color: var(--pdp-ice); font-size: 0.85rem; font-weight: 600; letter-spacing: 0.12em; }
-.about-value-list h3 { margin: 0.75rem 0 0; color: #fff; font-size: clamp(1.4rem, 2.6vw, 2rem); }
+.about-value-list h3 { margin: 0; color: #fff; font-size: clamp(1.4rem, 2.6vw, 2rem); }
 .about-value-list p { margin: 0.6rem 0 0; color: var(--pdp-muted); font-size: 1rem; line-height: 1.6; }
 
 @media (max-width: 991px) {
